@@ -1,0 +1,201 @@
+mixed-port: 7890
+socks-port: 7891
+redir-port: 7892
+allow-lan: true
+mode: global
+log-level: info
+external-controller: 127.0.0.1:9090
+dns:
+  enable: true
+  use-hosts: true
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  default-nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+  nameserver:
+    - 1.1.1.1
+    - 8.8.8.8
+proxies:
+  - name: 🇸🇪 ⚡ Швеция
+    type: vless
+    server: ws.example.com
+    port: 443
+    network: ws
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000001
+    packet-encoding: xudp
+    tls: true
+    servername: ws.example.com
+    ws-opts:
+      path: /ws-path
+      headers: {}
+    client-fingerprint: chrome
+  - name: 🇳🇱 ⚡ Нидерланды
+    type: vless
+    server: 192.0.2.10
+    port: 443
+    network: tcp
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000002
+    packet-encoding: xudp
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.example.org
+    reality-opts:
+      public-key: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      short-id: ''
+    client-fingerprint: qq
+  - name: 🇳🇱 ⚡ Нидерланды (Hysteria2) 🚀
+    type: hysteria2
+    server: hy2.example.com
+    port: 443
+    udp: true
+    password: 00000000-0000-4000-8000-000000000003
+    sni: hy2.example.com
+    client-fingerprint: chrome
+    alpn:
+      - h3
+  - name: 🇷🇴⚡ Румыния
+    type: vless
+    server: grpc.example.com
+    port: 443
+    network: grpc
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000004
+    packet-encoding: xudp
+    tls: true
+    servername: grpc.example.com
+    alpn:
+      - h2
+    grpc-opts:
+      grpc-service-name: example-svc-1a2b
+    client-fingerprint: firefox
+  - name: 🇷🇴⚡ Румыния через Москву
+    type: vless
+    server: 198.51.100.20
+    port: 443
+    network: tcp
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000005
+    packet-encoding: xudp
+    flow: xtls-rprx-vision
+    tls: true
+    servername: cdn.example.net
+    reality-opts:
+      public-key: BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+      short-id: '0123456789abcdef'
+    client-fingerprint: firefox
+  - name: 🇺🇸 США (GEMINI + ) 🤖
+    type: vless
+    server: 203.0.113.30
+    port: 2053
+    network: tcp
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000006
+    packet-encoding: xudp
+    flow: xtls-rprx-vision
+    tls: true
+    servername: www.example.com
+    reality-opts:
+      public-key: CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      short-id: '01234567'
+    client-fingerprint: firefox
+  - name: 🇻🇳  👇 Серверы для обхода белых списков 👇
+    type: hysteria2
+    server: '127'
+    port: 443
+    udp: true
+    password: 00000000-0000-4000-8000-000000000007
+    client-fingerprint: chrome
+    alpn:
+      - h3
+  - name: 🇪🇺  Обход белых списков 1
+    type: vless
+    server: front-1.example.net
+    port: 443
+    network: xhttp
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000008
+    packet-encoding: xudp
+    tls: true
+    servername: front-1.example.net
+    alpn:
+      - h2
+      - http/1.1
+    xhttp-opts:
+      path: /00000000-0000-4000-8000-0000000000aa
+      host: front-1.example.net
+      mode: packet-up
+      no-grpc-header: true
+      x-padding-bytes: 50-150
+      x-padding-obfs-mode: true
+      x-padding-key: tag
+      x-padding-header: X-Cache-Token
+      x-padding-placement: header
+      x-padding-method: tokenish
+      uplink-http-method: GET
+      session-placement: query
+      session-key: key
+      session-table: Base62
+      session-length: 16-32
+      seq-placement: query
+      seq-key: 'n'
+      uplink-data-placement: header
+      uplink-data-key: X-Chunk
+      uplink-chunk-size: 3000-4000
+      sc-max-each-post-bytes: 12000
+      sc-min-posts-interval-ms: 5-10
+      reuse-settings:
+        max-connections: '0'
+        max-concurrency: 8-16
+    client-fingerprint: firefox
+  - name: 🇪🇺 Обход белых списков 2
+    type: vless
+    server: cdn-2.example.net
+    port: 443
+    network: xhttp
+    udp: true
+    uuid: 00000000-0000-4000-8000-000000000009
+    packet-encoding: xudp
+    tls: true
+    servername: cdn-2.example.net
+    alpn:
+      - h2
+      - http/1.1
+    xhttp-opts:
+      path: /example/xhttp/path/0001
+      host: cdn-2.example.net
+      mode: packet-up
+      no-grpc-header: true
+      x-padding-bytes: 50-150
+      x-padding-obfs-mode: true
+      x-padding-placement: header
+      x-padding-method: tokenish
+      uplink-http-method: GET
+      session-placement: query
+      session-key: auth
+      session-length: 16-32
+      seq-placement: query
+      seq-key: chunk_id
+      uplink-data-placement: header
+      uplink-data-key: X-Seg
+      uplink-chunk-size: 3000-4000
+      sc-max-each-post-bytes: 12000
+      sc-min-posts-interval-ms: 5-10
+    client-fingerprint: firefox
+proxy-groups:
+  - name: → Remnawave
+    type: select
+    proxies:
+      - 🇸🇪 ⚡ Швеция
+      - 🇳🇱 ⚡ Нидерланды
+      - 🇳🇱 ⚡ Нидерланды (Hysteria2) 🚀
+      - 🇷🇴⚡ Румыния
+      - 🇷🇴⚡ Румыния через Москву
+      - 🇺🇸 США (GEMINI + ) 🤖
+      - 🇻🇳  👇 Серверы для обхода белых списков 👇
+      - 🇪🇺  Обход белых списков 1
+      - 🇪🇺 Обход белых списков 2
+rules:
+  - MATCH,→ Remnawave
