@@ -34,7 +34,7 @@ Map<String, dynamic> _release({List<Map<String, String>>? assets}) => {
 
 void main() {
   late Directory work;
-  late List<(String, String)> elevated;
+  late List<(String, List<String>)> elevated;
   late List<Uri> downloads;
 
   setUp(() {
@@ -58,9 +58,9 @@ void main() {
       await File(savePath).writeAsBytes(data);
       onProgress(data.length, data.length);
     },
-    runElevated: (executable, arguments) {
+    runInstaller: (executable, arguments) async {
       elevated.add((executable, arguments));
-      return accepted;
+      return accepted ? 0 : 2;
     },
     workDir: () async => work.path,
   );
@@ -107,10 +107,13 @@ void main() {
     final (executable, arguments) = elevated.single;
     expect(File(executable).existsSync(), isTrue);
     expect(executable, endsWith(_installer));
-    expect(
-      arguments,
-      '/SILENT /SUPPRESSMSGBOXES /NORESTART /SP- /relaunch=--connect',
-    );
+    expect(arguments, [
+      '/SILENT',
+      '/SUPPRESSMSGBOXES',
+      '/NORESTART',
+      '/SP-',
+      '/relaunch=--connect',
+    ]);
   });
 
   test('without a running VPN the relaunch carries no arguments', () {

@@ -77,7 +77,12 @@ typedef UpdateDownloader =
       String savePath,
       void Function(int received, int total) onProgress,
     );
-typedef ElevatedRunner = bool Function(String executable, String arguments);
+
+/// Runs the installer and completes with its exit code. Setup asks for UAC
+/// itself; started through `runas`, its "original user" would be elevated and
+/// the relaunched app would run as administrator.
+typedef InstallerRunner =
+    Future<int> Function(String executable, List<String> arguments);
 
 /// Downloads the Inno Setup installer of a release, checks it against the
 /// release's SHA256SUMS.txt and starts it silently; the installer relaunches
@@ -85,13 +90,13 @@ typedef ElevatedRunner = bool Function(String executable, String arguments);
 class WindowsUpdater {
   final UpdateTextFetcher fetchText;
   final UpdateDownloader download;
-  final ElevatedRunner runElevated;
+  final InstallerRunner runInstaller;
   final Future<String> Function() workDir;
 
   const WindowsUpdater({
     required this.fetchText,
     required this.download,
-    required this.runElevated,
+    required this.runInstaller,
     required this.workDir,
   });
 
@@ -131,10 +136,12 @@ class WindowsUpdater {
       await file.delete();
       throw const UpdateException(UpdateFailure.broken);
     }
-    final started = runElevated(
+    // A successful install kills this process before setup exits, so only
+    // a refused UAC prompt or a failed setup ever returns here.
+    final exitCode = await runInstaller(
       file.path,
-      installerArguments(reconnect: reconnect).join(' '),
+      installerArguments(reconnect: reconnect),
     );
-    if (!started) throw const UpdateException(UpdateFailure.declined);
+    if (exitCode != 0) throw const UpdateException(UpdateFailure.declined);
   }
 }
