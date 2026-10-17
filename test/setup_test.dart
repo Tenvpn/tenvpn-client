@@ -298,6 +298,22 @@ void main() {
       expect(args, ['dart-define-from-file=env.json', 'split-per-abi']);
     });
 
+    test('the Play bundle is not split per ABI and carries its version', () {
+      final args = setup.createFlutterBuildArgs(
+        platform: 'android',
+        verbose: false,
+        targets: 'aab',
+        buildName: '1.0.0',
+        buildNumber: '10000',
+      );
+
+      expect(args, [
+        'dart-define-from-file=env.json',
+        'build-name=1.0.0',
+        'build-number=10000',
+      ]);
+    });
+
     test('adds verbose to flutter build args with -v', () {
       final args = setup.createFlutterBuildArgs(
         platform: 'android',
