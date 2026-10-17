@@ -242,7 +242,7 @@ proxies:
       subscription = parseSubscription(fixture('remnawave_mihomo.yaml'));
     });
 
-    test('groups: TENVPN → Авто (url-test) / Вручную (select)', () {
+    test('groups: TENVPN → Авто (regular → whitelist tiers) / Вручную', () {
       final generated = buildConfig(subscription);
       final groups = (generated.config['proxy-groups'] as List)
           .cast<Map<String, dynamic>>();
@@ -250,18 +250,110 @@ proxies:
       expect(groups.map((group) => group['name']), [
         mainGroupName,
         autoGroupName,
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
         manualGroupName,
       ]);
       expect(groups[0]['type'], 'select');
       expect(groups[0]['proxies'], [autoGroupName, manualGroupName]);
-      expect(groups[1]['type'], 'url-test');
-      expect(groups[1]['proxies'], names);
-      expect(groups[1]['url'], 'https://www.gstatic.com/generate_204');
-      expect(groups[1]['interval'], 300);
-      expect(groups[2]['type'], 'select');
-      expect(groups[2]['proxies'], names);
+      expect(groups[1], {
+        'name': autoGroupName,
+        'type': 'fallback',
+        'proxies': [autoPrimaryGroupName, autoWhitelistGroupName],
+        'url': 'https://www.gstatic.com/generate_204',
+        'interval': 15,
+        'timeout': 3000,
+        'lazy': true,
+        'max-failed-times': 3,
+      });
+      expect(groups[2], {
+        'name': autoPrimaryGroupName,
+        'type': 'url-test',
+        'proxies': names.take(6).toList(),
+        'url': 'https://www.gstatic.com/generate_204',
+        'interval': 120,
+        'timeout': 3000,
+        'tolerance': 50,
+        'lazy': true,
+        'max-failed-times': 3,
+        'hidden': true,
+      });
+      expect(groups[3]['type'], 'url-test');
+      expect(groups[3]['proxies'], [
+        '🇪🇺  Обход белых списков 1',
+        '🇪🇺 Обход белых списков 2',
+      ]);
+      expect(groups[3]['interval'], 300);
+      expect(groups[3]['timeout'], 5000);
+      expect(groups[3]['tolerance'], 100);
+      expect(groups[3]['hidden'], isTrue);
+      expect(groups[3].containsKey('max-failed-times'), isFalse);
+      expect(groups[4]['type'], 'select');
+      expect(groups[4]['proxies'], names);
       expect(generated.config['rules'].last, 'MATCH,$mainGroupName');
       expect(generated.config['mode'], 'rule');
+    });
+
+    test('one tier and no AWG: «Авто» is that url-test itself', () {
+      for (final (text, wl) in [
+        (
+          'proxies:\n'
+              '  - {name: A, type: vless, server: a.example.com, port: 443}\n'
+              '  - {name: B, type: vless, server: b.example.com, port: 443}\n',
+          false,
+        ),
+        (
+          'proxies:\n'
+              '  - {name: Белые списки 1, type: vless, server: a.example.com, port: 443}\n',
+          true,
+        ),
+      ]) {
+        final groups =
+            (buildConfig(parseSubscription(text)).config['proxy-groups']
+                    as List)
+                .cast<Map<String, dynamic>>();
+        expect(groups.map((group) => group['name']), [
+          mainGroupName,
+          autoGroupName,
+          manualGroupName,
+        ]);
+        expect(groups[1]['type'], 'url-test');
+        expect(groups[1].containsKey('hidden'), isFalse);
+        expect(groups[1]['interval'], wl ? 300 : 120);
+      }
+    });
+
+    test('a whitelist server is found by its name outside the section', () {
+      final groups = {
+        for (final group
+            in buildConfig(
+                  parseSubscription('''
+proxies:
+  - {name: NL, type: vless, server: a.example.com, port: 443}
+  - {name: 🇪🇺 Обход белых списков 9, type: vless, server: b.example.com, port: 443}
+'''),
+                ).config['proxy-groups']
+                as List)
+          group['name']: group,
+      };
+      expect(groups[autoPrimaryGroupName]['proxies'], ['NL']);
+      expect(groups[autoWhitelistGroupName]['proxies'], [
+        '🇪🇺 Обход белых списков 9',
+      ]);
+      expect(
+        isWhitelistServer(const ServerEntry(name: 'X', type: 'vless')),
+        isFalse,
+      );
+      expect(
+        isWhitelistServer(
+          const ServerEntry(
+            name: 'X',
+            type: 'vless',
+            section: 'Серверы для обхода белых списков',
+          ),
+        ),
+        isTrue,
+      );
     });
 
     test('tun, fake-ip DNS without Chinese resolvers, controller secret', () {
@@ -295,13 +387,22 @@ proxies:
       );
     });
 
-    test('AWG is appended to both groups and tagged', () {
+    test('AWG sits between the tiers in «Авто» and ends «Вручную»', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
       final generated = buildConfig(subscription, awg: awg);
-      final groups = (generated.config['proxy-groups'] as List)
-          .cast<Map<String, dynamic>>();
-      expect(groups[1]['proxies'].last, awgDefaultName);
-      expect(groups[2]['proxies'].last, awgDefaultName);
+      final groups = {
+        for (final group in (generated.config['proxy-groups'] as List))
+          group['name']: group,
+      };
+      expect(groups[autoGroupName]['proxies'], [
+        autoPrimaryGroupName,
+        awgDefaultName,
+        autoWhitelistGroupName,
+      ]);
+      for (final tier in autoTierGroupNames) {
+        expect(groups[tier]['proxies'], isNot(contains(awgDefaultName)));
+      }
+      expect(groups[manualGroupName]['proxies'].last, awgDefaultName);
       expect(generated.servers.last.section, awgSectionTitle);
       expect(
         proxyNamed(
@@ -312,7 +413,7 @@ proxies:
       );
     });
 
-    test('awgFirst falls back from AWG to a hidden url-test pool', () {
+    test('awgFirst puts AWG ahead of both tiers', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
       final generated = buildConfig(
         subscription,
@@ -326,22 +427,17 @@ proxies:
       expect(groups[autoGroupName]['type'], 'fallback');
       expect(groups[autoGroupName]['proxies'], [
         awgDefaultName,
-        autoPoolGroupName,
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
       ]);
-      expect(groups[autoPoolGroupName]['type'], 'url-test');
-      expect(groups[autoPoolGroupName]['hidden'], isTrue);
-      expect(
-        groups[autoPoolGroupName]['proxies'],
-        isNot(contains(awgDefaultName)),
-      );
       final withoutAwg = buildConfig(
         subscription,
         options: const ConfigGenOptions(autoStrategy: AutoStrategy.awgFirst),
       );
-      expect(
-        (withoutAwg.config['proxy-groups'] as List)[1]['type'],
-        'url-test',
-      );
+      expect((withoutAwg.config['proxy-groups'] as List)[1]['proxies'], [
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
+      ]);
     });
   });
 

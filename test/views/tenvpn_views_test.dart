@@ -417,29 +417,36 @@ void main() {
       expect(text('AmneziaWG'), findsWidgets);
     });
 
-    test('selection follows the hidden pool in AWG-first mode', () {
+    test('selection looks through the hidden «Авто» tiers', () {
       container = build(items: [profile]);
-      container.read(groupsProvider.notifier).value = [
-        const Group(
-          type: GroupType.Selector,
-          name: mainGroupName,
-          now: autoGroupName,
-        ),
-        const Group(
-          type: GroupType.Fallback,
-          name: autoGroupName,
-          now: autoPoolGroupName,
-        ),
-        const Group(
-          type: GroupType.URLTest,
-          name: autoPoolGroupName,
-          now: 'NL',
-        ),
-      ];
-      expect(container.read(tenvpnSelectionProvider), (
-        auto: true,
-        server: 'NL',
-      ));
+      for (final (tier, server) in [
+        (autoPrimaryGroupName, 'NL'),
+        (autoWhitelistGroupName, 'WL 1'),
+        ('AWG', 'AWG'),
+      ]) {
+        container.read(groupsProvider.notifier).value = [
+          const Group(
+            type: GroupType.Selector,
+            name: mainGroupName,
+            now: autoGroupName,
+          ),
+          Group(type: GroupType.Fallback, name: autoGroupName, now: tier),
+          const Group(
+            type: GroupType.URLTest,
+            name: autoPrimaryGroupName,
+            now: 'NL',
+          ),
+          const Group(
+            type: GroupType.URLTest,
+            name: autoWhitelistGroupName,
+            now: 'WL 1',
+          ),
+        ];
+        expect(container.read(tenvpnSelectionProvider), (
+          auto: true,
+          server: server,
+        ));
+      }
     });
   });
 

@@ -3,18 +3,26 @@ import 'dart:math';
 import 'constants.dart';
 import 'subscription.dart';
 
+/// Order of the tiers inside «Авто»: regular servers → AmneziaWG → servers
+/// for mobile whitelists (CDN traffic is paid and slower, so it goes last).
 enum AutoStrategy {
   fastest,
-
-  /// AmneziaWG first, the rest of the pool only when it is down: the
-  /// Windows "AWG priority" mode planned for session 3.
   awgFirst,
 }
 
 class ConfigGenOptions {
   final String testUrl;
+
+  /// The tier switch: mihomo re-tests groups only on a timer or after
+  /// [maxFailedTimes] dial failures, never on a network change.
+  final int autoIntervalSeconds;
   final int testIntervalSeconds;
+  final int whitelistIntervalSeconds;
+  final int testTimeoutMs;
+  final int whitelistTimeoutMs;
   final int toleranceMs;
+  final int whitelistToleranceMs;
+  final int maxFailedTimes;
   final bool tun;
   final String controllerAddress;
   final String? controllerSecret;
@@ -23,8 +31,14 @@ class ConfigGenOptions {
 
   const ConfigGenOptions({
     this.testUrl = 'https://www.gstatic.com/generate_204',
-    this.testIntervalSeconds = 300,
+    this.autoIntervalSeconds = 15,
+    this.testIntervalSeconds = 120,
+    this.whitelistIntervalSeconds = 300,
+    this.testTimeoutMs = 3000,
+    this.whitelistTimeoutMs = 5000,
     this.toleranceMs = 50,
+    this.whitelistToleranceMs = 100,
+    this.maxFailedTimes = 3,
     this.tun = true,
     this.controllerAddress = '127.0.0.1:9090',
     this.controllerSecret,
@@ -32,6 +46,10 @@ class ConfigGenOptions {
     this.autoStrategy = AutoStrategy.fastest,
   });
 }
+
+bool isWhitelistServer(ServerEntry server) =>
+    whitelistWords.hasMatch(server.name) ||
+    (server.section != null && whitelistWords.hasMatch(server.section!));
 
 // Bootstrap and proxy-server lookups must work on networks that only let
 // Russian resources through, so Yandex DNS goes first; nothing Chinese.
@@ -109,7 +127,16 @@ GeneratedConfig buildConfig(
     );
   }
   final allNames = proxies.map((proxy) => proxy['name'] as String).toList();
-  final poolNames = allNames.where((name) => !awgNames.contains(name)).toList();
+  final whitelist = {
+    for (final server in servers)
+      if (!awgNames.contains(server.name) && isWhitelistServer(server))
+        server.name,
+  };
+  final primaryNames = [
+    for (final name in allNames)
+      if (!awgNames.contains(name) && !whitelist.contains(name)) name,
+  ];
+  final whitelistNames = allNames.where(whitelist.contains).toList();
   final secret = options.controllerSecret ?? generateSecret(random);
   final groups = <Map<String, dynamic>>[
     {
@@ -117,36 +144,9 @@ GeneratedConfig buildConfig(
       'type': 'select',
       'proxies': [autoGroupName, manualGroupName],
     },
+    ..._autoGroups(primaryNames, awgNames, whitelistNames, options),
+    {'name': manualGroupName, 'type': 'select', 'proxies': allNames},
   ];
-  final useAwgFirst =
-      options.autoStrategy == AutoStrategy.awgFirst &&
-      awgNames.isNotEmpty &&
-      poolNames.isNotEmpty;
-  if (useAwgFirst) {
-    groups.add({
-      'name': autoGroupName,
-      'type': 'fallback',
-      'proxies': [...awgNames, autoPoolGroupName],
-      ..._healthCheck(options),
-    });
-    groups.add({
-      'name': autoPoolGroupName,
-      'type': 'url-test',
-      'proxies': poolNames,
-      'tolerance': options.toleranceMs,
-      'hidden': true,
-      ..._healthCheck(options),
-    });
-  } else {
-    groups.add({
-      'name': autoGroupName,
-      'type': 'url-test',
-      'proxies': allNames,
-      'tolerance': options.toleranceMs,
-      ..._healthCheck(options),
-    });
-  }
-  groups.add({'name': manualGroupName, 'type': 'select', 'proxies': allNames});
   final config = <String, dynamic>{
     'mixed-port': options.mixedPort,
     'allow-lan': false,
@@ -183,10 +183,54 @@ GeneratedConfig buildConfig(
   return GeneratedConfig(config: config, servers: servers, secret: secret);
 }
 
-Map<String, dynamic> _healthCheck(ConfigGenOptions options) => {
-  'url': options.testUrl,
-  'interval': options.testIntervalSeconds,
-};
+List<Map<String, dynamic>> _autoGroups(
+  List<String> primary,
+  List<String> awg,
+  List<String> whitelist,
+  ConfigGenOptions options,
+) {
+  Map<String, dynamic> urlTest(String name, List<String> proxies, bool wl) => {
+    'name': name,
+    'type': 'url-test',
+    'proxies': proxies,
+    'url': options.testUrl,
+    'interval': wl
+        ? options.whitelistIntervalSeconds
+        : options.testIntervalSeconds,
+    'timeout': wl ? options.whitelistTimeoutMs : options.testTimeoutMs,
+    'tolerance': wl ? options.whitelistToleranceMs : options.toleranceMs,
+    'lazy': true,
+    if (!wl) 'max-failed-times': options.maxFailedTimes,
+  };
+  final tiers = [
+    if (primary.isNotEmpty) (autoPrimaryGroupName, primary, false),
+    if (whitelist.isNotEmpty) (autoWhitelistGroupName, whitelist, true),
+  ];
+  if (awg.isEmpty && tiers.length < 2) {
+    final (_, proxies, wl) = tiers.single;
+    return [urlTest(autoGroupName, proxies, wl)];
+  }
+  final members = [
+    if (options.autoStrategy == AutoStrategy.awgFirst) ...awg,
+    if (primary.isNotEmpty) autoPrimaryGroupName,
+    if (options.autoStrategy == AutoStrategy.fastest) ...awg,
+    if (whitelist.isNotEmpty) autoWhitelistGroupName,
+  ];
+  return [
+    {
+      'name': autoGroupName,
+      'type': 'fallback',
+      'proxies': members,
+      'url': options.testUrl,
+      'interval': options.autoIntervalSeconds,
+      'timeout': options.testTimeoutMs,
+      'lazy': true,
+      'max-failed-times': options.maxFailedTimes,
+    },
+    for (final (name, proxies, wl) in tiers)
+      {...urlTest(name, proxies, wl), 'hidden': true},
+  ];
+}
 
 String generateSecret([Random? random]) {
   final source = random ?? Random.secure();
