@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'main_view.dart';
 import 'mascot.dart';
@@ -134,27 +133,6 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
           label: l.tenvpnAdd,
           loading: _busy,
           onPressed: _submit,
-        ),
-        const SizedBox(height: 10),
-        TenvpnBigButton(
-          key: const ValueKey('tenvpn-open-bot'),
-          label: l.tenvpnOpenBot,
-          primary: false,
-          height: 52,
-          onPressed: () => unawaited(
-            launchUrl(
-              Uri.parse(tenvpnBotUrl),
-              mode: LaunchMode.externalApplication,
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Center(
-          child: Text(
-            l.tenvpnNoLinkYet,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: p.mutedDeep),
-          ),
         ),
         const SizedBox(height: 16),
       ],
