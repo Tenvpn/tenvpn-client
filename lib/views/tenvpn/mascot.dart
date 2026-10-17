@@ -11,10 +11,10 @@ enum FerPose { off, connecting, on, error, welcome }
 /// Must match the `<pose>-<n>.webp` files tool/cut_mascot.py writes.
 const ferVariants = {
   FerPose.off: 2,
-  FerPose.connecting: 1,
-  FerPose.on: 2,
-  FerPose.error: 1,
-  FerPose.welcome: 1,
+  FerPose.connecting: 3,
+  FerPose.on: 5,
+  FerPose.error: 4,
+  FerPose.welcome: 2,
 };
 
 FerPose ferPoseFor(ConnectionPhase phase) => switch (phase) {
