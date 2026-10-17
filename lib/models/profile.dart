@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'clash_config.dart';
@@ -190,14 +191,31 @@ extension ProfileExtension on Profile {
     final response = await request.getFileResponseForUrl(url);
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
+    final title = parseProfileTitle(response.headers.value('profile-title'));
+    final interval = parseUpdateInterval(
+      response.headers.value('profile-update-interval'),
+    );
+    final data = response.data ?? Uint8List.fromList([]);
+    final bytes = ageSecretKey?.isNotEmpty == true
+        ? data
+        : utf8.encode(
+            await tenvpnConfig.generate(
+              id,
+              utf8.decode(data, allowMalformed: true),
+            ),
+          );
     return copyWith(
       label: label.takeFirstValid([
+        title,
         getFileNameForDisposition(disposition),
         getFileNameFromUrl(url),
         id.toString(),
       ]),
       subscriptionInfo: SubscriptionInfo.formHString(userinfo),
-    ).saveFile(response.data ?? Uint8List.fromList([]), prepare: prepare);
+      autoUpdateDuration: lastUpdateDate == null && interval != null
+          ? interval
+          : autoUpdateDuration,
+    ).saveFile(bytes, prepare: prepare);
   }
 
   Future<Profile> saveFile(

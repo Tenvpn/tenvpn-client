@@ -13,6 +13,7 @@ import 'package:fl_clash/manager/manager.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -102,6 +103,7 @@ class ApplicationState extends ConsumerState<Application> {
       update: (profile) =>
           ref.read(profilesActionProvider.notifier).updateProfile(profile),
       onError: (error) => commonPrint.log(compactError(error)),
+      refreshOnStart: true,
     );
     ref.listenManual(
       profilesProvider,
@@ -122,32 +124,42 @@ class ApplicationState extends ConsumerState<Application> {
   }
 
   void _initLink() {
-    linkManager.initAppLinksListen((url) async {
-      unawaited(window?.show());
-      final message = currentAppLocalizations.createProfileFromUrlTip(url);
-      final parts = message.split(url);
-      final res = await dialogs.showMessage(
-        title: currentAppLocalizations.addProfile,
-        message: TextSpan(
-          children: [
-            TextSpan(text: parts.first),
-            TextSpan(
-              text: url,
-              style: TextStyle(
-                color: context.colorScheme.primary,
-                decoration: TextDecoration.underline,
-                decorationColor: context.colorScheme.primary,
-              ),
+    linkManager.initAppLinksListen(
+      (url) => _confirmInstallConfig(url),
+      installTenvpnCallBack: (url, awgUrl, awgToken) => _confirmInstallConfig(
+        url,
+        awg: AwgSource(url: awgUrl, token: awgToken),
+      ),
+    );
+  }
+
+  Future<void> _confirmInstallConfig(String url, {AwgSource? awg}) async {
+    unawaited(window?.show());
+    final message = currentAppLocalizations.createProfileFromUrlTip(url);
+    final parts = message.split(url);
+    final res = await dialogs.showMessage(
+      title: currentAppLocalizations.addProfile,
+      message: TextSpan(
+        children: [
+          TextSpan(text: parts.first),
+          TextSpan(
+            text: url,
+            style: TextStyle(
+              color: context.colorScheme.primary,
+              decoration: TextDecoration.underline,
+              decorationColor: context.colorScheme.primary,
             ),
-            if (parts.length > 1) TextSpan(text: parts.last),
-          ],
-        ),
-      );
-      if (res != true) return;
-      unawaited(
-        ref.read(profilesActionProvider.notifier).addProfileFormURL(url),
-      );
-    });
+          ),
+          if (parts.length > 1) TextSpan(text: parts.last),
+        ],
+      ),
+    );
+    if (res != true) return;
+    unawaited(
+      ref
+          .read(profilesActionProvider.notifier)
+          .addProfileFormURL(url, awg: awg),
+    );
   }
 
   void _checkProfilesOnResume() {

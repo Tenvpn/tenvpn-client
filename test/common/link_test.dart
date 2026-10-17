@@ -47,6 +47,40 @@ void main() {
     expect(received, isEmpty);
   });
 
+  test('awg parameters go to the TENVPN callback when it is set', () async {
+    final tenvpn = <List<String>>[];
+    await linkManager.initAppLinksListen(
+      received.add,
+      installTenvpnCallBack: (url, awgUrl, token) =>
+          tenvpn.add([url, awgUrl, token]),
+    );
+
+    await emit(
+      'tenvpn://install-config?url=https%3A%2F%2Fsub.example.com%2Fabc'
+      '&awg=https%3A%2F%2Fapi.example.com%2Fapi%2Fapp%2Fv1%2Fawg&awg_token=t0k',
+    );
+    await emit(
+      'tenvpn://install-config?url=https://example.com/a.yaml&awg=x&awg_token=',
+    );
+
+    expect(tenvpn, [
+      [
+        'https://sub.example.com/abc',
+        'https://api.example.com/api/app/v1/awg',
+        't0k',
+      ],
+    ]);
+    expect(received, ['https://example.com/a.yaml']);
+  });
+
+  test('without a TENVPN callback awg parameters are ignored', () async {
+    await listen();
+
+    await emit('tenvpn://install-config?url=https://e.com/a&awg=x&awg_token=t');
+
+    expect(received, ['https://e.com/a']);
+  });
+
   test('a link for another host is ignored', () async {
     await listen();
 
