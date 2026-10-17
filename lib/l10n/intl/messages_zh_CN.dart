@@ -1255,6 +1255,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "AmneziaWG first, the others when it is down",
     ),
+    "tenvpnProviderHint": MessageLookupByLibrary.simpleMessage(
+      "You get the subscription link from your TENVPN provider",
+    ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",

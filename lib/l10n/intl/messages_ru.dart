@@ -1790,6 +1790,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Сначала AmneziaWG, остальные — если он недоступен",
     ),
+    "tenvpnProviderHint": MessageLookupByLibrary.simpleMessage(
+      "Ссылку на подписку вы получаете у своего провайдера TENVPN",
+    ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
