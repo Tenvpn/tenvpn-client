@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -63,7 +65,7 @@ final tenvpnWindowsUpdater = WindowsUpdater(
   },
   download: (url, savePath, onProgress) =>
       request.dio.downloadUri(url, savePath, onReceiveProgress: onProgress),
-  runElevated: (executable, arguments) =>
-      windows?.runas(executable, arguments) ?? false,
+  runInstaller: (executable, arguments) async =>
+      (await Process.start(executable, arguments)).exitCode,
   workDir: () => appPath.tempPath,
 );
