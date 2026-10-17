@@ -8,15 +8,16 @@ import 'package:yaml/yaml.dart';
 String fixture(String name) =>
     File('test/fixtures/tenvpn/$name').readAsStringSync();
 
-Map<String, dynamic> proxyNamed(List<Map<String, dynamic>> proxies, String name) =>
-    proxies.firstWhere((proxy) => proxy['name'] == name);
+Map<String, dynamic> proxyNamed(
+  List<Map<String, dynamic>> proxies,
+  String name,
+) => proxies.firstWhere((proxy) => proxy['name'] == name);
 
 Map<String, dynamic> roundTrip(GeneratedConfig generated) =>
     toPlain(loadYaml(encodeConfig(generated))) as Map<String, dynamic>;
 
-Matcher throwsConfigGen(ConfigGenErrorCode code) => throwsA(
-  isA<ConfigGenException>().having((e) => e.code, 'code', code),
-);
+Matcher throwsConfigGen(ConfigGenErrorCode code) =>
+    throwsA(isA<ConfigGenException>().having((e) => e.code, 'code', code));
 
 void main() {
   group('parseSubscription', () {
@@ -24,8 +25,9 @@ void main() {
     late ParsedSubscription parsed;
 
     setUp(() {
-      raw = toPlain(loadYaml(fixture('remnawave_mihomo.yaml')))
-          as Map<String, dynamic>;
+      raw =
+          toPlain(loadYaml(fixture('remnawave_mihomo.yaml')))
+              as Map<String, dynamic>;
       parsed = parseSubscription(fixture('remnawave_mihomo.yaml'));
     });
 
@@ -61,10 +63,13 @@ void main() {
         sections['🇪🇺  Обход белых списков 1'],
         'Серверы для обхода белых списков',
       );
-      expect(
-        parsed.servers.map((server) => server.transport).toSet(),
-        {'ws', 'vless', 'hysteria2', 'grpc', 'xhttp'},
-      );
+      expect(parsed.servers.map((server) => server.transport).toSet(), {
+        'ws',
+        'vless',
+        'hysteria2',
+        'grpc',
+        'xhttp',
+      });
     });
 
     test('base64 share links fail with a dedicated error', () {
@@ -124,10 +129,23 @@ proxies:
     });
 
     test('isRoutableHost', () {
-      for (final host in ['example.com', '192.0.2.1', '2001:db8::1', 'a.b-c.io']) {
+      for (final host in [
+        'example.com',
+        '192.0.2.1',
+        '2001:db8::1',
+        'a.b-c.io',
+      ]) {
         expect(isRoutableHost(host), isTrue, reason: host);
       }
-      for (final host in ['127', '', '0.0.0.0', '127.0.0.1', '999.1.1.1', 'localhost', null]) {
+      for (final host in [
+        '127',
+        '',
+        '0.0.0.0',
+        '127.0.0.1',
+        '999.1.1.1',
+        'localhost',
+        null,
+      ]) {
         expect(isRoutableHost(host), isFalse, reason: '$host');
       }
     });
@@ -258,7 +276,13 @@ proxies:
         ...dns['nameserver'],
         ...dns['proxy-server-nameserver'],
       ].join(' ');
-      for (final chinese in ['223.5.5.5', '119.29', 'doh.pub', 'alidns', '114.114']) {
+      for (final chinese in [
+        '223.5.5.5',
+        '119.29',
+        'doh.pub',
+        'alidns',
+        '114.114',
+      ]) {
         expect(resolvers, isNot(contains(chinese)));
       }
       expect(dns.containsKey('nameserver-policy'), isFalse);
@@ -300,10 +324,16 @@ proxies:
           group['name']: group,
       };
       expect(groups[autoGroupName]['type'], 'fallback');
-      expect(groups[autoGroupName]['proxies'], [awgDefaultName, autoPoolGroupName]);
+      expect(groups[autoGroupName]['proxies'], [
+        awgDefaultName,
+        autoPoolGroupName,
+      ]);
       expect(groups[autoPoolGroupName]['type'], 'url-test');
       expect(groups[autoPoolGroupName]['hidden'], isTrue);
-      expect(groups[autoPoolGroupName]['proxies'], isNot(contains(awgDefaultName)));
+      expect(
+        groups[autoPoolGroupName]['proxies'],
+        isNot(contains(awgDefaultName)),
+      );
       final withoutAwg = buildConfig(
         subscription,
         options: const ConfigGenOptions(autoStrategy: AutoStrategy.awgFirst),

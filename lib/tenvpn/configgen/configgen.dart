@@ -14,7 +14,11 @@ GeneratedConfig generateFromSubscription(
   Map<String, dynamic>? awg,
   ConfigGenOptions options = const ConfigGenOptions(),
 }) {
-  return buildConfig(parseSubscription(subscription), awg: awg, options: options);
+  return buildConfig(
+    parseSubscription(subscription),
+    awg: awg,
+    options: options,
+  );
 }
 
 String encodeConfig(GeneratedConfig generated) => yaml.encode(generated.config);

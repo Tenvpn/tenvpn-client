@@ -47,7 +47,9 @@ Map<String, dynamic> parseAwgConf(String conf, {String name = awgDefaultName}) {
     proxy['pre-shared-key'] = _checkKey(presharedKey, 'PresharedKey');
   }
   final allowedIps = _splitList(peer['allowedips']);
-  proxy['allowed-ips'] = allowedIps.isEmpty ? ['0.0.0.0/0', '::/0'] : allowedIps;
+  proxy['allowed-ips'] = allowedIps.isEmpty
+      ? ['0.0.0.0/0', '::/0']
+      : allowedIps;
   proxy['udp'] = true;
   final mtu = _optionalInt(interface, 'mtu');
   if (mtu != null) proxy['mtu'] = mtu;
@@ -106,7 +108,9 @@ String _checkKey(String value, String label) {
 ({String host, int port}) _parseEndpoint(String? endpoint) {
   final value = endpoint?.trim() ?? '';
   final separator = value.lastIndexOf(':');
-  final port = separator > 0 ? int.tryParse(value.substring(separator + 1)) : null;
+  final port = separator > 0
+      ? int.tryParse(value.substring(separator + 1))
+      : null;
   if (port == null || port <= 0 || port > 65535) {
     throw const ConfigGenException(
       ConfigGenErrorCode.awgInvalid,
@@ -139,7 +143,10 @@ int? _optionalInt(Map<String, String> section, String key) {
   if (value == null || value.isEmpty) return null;
   final parsed = int.tryParse(value);
   if (parsed == null) {
-    throw ConfigGenException(ConfigGenErrorCode.awgInvalid, '$key is not a number');
+    throw ConfigGenException(
+      ConfigGenErrorCode.awgInvalid,
+      '$key is not a number',
+    );
   }
   return parsed;
 }
