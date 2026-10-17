@@ -44,6 +44,32 @@ class ConfigGenOptions {
   });
 }
 
+const xrayPaddingDefaults = {
+  'x-padding-header': 'X-Padding',
+  'x-padding-key': 'x_padding',
+  'x-padding-placement': 'queryInHeader',
+  'x-padding-method': 'repeat-x',
+};
+
+/// Xray defaults empty padding fields and (26.9.8+) demands ML-KEM; mihomo doesn't.
+Map<String, dynamic> alignWithXray(Map<String, dynamic> proxy) {
+  final aligned = Map<String, dynamic>.from(proxy);
+  final xhttp = aligned['xhttp-opts'];
+  if (xhttp is Map && xhttp['x-padding-obfs-mode'] == true) {
+    aligned['xhttp-opts'] = {
+      ...xhttp,
+      for (final MapEntry(:key, :value) in xrayPaddingDefaults.entries)
+        if (xhttp[key] == null || xhttp[key] == '') key: value,
+    };
+  }
+  final reality = aligned['reality-opts'];
+  if (reality is Map) {
+    aligned['reality-opts'] = {...reality, 'support-x25519mlkem768': true};
+    aligned['client-fingerprint'] = 'chrome';
+  }
+  return aligned;
+}
+
 bool isWhitelistServer(ServerEntry server) =>
     whitelistWords.hasMatch(server.name) ||
     (server.section != null && whitelistWords.hasMatch(server.section!));
@@ -105,7 +131,7 @@ GeneratedConfig buildConfig(
   Random? random,
 }) {
   final proxies = [
-    for (final proxy in subscription.proxies) Map<String, dynamic>.from(proxy),
+    for (final proxy in subscription.proxies) alignWithXray(proxy),
   ];
   final servers = [...subscription.servers];
   final awgNames = <String>[];
