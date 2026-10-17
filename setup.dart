@@ -210,8 +210,17 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-Map<String, String> createBuildEnvironment(String env) {
-  return {'APP_ENV': env};
+/// `TENVPN_API_BASE` comes from the build machine's environment (a CI
+/// secret or a local export), so the backend address never sits in git.
+Map<String, String> createBuildEnvironment(
+  String env, {
+  Map<String, String>? environment,
+}) {
+  final apiBase = (environment ?? Platform.environment)['TENVPN_API_BASE'];
+  return {
+    'APP_ENV': env,
+    if (apiBase != null && apiBase.isNotEmpty) 'TENVPN_API_BASE': apiBase,
+  };
 }
 
 String createMacosBuildConfig(String arch) {

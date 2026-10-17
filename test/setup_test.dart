@@ -49,7 +49,16 @@ void main() {
     });
 
     test('Flutter build environment does not depend on Core SHA256', () {
-      expect(setup.createBuildEnvironment('dev'), {'APP_ENV': 'dev'});
+      expect(setup.createBuildEnvironment('dev', environment: const {}), {
+        'APP_ENV': 'dev',
+      });
+      expect(
+        setup.createBuildEnvironment(
+          'stable',
+          environment: const {'TENVPN_API_BASE': 'https://api.example.com'},
+        ),
+        {'APP_ENV': 'stable', 'TENVPN_API_BASE': 'https://api.example.com'},
+      );
     });
 
     test('parses iOS bundle identifier override', () {
