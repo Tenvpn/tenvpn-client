@@ -13,8 +13,6 @@ import 'main_view.dart';
 import 'mascot.dart';
 import 'theme.dart';
 
-const tenvpnBotUrl = 'https://t.me/Tenvpnrobot?start=src_app';
-
 /// First run without a subscription, and «Вставить другую ссылку» later on
 /// ([replace]): the new subscription then takes the place of the old one.
 class TenvpnOnboardingView extends ConsumerStatefulWidget {
@@ -61,7 +59,12 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
     });
     final error = await ref
         .read(profilesActionProvider.notifier)
-        .importSubscription(link.url, awg: link.awg, replace: widget.replace);
+        .importSubscription(
+          link.url,
+          awg: link.awg,
+          token: link.token,
+          replace: widget.replace,
+        );
     if (!mounted) return;
     setState(() {
       _busy = false;

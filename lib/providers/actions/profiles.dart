@@ -143,12 +143,15 @@ class ProfilesAction extends _$ProfilesAction {
   Future<String?> importSubscription(
     String url, {
     AwgSource? awg,
+    String? token,
     bool replace = false,
   }) async {
     final profile = Profile.normal(url: url);
     final Profile imported;
     try {
-      if (awg != null) {
+      if (token != null) {
+        await tenvpnConfig.setAppToken(profile.id, token);
+      } else if (awg != null) {
         await tenvpnConfig.setAwgSource(profile.id, awg);
       }
       imported = await profile.update(prepare: prepareProfileConfig);
@@ -176,6 +179,16 @@ class ProfilesAction extends _$ProfilesAction {
       }
       // Drops the "(1)" the label got while the old profile held the title.
       ref.read(profilesProvider.notifier).put(imported);
+    }
+    return null;
+  }
+
+  Future<String?> refreshToken(Profile profile, String token) async {
+    await tenvpnConfig.setAppToken(profile.id, token);
+    try {
+      await updateProfile(profile);
+    } catch (error) {
+      return importErrorMessage(error, currentAppLocalizations);
     }
     return null;
   }

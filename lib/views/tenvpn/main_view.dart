@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'servers_view.dart';
 import 'settings_view.dart';
@@ -302,8 +303,8 @@ class TenvpnPing extends ConsumerWidget {
   }
 }
 
-/// "Истекает: …" under the server card. Session 4 swaps the source of
-/// [tenvpnExpiryProvider] for the TENVPN backend and adds «Продлить» here.
+/// Paid-until (or the panel's end date), the balance when the backend sent
+/// it, and «Продлить» — a secondary button: lime stays for "connected".
 class TenvpnExpiryLine extends ConsumerWidget {
   const TenvpnExpiryLine({super.key});
 
@@ -312,27 +313,76 @@ class TenvpnExpiryLine extends ConsumerWidget {
     final l = context.appLocalizations;
     final p = context.palette;
     final expiry = ref.watch(tenvpnExpiryProvider);
+    final account = expiry.account;
+    final locale = Localizations.localeOf(context).toLanguageTag();
     var color = p.muted;
     final String text;
-    if (expiry == null) {
+    final date = expiry.date;
+    if (expiry.free) {
+      text = l.tenvpnFreeAccess;
+    } else if (expiry.suspended) {
+      text = l.tenvpnSuspended;
+      color = p.danger;
+    } else if (date == null) {
       text = l.tenvpnExpiresUnknown;
     } else {
-      final left = daysLeft(expiry, DateTime.now());
-      final locale = Localizations.localeOf(context).toLanguageTag();
-      final date = DateFormat.yMMMMd(locale).format(expiry);
+      final left = daysLeft(date, DateTime.now());
+      final formatted = DateFormat.yMMMMd(locale).format(date);
       if (left < 0) {
         text = l.tenvpnExpired;
         color = p.danger;
       } else {
-        text = '${l.tenvpnExpires(date)} · ${l.tenvpnDaysLeft(left)}';
+        final head = expiry.source == ExpirySource.account
+            ? l.tenvpnPaidUntil(formatted)
+            : l.tenvpnExpires(formatted);
+        text = '$head · ${l.tenvpnDaysLeft(left)}';
         if (left <= 3) color = p.warn;
       }
     }
-    return Text(
-      text,
-      key: const ValueKey('tenvpn-expiry'),
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 13, color: color),
+    final money = NumberFormat.decimalPatternDigits(
+      locale: locale,
+      decimalDigits: 0,
+    );
+    return Column(
+      children: [
+        Text(
+          text,
+          key: const ValueKey('tenvpn-expiry'),
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 13, color: color),
+        ),
+        if (account != null && !expiry.free) ...[
+          const SizedBox(height: 2),
+          Text(
+            [
+              l.tenvpnBalance(
+                money.format(account.balanceRub.floor()),
+                money.format(account.dailyRateRub.round()),
+              ),
+              if (account.activeDevices > 0)
+                l.tenvpnDevices(account.activeDevices),
+            ].join(' · '),
+            key: const ValueKey('tenvpn-balance'),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12.5, color: p.muted),
+          ),
+        ],
+        const SizedBox(height: 6),
+        OutlinedButton.icon(
+          key: const ValueKey('tenvpn-renew'),
+          onPressed: () => launchUrl(
+            Uri.parse(ref.read(tenvpnRenewUrlProvider)),
+            mode: LaunchMode.externalApplication,
+          ),
+          icon: const Icon(Symbols.add_card, size: 18),
+          label: Text(l.tenvpnRenew),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: p.text,
+            side: BorderSide(color: p.borderStrong),
+            visualDensity: VisualDensity.compact,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -111,11 +111,45 @@ final tenvpnHasAwgProvider = Provider<bool>((ref) {
   return sections.any((section) => section.kind == ServerSectionKind.reserve);
 });
 
-final tenvpnExpiryProvider = Provider<DateTime?>((ref) {
+final tenvpnConfigProvider = Provider<TenvpnConfigService>(
+  (ref) => tenvpnConfig,
+);
+
+class TenvpnAccountRefresh extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void bump() => state++;
+}
+
+final tenvpnAccountRefreshProvider =
+    NotifierProvider<TenvpnAccountRefresh, int>(TenvpnAccountRefresh.new);
+
+final tenvpnAccountProvider = FutureProvider<AccountCache?>((ref) async {
+  final profile = ref.watch(
+    currentProfileProvider.select(
+      (profile) =>
+          profile == null ? null : (profile.id, profile.lastUpdateDate),
+    ),
+  );
+  ref.watch(tenvpnAccountRefreshProvider);
+  if (profile == null) return null;
+  return ref.read(tenvpnConfigProvider).account(profile.$1);
+});
+
+final tenvpnExpiryProvider = Provider<TenvpnExpiry>((ref) {
   final expire = ref.watch(
     currentProfileProvider.select(
       (profile) => profile?.subscriptionInfo?.expire ?? 0,
     ),
   );
-  return expiryFromHeader(expire);
+  return resolveExpiry(
+    account: ref.watch(tenvpnAccountProvider).value,
+    subscription: expiryFromHeader(expire),
+  );
+});
+
+final tenvpnRenewUrlProvider = Provider<String>((ref) {
+  final expiry = ref.watch(tenvpnExpiryProvider);
+  return expiry.account?.renewUrl ?? tenvpnBotUrl;
 });

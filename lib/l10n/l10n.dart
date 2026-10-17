@@ -7877,6 +7877,123 @@ class AppLocalizations {
   String get tenvpnSortPing {
     return Intl.message('By ping', name: 'tenvpnSortPing', desc: '', args: []);
   }
+
+  /// `Paid until {date}`
+  String tenvpnPaidUntil(Object date) {
+    return Intl.message(
+      'Paid until $date',
+      name: 'tenvpnPaidUntil',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Balance {balance} ₽ · {rate} ₽ a day`
+  String tenvpnBalance(Object balance, Object rate) {
+    return Intl.message(
+      'Balance $balance ₽ · $rate ₽ a day',
+      name: 'tenvpnBalance',
+      desc: '',
+      args: [balance, rate],
+    );
+  }
+
+  /// `{count, plural, =1{1 device} other{{count} devices}}`
+  String tenvpnDevices(num count) {
+    return Intl.plural(
+      count,
+      one: '1 device',
+      other: '$count devices',
+      name: 'tenvpnDevices',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Access paused — top up your balance`
+  String get tenvpnSuspended {
+    return Intl.message(
+      'Access paused — top up your balance',
+      name: 'tenvpnSuspended',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Free access`
+  String get tenvpnFreeAccess {
+    return Intl.message(
+      'Free access',
+      name: 'tenvpnFreeAccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Renew`
+  String get tenvpnRenew {
+    return Intl.message('Renew', name: 'tenvpnRenew', desc: '', args: []);
+  }
+
+  /// `Subscription`
+  String get tenvpnNoticeChannel {
+    return Intl.message(
+      'Subscription',
+      name: 'tenvpnNoticeChannel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your subscription is ending`
+  String get tenvpnExpiryNoticeTitle {
+    return Intl.message(
+      'Your subscription is ending',
+      name: 'tenvpnExpiryNoticeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paid until {date}. Renew now so the VPN keeps working.`
+  String tenvpnExpiryNoticeText(Object date) {
+    return Intl.message(
+      'Paid until $date. Renew now so the VPN keeps working.',
+      name: 'tenvpnExpiryNoticeText',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Technical statistics`
+  String get tenvpnTelemetry {
+    return Intl.message(
+      'Technical statistics',
+      name: 'tenvpnTelemetry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `App version, OS and connection protocol — helps support. No IP, no sites.`
+  String get tenvpnTelemetryDesc {
+    return Intl.message(
+      'App version, OS and connection protocol — helps support. No IP, no sites.',
+      name: 'tenvpnTelemetryDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy policy`
+  String get tenvpnPrivacy {
+    return Intl.message(
+      'Privacy policy',
+      name: 'tenvpnPrivacy',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

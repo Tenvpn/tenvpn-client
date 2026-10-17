@@ -16,6 +16,7 @@ import 'advanced_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'onboarding_view.dart';
+import 'privacy_view.dart';
 import 'state.dart';
 import 'theme.dart';
 
@@ -96,6 +97,13 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnAdvancedDesc,
                     onTap: () =>
                         BaseNavigator.push(context, const TenvpnAdvancedView()),
+                  ),
+                  const _TelemetryRow(),
+                  TenvpnSettingsRow(
+                    icon: Symbols.shield_lock,
+                    title: l.tenvpnPrivacy,
+                    onTap: () =>
+                        BaseNavigator.push(context, const TenvpnPrivacyView()),
                   ),
                   TenvpnSettingsRow(
                     icon: Symbols.info,
@@ -244,6 +252,27 @@ class _AutoConnectRow extends ConsumerWidget {
       onChanged: (value) => ref
           .read(appSettingProvider.notifier)
           .update((s) => s.copyWith(autoRun: value)),
+    );
+  }
+}
+
+class _TelemetryRow extends ConsumerWidget {
+  const _TelemetryRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final value = ref.watch(
+      appSettingProvider.select((s) => s.tenvpnTelemetry),
+    );
+    return _SwitchRow(
+      icon: Symbols.monitoring,
+      title: l.tenvpnTelemetry,
+      subtitle: l.tenvpnTelemetryDesc,
+      value: value,
+      onChanged: (value) => ref
+          .read(appSettingProvider.notifier)
+          .update((s) => s.copyWith(tenvpnTelemetry: value)),
     );
   }
 }

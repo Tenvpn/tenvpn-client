@@ -24,6 +24,7 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
       closeConnections: json['closeConnections'] as bool? ?? true,
       promptCloseConnections: json['promptCloseConnections'] as bool? ?? true,
       awgPriority: json['awgPriority'] as bool? ?? false,
+      tenvpnTelemetry: json['tenvpnTelemetry'] as bool? ?? true,
       serverListStyle:
           $enumDecodeNullable(
             _$ServerListStyleEnumMap,
@@ -102,6 +103,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'closeConnections': instance.closeConnections,
       'promptCloseConnections': instance.promptCloseConnections,
       'awgPriority': instance.awgPriority,
+      'tenvpnTelemetry': instance.tenvpnTelemetry,
       'serverListStyle': _$ServerListStyleEnumMap[instance.serverListStyle]!,
       'serverSort': _$ServerSortEnumMap[instance.serverSort]!,
       'testUrl': instance.testUrl,

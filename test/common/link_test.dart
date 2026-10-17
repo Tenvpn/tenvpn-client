@@ -47,12 +47,11 @@ void main() {
     expect(received, isEmpty);
   });
 
-  test('awg parameters go to the TENVPN callback when it is set', () async {
-    final tenvpn = <List<String>>[];
+  test('import and awg links go to the TENVPN callback when it is set', () async {
+    final tenvpn = <Uri>[];
     await linkManager.initAppLinksListen(
       received.add,
-      installTenvpnCallBack: (url, awgUrl, token) =>
-          tenvpn.add([url, awgUrl, token]),
+      installTenvpnCallBack: tenvpn.add,
     );
 
     await emit(
@@ -62,14 +61,11 @@ void main() {
     await emit(
       'tenvpn://install-config?url=https://example.com/a.yaml&awg=x&awg_token=',
     );
+    await emit('tenvpn://import?sub=https%3A%2F%2Fsub.example.com%2Fx&token=t');
+    await emit('clash://import?sub=https://sub.example.com/x');
 
-    expect(tenvpn, [
-      [
-        'https://sub.example.com/abc',
-        'https://api.example.com/api/app/v1/awg',
-        't0k',
-      ],
-    ]);
+    expect(tenvpn.map((uri) => uri.host), ['install-config', 'import']);
+    expect(tenvpn.last.queryParameters['token'], 't');
     expect(received, ['https://example.com/a.yaml']);
   });
 

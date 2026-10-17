@@ -99,31 +99,41 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m31(server) => "Auto · ${server}";
 
-  static String m32(count) =>
+  static String m32(balance, rate) => "Balance ${balance} ₽ · ${rate} ₽ a day";
+
+  static String m33(count) =>
       "${Intl.plural(count, zero: '0 days left', one: '1 day left', other: '${count} days left')}";
 
-  static String m33(date) => "Expires: ${date}";
+  static String m34(count) =>
+      "${Intl.plural(count, one: '1 device', other: '${count} devices')}";
 
-  static String m34(host) => "The link points to ${host}. Add it to TENVPN?";
+  static String m35(date) => "Expires: ${date}";
 
-  static String m35(value) => "${value} ms";
+  static String m36(date) =>
+      "Paid until ${date}. Renew now so the VPN keeps working.";
 
-  static String m36(server) => "Now: ${server}";
+  static String m37(host) => "The link points to ${host}. Add it to TENVPN?";
 
-  static String m37(time) => "Updated ${time}";
+  static String m38(value) => "${value} ms";
 
-  static String m38(version) => "Version ${version}";
+  static String m39(server) => "Now: ${server}";
 
-  static String m39(country) => "Your IP: ${country}";
+  static String m40(date) => "Paid until ${date}";
 
-  static String m40(interval, idleInterval) =>
+  static String m41(time) => "Updated ${time}";
+
+  static String m42(version) => "Version ${version}";
+
+  static String m43(country) => "Your IP: ${country}";
+
+  static String m44(interval, idleInterval) =>
       "${interval} · Idle ${idleInterval}";
 
-  static String m41(interval) => "${interval} · Idle disabled";
+  static String m45(interval) => "${interval} · Idle disabled";
 
-  static String m42(label) => "${label} must be a URL";
+  static String m46(label) => "${label} must be a URL";
 
-  static String m43(count) =>
+  static String m47(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1615,18 +1625,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
+    "tenvpnBalance": m32,
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Use another link",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
-    "tenvpnDaysLeft": m32,
+    "tenvpnDaysLeft": m33,
+    "tenvpnDevices": m34,
     "tenvpnDisconnect": MessageLookupByLibrary.simpleMessage("Disconnect"),
     "tenvpnExpired": MessageLookupByLibrary.simpleMessage(
       "Subscription has ended",
     ),
-    "tenvpnExpires": m33,
+    "tenvpnExpires": m35,
     "tenvpnExpiresUnknown": MessageLookupByLibrary.simpleMessage("Expires: —"),
+    "tenvpnExpiryNoticeText": m36,
+    "tenvpnExpiryNoticeTitle": MessageLookupByLibrary.simpleMessage(
+      "Your subscription is ending",
+    ),
+    "tenvpnFreeAccess": MessageLookupByLibrary.simpleMessage("Free access"),
     "tenvpnHintConnecting": MessageLookupByLibrary.simpleMessage("Connecting…"),
     "tenvpnHintError": MessageLookupByLibrary.simpleMessage(
       "The server is not responding. Pick another one or wait a minute",
@@ -1639,7 +1656,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportOffline": MessageLookupByLibrary.simpleMessage(
       "Could not download the subscription. Check your internet and try again.",
     ),
-    "tenvpnImportText": m34,
+    "tenvpnImportText": m37,
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Add subscription?",
     ),
@@ -1650,16 +1667,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Compact"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Detailed"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Server list"),
-    "tenvpnMs": m35,
+    "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "No link yet? The TENVPN bot gives you one.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("no reply"),
-    "tenvpnNow": m36,
+    "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Subscription"),
+    "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
+    "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Turn on"),
     "tenvpnPowerOnState": MessageLookupByLibrary.simpleMessage("On"),
+    "tenvpnPrivacy": MessageLookupByLibrary.simpleMessage("Privacy policy"),
     "tenvpnProtocol": MessageLookupByLibrary.simpleMessage("Protocol"),
     "tenvpnProtocolAuto": MessageLookupByLibrary.simpleMessage("Auto"),
     "tenvpnProtocolAutoDesc": MessageLookupByLibrary.simpleMessage(
@@ -1671,6 +1691,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "AmneziaWG first, the others when it is down",
     ),
+    "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
     ),
@@ -1709,8 +1730,17 @@ class MessageLookup extends MessageLookupByLibrary {
       "Connecting",
     ),
     "tenvpnStatusError": MessageLookupByLibrary.simpleMessage("No connection"),
+    "tenvpnSuspended": MessageLookupByLibrary.simpleMessage(
+      "Access paused — top up your balance",
+    ),
     "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Mobile"),
     "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Backup"),
+    "tenvpnTelemetry": MessageLookupByLibrary.simpleMessage(
+      "Technical statistics",
+    ),
+    "tenvpnTelemetryDesc": MessageLookupByLibrary.simpleMessage(
+      "App version, OS and connection protocol — helps support. No IP, no sites.",
+    ),
     "tenvpnTheme": MessageLookupByLibrary.simpleMessage("Theme"),
     "tenvpnThemeDark": MessageLookupByLibrary.simpleMessage("Dark"),
     "tenvpnThemeLight": MessageLookupByLibrary.simpleMessage("Light"),
@@ -1718,16 +1748,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateSubscription": MessageLookupByLibrary.simpleMessage(
       "Refresh subscription",
     ),
-    "tenvpnUpdatedAt": m37,
+    "tenvpnUpdatedAt": m41,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
-    "tenvpnVersion": m38,
+    "tenvpnVersion": m42,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Let\'s connect in a minute",
     ),
-    "tenvpnYourIp": m39,
+    "tenvpnYourIp": m43,
     "testInterval": MessageLookupByLibrary.simpleMessage("Test interval"),
     "testUrl": MessageLookupByLibrary.simpleMessage("Test URL"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("Test when used"),
@@ -1776,8 +1806,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "UI info update interval",
     ),
-    "uiUpdateIntervalDesc": m40,
-    "uiUpdateIntervalIdleDisabledDesc": m41,
+    "uiUpdateIntervalDesc": m44,
+    "uiUpdateIntervalIdleDisabledDesc": m45,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Unauthorized"),
     "undo": MessageLookupByLibrary.simpleMessage("Undo"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Unified delay"),
@@ -1803,7 +1833,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m42,
+    "urlTip": m46,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Checks the hosts entries in the configuration before querying upstream DNS servers",
@@ -1835,7 +1865,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Also set the system clock",
     ),
-    "yearsAgo": m43,
+    "yearsAgo": m47,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };

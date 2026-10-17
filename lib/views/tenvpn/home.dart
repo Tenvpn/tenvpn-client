@@ -3,6 +3,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
+import 'account_tasks.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'onboarding_view.dart';
@@ -22,7 +23,10 @@ class TenvpnHome extends ConsumerWidget {
     if (!loaded) {
       child = const TenvpnSplash(key: ValueKey('tenvpn-loading'));
     } else if (hasProfile) {
-      child = const TenvpnMainView(key: ValueKey('tenvpn-main'));
+      child = const TenvpnAccountTasks(
+        key: ValueKey('tenvpn-main'),
+        child: TenvpnMainView(),
+      );
     } else {
       child = const TenvpnOnboardingView(key: ValueKey('tenvpn-onboarding'));
     }

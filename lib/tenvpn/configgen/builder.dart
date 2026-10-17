@@ -100,7 +100,12 @@ GeneratedConfig buildConfig(
     proxies.add({...awg, 'name': name});
     awgNames.add(name);
     servers.add(
-      ServerEntry(name: name, type: 'wireguard', section: awgSectionTitle),
+      ServerEntry(
+        name: name,
+        type: 'wireguard',
+        security: awg.containsKey('amnezia-wg-option') ? 'amnezia' : null,
+        section: awgSectionTitle,
+      ),
     );
   }
   final allNames = proxies.map((proxy) => proxy['name'] as String).toList();

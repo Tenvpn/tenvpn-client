@@ -159,6 +159,24 @@ class App {
     return methodChannel.invokeMethod<bool>('openAppSettings');
   }
 
+  Future<bool> showAccountNotice({
+    required String channelName,
+    required String title,
+    required String text,
+    required String actionLabel,
+    required String actionUrl,
+  }) async {
+    if (!Platform.isAndroid) return false;
+    final shown = await methodChannel.invokeMethod<bool>('showAccountNotice', {
+      'channelName': channelName,
+      'title': title,
+      'text': text,
+      'actionLabel': actionLabel,
+      'actionUrl': actionUrl,
+    });
+    return shown ?? false;
+  }
+
   Future<bool?> openVpnSettings() async {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openVpnSettings');

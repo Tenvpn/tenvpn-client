@@ -4,6 +4,9 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -16,6 +19,8 @@ import android.os.Looper
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.pm.ShortcutInfoCompat
@@ -191,6 +196,17 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             "openVpnSettings" -> {
                 result.success(openVpnSettings())
             }
+            "showAccountNotice" -> {
+                result.success(
+                    showAccountNotice(
+                        channelName = call.argument<String>("channelName") ?: "TENVPN",
+                        title = call.argument<String>("title") ?: "",
+                        text = call.argument<String>("text") ?: "",
+                        actionLabel = call.argument<String>("actionLabel") ?: "",
+                        actionUrl = call.argument<String>("actionUrl") ?: "",
+                    )
+                )
+            }
             else -> {
                 result.notImplemented()
             }
@@ -275,6 +291,47 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         } catch (_: Exception) {
             false
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun showAccountNotice(
+        channelName: String,
+        title: String,
+        text: String,
+        actionLabel: String,
+        actionUrl: String,
+    ): Boolean {
+        val context = GlobalState.application
+        val manager = NotificationManagerCompat.from(context)
+        if (!manager.areNotificationsEnabled()) return false
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager.createNotificationChannel(
+                NotificationChannel(
+                    ACCOUNT_CHANNEL,
+                    channelName,
+                    NotificationManager.IMPORTANCE_DEFAULT,
+                )
+            )
+        }
+        val flags = PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        val open = PendingIntent.getActivity(
+            context, ACCOUNT_NOTICE_ID, Intent().setComponent(Components.mainActivity), flags,
+        )
+        val builder = NotificationCompat.Builder(context, ACCOUNT_CHANNEL)
+            .setSmallIcon(cc.chenx.flclash.service.R.drawable.ic_service)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(open)
+            .setAutoCancel(true)
+        if (actionUrl.startsWith("https://") && actionLabel.isNotEmpty()) {
+            val renew = PendingIntent.getActivity(
+                context, ACCOUNT_NOTICE_ID + 1, Intent(Intent.ACTION_VIEW, actionUrl.toUri()), flags,
+            )
+            builder.addAction(0, actionLabel, renew)
+        }
+        manager.notify(ACCOUNT_NOTICE_ID, builder.build())
+        return true
     }
 
     @Suppress("DEPRECATION")
@@ -526,5 +583,7 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         const val NOTIFICATION_PERMISSION_REQUEST_CODE = 1002
         const val INSTALLED_APPS_PERMISSION_REQUEST_CODE = 1003
         const val LOCAL_NETWORK_PERMISSION_REQUEST_CODE = 1004
+        const val ACCOUNT_CHANNEL = "TENVPN_ACCOUNT"
+        const val ACCOUNT_NOTICE_ID = 4100
     }
 }

@@ -121,27 +121,45 @@ class ApplicationState extends ConsumerState<Application> {
 
   void _initLink() {
     linkManager.initAppLinksListen(
-      (url) => _confirmInstallConfig(url),
-      installTenvpnCallBack: (url, awgUrl, awgToken) => _confirmInstallConfig(
-        url,
-        awg: AwgSource(url: awgUrl, token: awgToken),
-      ),
+      (url) => _handleImportLink((url: url, awg: null, token: null)),
+      installTenvpnCallBack: (uri) {
+        final link = parseImportLink(uri.toString());
+        if (link == null) return;
+        _handleImportLink(link, connect: uri.host == 'import');
+      },
     );
   }
 
-  Future<void> _confirmInstallConfig(String url, {AwgSource? awg}) async {
+  /// Silent only when nothing is replaced; a different subscription asks.
+  Future<void> _handleImportLink(
+    ImportLink link, {
+    bool connect = false,
+  }) async {
     unawaited(window?.show());
     final l = currentAppLocalizations;
-    final host = Uri.tryParse(url)?.host ?? '';
-    final res = await dialogs.showMessage(
-      title: l.tenvpnImportTitle,
-      message: TextSpan(text: l.tenvpnImportText(host.isEmpty ? url : host)),
-    );
-    if (res != true) return;
+    final current = ref.read(currentProfileProvider);
+    final same = current != null && current.url == link.url;
+    final silent = connect && (current == null || same);
+    if (!silent) {
+      final host = Uri.tryParse(link.url)?.host ?? '';
+      final res = await dialogs.showMessage(
+        title: l.tenvpnImportTitle,
+        message: TextSpan(
+          text: l.tenvpnImportText(host.isEmpty ? link.url : host),
+        ),
+      );
+      if (res != true) return;
+    }
     globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
-    final error = await ref
-        .read(profilesActionProvider.notifier)
-        .importSubscription(url, awg: awg, replace: true);
+    final profiles = ref.read(profilesActionProvider.notifier);
+    final error = same && link.token != null
+        ? await profiles.refreshToken(current, link.token!)
+        : await profiles.importSubscription(
+            link.url,
+            awg: link.awg,
+            token: link.token,
+            replace: true,
+          );
     if (error != null) {
       unawaited(
         dialogs.showMessage(
@@ -149,6 +167,10 @@ class ApplicationState extends ConsumerState<Application> {
           message: TextSpan(text: error),
         ),
       );
+      return;
+    }
+    if (connect && !ref.read(isStartProvider)) {
+      ref.read(commonActionProvider.notifier).toggleRunning();
     }
   }
 
