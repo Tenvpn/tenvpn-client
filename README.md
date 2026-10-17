@@ -28,9 +28,11 @@
 git clone --recursive https://github.com/tenvpn/tenvpn-client.git
 cd tenvpn-client
 dart setup.dart android --env stable          # APK в dist/
-dart setup.dart windows --env stable          # установщик .exe и portable .zip в dist/
+dart setup.dart windows --env stable          # установщик .exe (нужен Inno Setup 6) и portable .zip в dist/
 dart setup.dart ios --no-codesign             # только на macOS
 ```
+
+Как на Windows устроены служба для TUN, трей, автозапуск, установщик и обновления — [docs/windows.md](docs/windows.md). Переменные сборки `TENVPN_API_BASE` (бэкенд приложения) и `TENVPN_RELEASES_URL` (зеркало `releases/latest`, по умолчанию GitHub) берутся из окружения и попадают в `env.json`, в git их нет.
 
 `setup.dart` сам скачивает гео-базы (`assets/data/*`, ~100 МБ) — раньше это был отдельный шаг `dart run tool/geodata.dart`. **Если собирать в обход `setup.dart`** (`flutter build`, `flutter run`), гео-базы нужно положить самому — иначе ядро не стартует: `Unable to load asset: assets/data/GeoIP.metadb`, в интерфейсе «not initialized». Самый короткий способ — один раз прогнать `dart setup.dart <платформа>`.
 
