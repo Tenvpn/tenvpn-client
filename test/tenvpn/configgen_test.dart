@@ -448,6 +448,75 @@ proxies:
     });
   });
 
+  group('alignWithXray', () {
+    late List<Map<String, dynamic>> proxies;
+
+    setUp(() {
+      proxies =
+          (buildConfig(
+                    parseSubscription(fixture('remnawave_mihomo.yaml')),
+                  ).config['proxies']
+                  as List)
+              .cast<Map<String, dynamic>>();
+    });
+
+    test('empty xhttp padding fields get the Xray defaults', () {
+      final second = proxyNamed(proxies, '🇪🇺 Обход белых списков 2');
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-header', 'X-Padding'),
+      );
+      expect(second['xhttp-opts'], containsPair('x-padding-key', 'x_padding'));
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-placement', 'header'),
+      );
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-method', 'tokenish'),
+      );
+      final first = proxyNamed(proxies, '🇪🇺  Обход белых списков 1');
+      expect(
+        first['xhttp-opts'],
+        containsPair('x-padding-header', 'X-Cache-Token'),
+      );
+      expect(first['xhttp-opts'], containsPair('x-padding-key', 'tag'));
+      expect(first['client-fingerprint'], 'firefox');
+      final plain = alignWithXray({
+        'name': 'X',
+        'xhttp-opts': {'path': '/', 'x-padding-header': ''},
+      });
+      expect(plain['xhttp-opts'], {'path': '/', 'x-padding-header': ''});
+      final bare = alignWithXray({
+        'name': 'Y',
+        'xhttp-opts': {'x-padding-obfs-mode': true, 'x-padding-key': ''},
+      });
+      expect(bare['xhttp-opts'], {
+        'x-padding-obfs-mode': true,
+        ...xrayPaddingDefaults,
+      });
+    });
+
+    test('Reality offers ML-KEM with the chrome fingerprint', () {
+      final reality = proxies.where((proxy) => proxy['reality-opts'] != null);
+      expect(reality, hasLength(3));
+      for (final proxy in reality) {
+        expect(proxy['client-fingerprint'], 'chrome', reason: proxy['name']);
+        expect(proxy['reality-opts']['support-x25519mlkem768'], isTrue);
+        expect(proxy['reality-opts'], contains('public-key'));
+      }
+      final hysteria = proxyNamed(proxies, '🇳🇱 ⚡ Нидерланды (Hysteria2) 🚀');
+      expect(hysteria.containsKey('reality-opts'), isFalse);
+    });
+
+    test('the subscription itself is left untouched', () {
+      final parsed = parseSubscription(fixture('remnawave_mihomo.yaml'));
+      buildConfig(parsed);
+      final second = proxyNamed(parsed.proxies, '🇪🇺 Обход белых списков 2');
+      expect(second['xhttp-opts'], isNot(contains('x-padding-header')));
+    });
+  });
+
   group('encoded YAML', () {
     test('round-trips every fragile field, xhttp and xmux included', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
