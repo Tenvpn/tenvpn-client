@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 
 class AddProfileView extends ConsumerWidget {
   final BuildContext context;
@@ -125,12 +126,13 @@ class AddProfileView extends ConsumerWidget {
     final appLocalizations = context.appLocalizations;
     return ListView(
       children: [
-        ListItem(
-          leading: const Icon(Symbols.qr_code_sharp),
-          title: Text(appLocalizations.qrcode),
-          subtitle: Text(appLocalizations.qrcodeDesc),
-          onTap: () => _toScan(ref),
-        ),
+        if (!isPlayBuild)
+          ListItem(
+            leading: const Icon(Symbols.qr_code_sharp),
+            title: Text(appLocalizations.qrcode),
+            subtitle: Text(appLocalizations.qrcodeDesc),
+            onTap: () => _toScan(ref),
+          ),
         ListItem(
           leading: const Icon(Symbols.note_add_sharp),
           title: Text(appLocalizations.newProfile),

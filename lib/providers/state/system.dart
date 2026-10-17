@@ -213,7 +213,7 @@ SharedState sharedState(Ref ref) {
     startTip: currentAppLocalizations.startVpn,
     setupParams: SetupParams(selectedMap: selectedMap, testUrl: testUrl),
     vpnOptions: VpnOptions(
-      enable: vpnSetting.enable,
+      enable: isPlayBuild || vpnSetting.enable,
       stack: stack,
       // VpnService.setHttpProxy cannot carry credentials, so an authenticated
       // mixed port must not be declared as the system HTTP proxy; traffic

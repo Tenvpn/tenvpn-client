@@ -7,6 +7,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 
 typedef _VpnUpdate<T> = VpnProps Function(VpnProps state, T value);
 
@@ -104,6 +105,7 @@ class VPNItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    if (isPlayBuild) return const SizedBox.shrink();
     return _vpnToggle(
       title: (l) => 'VPN',
       subtitle: (l) => l.vpnEnableDesc,

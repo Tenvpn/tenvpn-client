@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wifi_ssid/wifi_ssid_manager.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 
 enum LocationPermissionFollowUp { none, showDeniedMessage, openSettings }
 
@@ -81,7 +82,7 @@ class Permissions {
   }
 
   Future<void> checkLocationPermissions(ProviderReader read) async {
-    if (!_supportsLocationPermissions()) {
+    if (isPlayBuild || !_supportsLocationPermissions()) {
       return;
     }
     final res = await WifiSsidManager.instance.checkPermission();
