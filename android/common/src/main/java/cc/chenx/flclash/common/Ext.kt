@@ -13,6 +13,7 @@ import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
 import android.os.Build
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -76,7 +77,13 @@ fun Service.startForeground(notification: Notification) {
         startForeground(
             GlobalState.NOTIFICATION_ID,
             notification,
-            FOREGROUND_SERVICE_TYPE_SPECIAL_USE,
+            // A VPN the user consented to qualifies for systemExempted; the
+            // proxy-only service has no fitting type and stays specialUse.
+            if (this is android.net.VpnService) {
+                FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
+            } else {
+                FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            },
         )
     } else {
         startForeground(GlobalState.NOTIFICATION_ID, notification)

@@ -96,6 +96,19 @@ Future<void> main(List<String> args) async {
   final iosDevelopmentTeam = results['ios-development-team'] as String?;
   final iosNoSign = results['no-codesign'] as bool;
   final skipDependencies = results['skip-dependencies'] as bool;
+  final buildName = results['build-name'] as String?;
+  final buildNumber = results['build-number'] as String?;
+  final targetList = targets.split(',');
+  if (platform == 'android' &&
+      targetList.contains('aab') &&
+      targetList.contains('apk')) {
+    stderr.writeln('Build aab and apk separately: only apk is split per ABI.');
+    exit(64);
+  }
+  if (buildNumber != null && int.tryParse(buildNumber) == null) {
+    stderr.writeln('--build-number must be an integer, got $buildNumber.');
+    exit(64);
+  }
 
   if (iosNoSign && platform != 'ios') {
     stderr.writeln('--no-codesign is only supported for iOS builds.');
@@ -120,6 +133,8 @@ Future<void> main(List<String> args) async {
         iosNoSign: iosNoSign,
         skipDependencies: skipDependencies,
         verbose: verbose,
+        buildName: buildName,
+        buildNumber: buildNumber,
       );
     },
   );
@@ -173,6 +188,16 @@ ArgParser createSetupArgParser() {
       negatable: false,
       help: 'Build an IPA without Apple provisioning (iOS only)',
     )
+    ..addOption(
+      'build-name',
+      valueHelp: '1.0.0',
+      help: 'Override the pubspec version name (the Play bundle)',
+    )
+    ..addOption(
+      'build-number',
+      valueHelp: '10000',
+      help: 'Override the pubspec build number (the Play bundle)',
+    )
     ..addFlag(
       'skip-dependencies',
       abbr: 's',
@@ -190,16 +215,23 @@ ArgParser createSetupArgParser() {
 List<String> createFlutterBuildArgs({
   required String platform,
   required bool verbose,
+  String targets = 'apk',
   String? iosExportMethod,
   String? iosExportOptionsPlist,
+  String? buildName,
+  String? buildNumber,
 }) {
   final flutterBuildArgs = <String>[
     if (verbose) 'verbose',
     'dart-define-from-file=env.json',
+    if (buildName != null) 'build-name=$buildName',
+    if (buildNumber != null) 'build-number=$buildNumber',
   ];
   switch (platform) {
     case 'android':
-      flutterBuildArgs.add('split-per-abi');
+      if (targets.split(',').contains('apk')) {
+        flutterBuildArgs.add('split-per-abi');
+      }
     case 'ios':
       if (iosExportOptionsPlist != null && iosExportOptionsPlist.isNotEmpty) {
         flutterBuildArgs.add('export-options-plist=$iosExportOptionsPlist');
@@ -400,6 +432,8 @@ Future<int> _package(
   required bool iosNoSign,
   required bool skipDependencies,
   required bool verbose,
+  String? buildName,
+  String? buildNumber,
 }) async {
   await ensureGeoData(rootDir: rootDir);
 
@@ -416,6 +450,9 @@ Future<int> _package(
   final flutterBuildArgs = createFlutterBuildArgs(
     platform: platform,
     verbose: verbose,
+    targets: targets,
+    buildName: buildName,
+    buildNumber: buildNumber,
     iosExportMethod: iosExportMethod,
     iosExportOptionsPlist: iosExportOptionsPlist,
   );
