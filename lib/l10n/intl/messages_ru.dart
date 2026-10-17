@@ -880,9 +880,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1721,10 +1722,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Запускать TENVPN вместе с компьютером",
     ),
+    "tenvpnAwgMissing": MessageLookupByLibrary.simpleMessage(
+      "Подключите через бота: «Мои устройства» → «Открыть в приложении»",
+    ),
     "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Кабинет"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Вставить другую ссылку",
     ),
@@ -1809,6 +1814,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Переподключиться"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
+    "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
+      "Самый быстрый на домашнем интернете",
+    ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
     ),

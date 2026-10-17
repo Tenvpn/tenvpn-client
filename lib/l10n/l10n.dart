@@ -8144,6 +8144,41 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Account`
+  String get tenvpnCabinet {
+    return Intl.message('Account', name: 'tenvpnCabinet', desc: '', args: []);
+  }
+
+  /// `AmneziaWG`
+  String get tenvpnSectionAwg {
+    return Intl.message(
+      'AmneziaWG',
+      name: 'tenvpnSectionAwg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Fastest on home internet`
+  String get tenvpnSectionAwgDesc {
+    return Intl.message(
+      'Fastest on home internet',
+      name: 'tenvpnSectionAwgDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect it through the bot: My devices → Open in the app`
+  String get tenvpnAwgMissing {
+    return Intl.message(
+      'Connect it through the bot: My devices → Open in the app',
+      name: 'tenvpnAwgMissing',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

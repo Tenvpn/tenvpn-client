@@ -15,6 +15,7 @@ import 'update.dart';
 
 export 'account.dart';
 export 'awg_source.dart';
+export 'cabinet.dart';
 export 'expiry.dart';
 export 'telemetry.dart';
 export 'headers.dart';

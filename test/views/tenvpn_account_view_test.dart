@@ -90,6 +90,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late ProviderContainer container;
+  var cabinetOpens = 0;
   late _MemoryConfig config;
   late List<Map<String, String>> notices;
   late List<ConnectEvent> events;
@@ -115,10 +116,14 @@ void main() {
 
   ProviderContainer build({AccountCache? account}) {
     config = _MemoryConfig()..cached = account;
+    cabinetOpens = 0;
     notices = [];
     events = [];
     final c = ProviderContainer(
       overrides: [
+        tenvpnOpenCabinetProvider.overrideWithValue(() async {
+          cabinetOpens++;
+        }),
         profilesProvider.overrideWith(() => TestProfiles([profile])),
         currentProfileIdProvider.overrideWithBuild((_, _) => profile.id),
         tenvpnConfigProvider.overrideWithValue(config),
@@ -175,7 +180,7 @@ void main() {
 
   Finder text(String value) => find.textContaining(value, findRichText: true);
 
-  testWidgets('balance, devices and Renew come from the account', (
+  testWidgets('balance, devices and the cabinet button from the account', (
     tester,
   ) async {
     container = build(account: _account());
@@ -183,7 +188,9 @@ void main() {
     expect(text('Paid until'), findsOneWidget);
     expect(text('13 days left'), findsOneWidget);
     expect(text('Balance 91 ₽ · 9 ₽ a day · 3 devices'), findsOneWidget);
-    expect(find.byKey(const ValueKey('tenvpn-renew')), findsOneWidget);
+    expect(find.byKey(const ValueKey('tenvpn-cabinet')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('tenvpn-cabinet')));
+    expect(cabinetOpens, 1);
     expect(
       container.read(tenvpnRenewUrlProvider),
       'https://t.me/Tenvpnrobot?start=app_renew',
