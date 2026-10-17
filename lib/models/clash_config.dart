@@ -1,5 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/tenvpn/configgen/builder.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'generated/clash_config.freezed.dart';
@@ -332,7 +333,7 @@ abstract class Dns with _$Dns {
     @Default(true) @JsonKey(name: 'use-system-hosts') bool useSystemHosts,
     @Default(false) @JsonKey(name: 'respect-rules') bool respectRules,
     @Default(false) bool ipv6,
-    @Default(['223.5.5.5'])
+    @Default(tenvpnDefaultNameservers)
     @JsonKey(name: 'default-nameserver')
     List<String> defaultNameserver,
     @Default(DnsMode.fakeIp)
@@ -341,19 +342,18 @@ abstract class Dns with _$Dns {
     @Default('198.18.0.1/16')
     @JsonKey(name: 'fake-ip-range')
     String fakeIpRange,
-    @Default(['+.local', '+.lan'])
+    @Default(tenvpnFakeIpFilter)
     @JsonKey(name: 'fake-ip-filter')
     List<String> fakeIpFilter,
-    @Default({'geosite:cn': 'https://doh.pub/dns-query'})
+    @Default({})
     @JsonKey(name: 'nameserver-policy')
     Map<String, String> nameserverPolicy,
-    @Default(['https://doh.pub/dns-query', 'https://dns.alidns.com/dns-query'])
-    List<String> nameserver,
-    @Default(['tls://8.8.4.4', 'tls://1.1.1.1']) List<String> fallback,
+    @Default(tenvpnNameservers) List<String> nameserver,
+    @Default([]) List<String> fallback,
     @Default({})
     @JsonKey(name: 'proxy-server-nameserver-policy')
     Map<String, String> proxyServerNameserverPolicy,
-    @Default(['https://doh.pub/dns-query'])
+    @Default(tenvpnProxyServerNameservers)
     @JsonKey(name: 'proxy-server-nameserver')
     List<String> proxyServerNameserver,
     @Default(FallbackFilter())

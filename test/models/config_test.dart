@@ -339,10 +339,16 @@ void main() {
       expect(config.tun.endpointIndependentNat, false);
       expect(config.interfaceNameMode, InterfaceNameMode.clear);
       expect(config.interfaceName, '');
-      expect(config.dns.fakeIpFilter, ['+.local', '+.lan']);
-      expect(config.dns.nameserverPolicy, {
-        'geosite:cn': 'https://doh.pub/dns-query',
-      });
+      expect(config.dns.fakeIpFilter, containsAll(['+.local', '*.lan']));
+      expect(config.dns.nameserverPolicy, isEmpty);
+      expect(config.dns.fallback, isEmpty);
+      expect(config.dns.defaultNameserver, ['77.88.8.8', '1.1.1.1']);
+      expect(config.dns.nameserver, ['https://1.1.1.1/dns-query', '77.88.8.8']);
+      expect(config.dns.proxyServerNameserver, [
+        '77.88.8.8',
+        '77.88.8.1',
+        '1.1.1.1',
+      ]);
     });
 
     test('custom values survive round-trip', () {
