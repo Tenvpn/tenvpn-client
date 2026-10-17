@@ -78,8 +78,8 @@ final tenvpnSelectionProvider = Provider<TenvpnSelection>((ref) {
   final auto = main == null || main.now != manualGroupName;
   final group = groups.getGroup(auto ? autoGroupName : manualGroupName);
   var server = group?.now;
-  if (server == autoPoolGroupName) {
-    server = groups.getGroup(autoPoolGroupName)?.now;
+  while (autoTierGroupNames.contains(server)) {
+    server = groups.getGroup(server!)?.now;
   }
   return (auto: auto, server: server?.isEmpty == true ? null : server);
 });
