@@ -5,10 +5,7 @@ import 'subscription.dart';
 
 /// Order of the tiers inside «Авто»: regular servers → AmneziaWG → servers
 /// for mobile whitelists (CDN traffic is paid and slower, so it goes last).
-enum AutoStrategy {
-  fastest,
-  awgFirst,
-}
+enum AutoStrategy { fastest, awgFirst }
 
 class ConfigGenOptions {
   final String testUrl;
@@ -36,8 +33,8 @@ class ConfigGenOptions {
     this.whitelistIntervalSeconds = 300,
     this.testTimeoutMs = 3000,
     this.whitelistTimeoutMs = 5000,
-    this.toleranceMs = 50,
-    this.whitelistToleranceMs = 100,
+    this.toleranceMs = 100,
+    this.whitelistToleranceMs = 150,
     this.maxFailedTimes = 3,
     this.tun = true,
     this.controllerAddress = '127.0.0.1:9090',
@@ -51,10 +48,14 @@ bool isWhitelistServer(ServerEntry server) =>
     whitelistWords.hasMatch(server.name) ||
     (server.section != null && whitelistWords.hasMatch(server.section!));
 
-// Bootstrap and proxy-server lookups must work on networks that only let
-// Russian resources through, so Yandex DNS goes first; nothing Chinese.
+// Server addresses must resolve directly even where only Russian resources
+// are reachable, so Yandex answers those; every other lookup rides the tunnel
+// (mihomo queries nameservers in parallel, so order alone keeps nothing out).
 const tenvpnDefaultNameservers = ['77.88.8.8', '1.1.1.1'];
-const tenvpnNameservers = ['https://1.1.1.1/dns-query', '77.88.8.8'];
+const tenvpnNameservers = [
+  'https://1.1.1.1/dns-query#$mainGroupName',
+  'https://8.8.8.8/dns-query#$mainGroupName',
+];
 const tenvpnProxyServerNameservers = ['77.88.8.8', '77.88.8.1', '1.1.1.1'];
 const tenvpnFakeIpFilter = [
   '*.lan',
@@ -167,7 +168,7 @@ GeneratedConfig buildConfig(
     },
     'dns': {
       'enable': true,
-      'listen': '0.0.0.0:1053',
+      'listen': '127.0.0.1:1053',
       'ipv6': false,
       'enhanced-mode': 'fake-ip',
       'fake-ip-range': '198.18.0.1/16',
@@ -194,6 +195,7 @@ List<Map<String, dynamic>> _autoGroups(
     'type': 'url-test',
     'proxies': proxies,
     'url': options.testUrl,
+    'expected-status': '204',
     'interval': wl
         ? options.whitelistIntervalSeconds
         : options.testIntervalSeconds,
@@ -222,6 +224,7 @@ List<Map<String, dynamic>> _autoGroups(
       'type': 'fallback',
       'proxies': members,
       'url': options.testUrl,
+      'expected-status': '204',
       'interval': options.autoIntervalSeconds,
       'timeout': options.testTimeoutMs,
       'lazy': true,

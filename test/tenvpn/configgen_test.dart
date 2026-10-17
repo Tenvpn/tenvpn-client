@@ -261,6 +261,7 @@ proxies:
         'type': 'fallback',
         'proxies': [autoPrimaryGroupName, autoWhitelistGroupName],
         'url': 'https://www.gstatic.com/generate_204',
+        'expected-status': '204',
         'interval': 15,
         'timeout': 3000,
         'lazy': true,
@@ -271,9 +272,10 @@ proxies:
         'type': 'url-test',
         'proxies': names.take(6).toList(),
         'url': 'https://www.gstatic.com/generate_204',
+        'expected-status': '204',
         'interval': 120,
         'timeout': 3000,
-        'tolerance': 50,
+        'tolerance': 100,
         'lazy': true,
         'max-failed-times': 3,
         'hidden': true,
@@ -285,7 +287,7 @@ proxies:
       ]);
       expect(groups[3]['interval'], 300);
       expect(groups[3]['timeout'], 5000);
-      expect(groups[3]['tolerance'], 100);
+      expect(groups[3]['tolerance'], 150);
       expect(groups[3]['hidden'], isTrue);
       expect(groups[3].containsKey('max-failed-times'), isFalse);
       expect(groups[4]['type'], 'select');
@@ -378,6 +380,11 @@ proxies:
         expect(resolvers, isNot(contains(chinese)));
       }
       expect(dns.containsKey('nameserver-policy'), isFalse);
+      expect(dns['listen'], '127.0.0.1:1053');
+      for (final server in dns['nameserver'] as List) {
+        expect(server, endsWith('#$mainGroupName'), reason: 'through the VPN');
+      }
+      expect(dns['proxy-server-nameserver'].first, '77.88.8.8');
       expect(config['external-controller'], '127.0.0.1:9090');
       expect(generated.secret, matches(RegExp(r'^[0-9a-f]{32}$')));
       expect(config['secret'], generated.secret);
