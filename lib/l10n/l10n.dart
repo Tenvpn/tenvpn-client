@@ -7878,10 +7878,10 @@ class AppLocalizations {
     return Intl.message('By ping', name: 'tenvpnSortPing', desc: '', args: []);
   }
 
-  /// `Paid until {date}`
+  /// `Subscription until {date}`
   String tenvpnPaidUntil(Object date) {
     return Intl.message(
-      'Paid until $date',
+      'Subscription until $date',
       name: 'tenvpnPaidUntil',
       desc: '',
       args: [date],
@@ -7955,10 +7955,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Paid until {date}. Renew now so the VPN keeps working.`
+  /// `Your subscription is active until {date}.`
   String tenvpnExpiryNoticeText(Object date) {
     return Intl.message(
-      'Paid until $date. Renew now so the VPN keeps working.',
+      'Your subscription is active until $date.',
       name: 'tenvpnExpiryNoticeText',
       desc: '',
       args: [date],

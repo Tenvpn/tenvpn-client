@@ -941,7 +941,7 @@
   "tenvpnSort": "Sorting",
   "tenvpnSortSubscription": "As in subscription",
   "tenvpnSortPing": "By ping",
-  "tenvpnPaidUntil": "Paid until {date}",
+  "tenvpnPaidUntil": "Subscription until {date}",
   "tenvpnBalance": "Balance {balance} ₽ · {rate} ₽ a day",
   "tenvpnDevices": "{count, plural, =1{1 device} other{{count} devices}}",
   "tenvpnSuspended": "Access paused — top up your balance",
@@ -949,7 +949,7 @@
   "tenvpnRenew": "Renew",
   "tenvpnNoticeChannel": "Subscription",
   "tenvpnExpiryNoticeTitle": "Your subscription is ending",
-  "tenvpnExpiryNoticeText": "Paid until {date}. Renew now so the VPN keeps working.",
+  "tenvpnExpiryNoticeText": "Your subscription is active until {date}.",
   "tenvpnTelemetry": "Technical statistics",
   "tenvpnTelemetryDesc": "App version, OS and connection protocol — helps support. No IP, no sites.",
   "tenvpnPrivacy": "Privacy policy"

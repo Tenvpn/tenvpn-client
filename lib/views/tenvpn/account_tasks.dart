@@ -16,8 +16,6 @@ typedef ShowAccountNotice =
       required String channelName,
       required String title,
       required String text,
-      required String actionLabel,
-      required String actionUrl,
     });
 
 typedef SendConnectEvent =
@@ -114,8 +112,6 @@ class _TenvpnAccountTasksState extends ConsumerState<TenvpnAccountTasks> {
       channelName: l.tenvpnNoticeChannel,
       title: l.tenvpnExpiryNoticeTitle,
       text: l.tenvpnExpiryNoticeText(date),
-      actionLabel: l.tenvpnRenew,
-      actionUrl: ref.read(tenvpnRenewUrlProvider),
     );
     if (shown) {
       await _config.markExpiryNotice(id, key);
