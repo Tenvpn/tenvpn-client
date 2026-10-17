@@ -54,7 +54,9 @@ ParsedSubscription parseSubscription(String text) {
   if (trimmed.isEmpty) {
     throw const ConfigGenException(ConfigGenErrorCode.empty);
   }
-  final lower = trimmed.substring(0, trimmed.length.clamp(0, 512)).toLowerCase();
+  final lower = trimmed
+      .substring(0, trimmed.length.clamp(0, 512))
+      .toLowerCase();
   if (lower.startsWith('<!doctype') || lower.startsWith('<html')) {
     throw const ConfigGenException(ConfigGenErrorCode.html);
   }
@@ -90,11 +92,7 @@ ParsedSubscription parseSubscription(String text) {
       section = sectionTitle(name);
       continue;
     }
-    final unique = uniqueName(
-      name,
-      usedNames,
-      reserved: reservedProxyNames,
-    );
+    final unique = uniqueName(name, usedNames, reserved: reservedProxyNames);
     usedNames.add(unique);
     proxy['name'] = unique;
     proxies.add(proxy);
@@ -153,7 +151,11 @@ String sectionTitle(String separatorName) {
       .trim();
 }
 
-String uniqueName(String name, Set<String> used, {Set<String> reserved = const {}}) {
+String uniqueName(
+  String name,
+  Set<String> used, {
+  Set<String> reserved = const {},
+}) {
   bool taken(String candidate) =>
       used.contains(candidate) || reserved.contains(candidate);
   if (!taken(name)) return name;

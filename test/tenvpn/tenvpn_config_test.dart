@@ -12,7 +12,10 @@ import 'package:yaml/yaml.dart';
 String fixture(String name) =>
     File('test/fixtures/tenvpn/$name').readAsStringSync();
 
-const source = AwgSource(url: 'https://api.example.com/api/app/v1/awg', token: 't0k');
+const source = AwgSource(
+  url: 'https://api.example.com/api/app/v1/awg',
+  token: 't0k',
+);
 
 void main() {
   late Directory dir;
@@ -92,32 +95,41 @@ void main() {
   });
 
   for (final status in [401, 403, 404, 410]) {
-    test('HTTP $status from the backend drops the cached AWG profile', () async {
+    test(
+      'HTTP $status from the backend drops the cached AWG profile',
+      () async {
+        await service.setAwgSource(1, source);
+        responses
+          ..add(awgOk)
+          ..add(() => AwgHttpResponse(status, '{}'));
+        await service.generate(1, fixture('remnawave_mihomo.yaml'));
+        final yaml = await service.generate(
+          1,
+          fixture('remnawave_mihomo.yaml'),
+        );
+        expect(proxyNames(yaml), isNot(contains(awgDefaultName)));
+        expect((await store.load(1)).awgCache, isNull);
+      },
+    );
+  }
+
+  test(
+    'an invalid AWG profile from the backend never replaces the cache',
+    () async {
       await service.setAwgSource(1, source);
       responses
         ..add(awgOk)
-        ..add(() => AwgHttpResponse(status, '{}'));
+        ..add(
+          () => AwgHttpResponse(
+            200,
+            json.encode({'version': 1, 'conf': '[Interface]\nPrivateKey = x'}),
+          ),
+        );
       await service.generate(1, fixture('remnawave_mihomo.yaml'));
       final yaml = await service.generate(1, fixture('remnawave_mihomo.yaml'));
-      expect(proxyNames(yaml), isNot(contains(awgDefaultName)));
-      expect((await store.load(1)).awgCache, isNull);
-    });
-  }
-
-  test('an invalid AWG profile from the backend never replaces the cache', () async {
-    await service.setAwgSource(1, source);
-    responses
-      ..add(awgOk)
-      ..add(
-        () => AwgHttpResponse(
-          200,
-          json.encode({'version': 1, 'conf': '[Interface]\nPrivateKey = x'}),
-        ),
-      );
-    await service.generate(1, fixture('remnawave_mihomo.yaml'));
-    final yaml = await service.generate(1, fixture('remnawave_mihomo.yaml'));
-    expect(proxyNames(yaml).last, awgDefaultName);
-  });
+      expect(proxyNames(yaml).last, awgDefaultName);
+    },
+  );
 
   test('a broken subscription fails before the AWG request', () async {
     await service.setAwgSource(1, source);

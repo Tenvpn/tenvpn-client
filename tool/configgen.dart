@@ -16,7 +16,9 @@ void main(List<String> arguments) {
   try {
     final generated = generateFromSubscription(
       File(args.option('subscription')!).readAsStringSync(),
-      awg: awgPath == null ? null : parseAwgConf(File(awgPath).readAsStringSync()),
+      awg: awgPath == null
+          ? null
+          : parseAwgConf(File(awgPath).readAsStringSync()),
       options: ConfigGenOptions(
         tun: !args.flag('no-tun'),
         autoStrategy: args.flag('awg-first')

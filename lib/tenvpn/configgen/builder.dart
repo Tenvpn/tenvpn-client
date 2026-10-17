@@ -185,8 +185,5 @@ Map<String, dynamic> _healthCheck(ConfigGenOptions options) => {
 
 String generateSecret([Random? random]) {
   final source = random ?? Random.secure();
-  return List.generate(
-    32,
-    (_) => source.nextInt(16).toRadixString(16),
-  ).join();
+  return List.generate(32, (_) => source.nextInt(16).toRadixString(16)).join();
 }
