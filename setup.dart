@@ -212,14 +212,22 @@ List<String> createFlutterBuildArgs({
 
 /// `TENVPN_API_BASE` comes from the build machine's environment (a CI
 /// secret or a local export), so the backend address never sits in git.
+/// `TENVPN_STORE` is `play` for the Google Play build and `site` (the
+/// default) for the APK from the website.
 Map<String, String> createBuildEnvironment(
   String env, {
   Map<String, String>? environment,
 }) {
-  final apiBase = (environment ?? Platform.environment)['TENVPN_API_BASE'];
+  final source = environment ?? Platform.environment;
+  final apiBase = source['TENVPN_API_BASE'];
+  final store = source['TENVPN_STORE'];
+  if (store != null && store.isNotEmpty && !{'play', 'site'}.contains(store)) {
+    throw ArgumentError.value(store, 'TENVPN_STORE', 'expected play or site');
+  }
   return {
     'APP_ENV': env,
     if (apiBase != null && apiBase.isNotEmpty) 'TENVPN_API_BASE': apiBase,
+    if (store != null && store.isNotEmpty) 'TENVPN_STORE': store,
   };
 }
 

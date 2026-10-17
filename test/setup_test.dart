@@ -61,6 +61,23 @@ void main() {
       );
     });
 
+    test('the store flag picks the Play or the website build', () {
+      expect(
+        setup.createBuildEnvironment(
+          'stable',
+          environment: const {'TENVPN_STORE': 'play'},
+        ),
+        {'APP_ENV': 'stable', 'TENVPN_STORE': 'play'},
+      );
+      expect(
+        () => setup.createBuildEnvironment(
+          'stable',
+          environment: const {'TENVPN_STORE': 'appstore'},
+        ),
+        throwsArgumentError,
+      );
+    });
+
     test('parses iOS bundle identifier override', () {
       final results = setup.createSetupArgParser().parse([
         'ios',

@@ -7994,6 +7994,16 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `You get the subscription link from your TENVPN provider`
+  String get tenvpnProviderHint {
+    return Intl.message(
+      'You get the subscription link from your TENVPN provider',
+      name: 'tenvpnProviderHint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {
