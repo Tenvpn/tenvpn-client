@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/launch.dart';
+import 'package:fl_clash/common/launch_args.dart';
 import 'package:fl_clash/common/migration.dart';
 import 'package:fl_clash/common/permission.dart';
 import 'package:fl_clash/common/tray.dart';
@@ -15,6 +16,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/navigation.dart';
+import 'package:fl_clash/views/tenvpn/update_dialog.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,6 +40,7 @@ class Bootstrap {
     );
     windowPort = window;
     trayPort = appTray;
+    updateProgressPort = const TenvpnUpdateProgress();
     navigationPort = navigation;
     final dynamicColor = await _initDynamicColor();
     return _initData(version, dynamicColor);
@@ -151,7 +154,10 @@ class Bootstrap {
             .highPriorityAutoLaunch,
       ),
     );
-    if (!_container.read(appSettingProvider).silentLaunch) {
+    final hidden =
+        _container.read(appSettingProvider).silentLaunch ||
+        launchArgs.autostart;
+    if (!hidden) {
       unawaited(window?.show());
     } else {
       unawaited(window?.hide());

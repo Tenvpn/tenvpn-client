@@ -7994,6 +7994,156 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `All traffic through VPN`
+  String get tenvpnFullTunnel {
+    return Intl.message(
+      'All traffic through VPN',
+      name: 'tenvpnFullTunnel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Every program on this computer. Turn off if another VPN gets in the way: then TENVPN carries browsers and programs that use the system proxy`
+  String get tenvpnFullTunnelDesc {
+    return Intl.message(
+      'Every program on this computer. Turn off if another VPN gets in the way: then TENVPN carries browsers and programs that use the system proxy',
+      name: 'tenvpnFullTunnelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open TENVPN`
+  String get tenvpnTrayOpen {
+    return Intl.message(
+      'Open TENVPN',
+      name: 'tenvpnTrayOpen',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reconnect`
+  String get tenvpnReconnect {
+    return Intl.message(
+      'Reconnect',
+      name: 'tenvpnReconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start with Windows`
+  String get tenvpnTrayAutoStart {
+    return Intl.message(
+      'Start with Windows',
+      name: 'tenvpnTrayAutoStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New version {version}`
+  String tenvpnUpdateTitle(Object version) {
+    return Intl.message(
+      'New version $version',
+      name: 'tenvpnUpdateTitle',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `TENVPN will download the update and install it. Windows will ask for permission — click Yes.`
+  String get tenvpnUpdateText {
+    return Intl.message(
+      'TENVPN will download the update and install it. Windows will ask for permission — click Yes.',
+      name: 'tenvpnUpdateText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Update`
+  String get tenvpnUpdateNow {
+    return Intl.message('Update', name: 'tenvpnUpdateNow', desc: '', args: []);
+  }
+
+  /// `Later`
+  String get tenvpnUpdateLater {
+    return Intl.message('Later', name: 'tenvpnUpdateLater', desc: '', args: []);
+  }
+
+  /// `Downloading the update… {percent}%`
+  String tenvpnUpdateDownloading(Object percent) {
+    return Intl.message(
+      'Downloading the update… $percent%',
+      name: 'tenvpnUpdateDownloading',
+      desc: '',
+      args: [percent],
+    );
+  }
+
+  /// `Could not update: {reason}. You can download the new version manually.`
+  String tenvpnUpdateFailed(Object reason) {
+    return Intl.message(
+      'Could not update: $reason. You can download the new version manually.',
+      name: 'tenvpnUpdateFailed',
+      desc: '',
+      args: [reason],
+    );
+  }
+
+  /// `the download is corrupted`
+  String get tenvpnUpdateBroken {
+    return Intl.message(
+      'the download is corrupted',
+      name: 'tenvpnUpdateBroken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `this release has no Windows installer`
+  String get tenvpnUpdateNoInstaller {
+    return Intl.message(
+      'this release has no Windows installer',
+      name: 'tenvpnUpdateNoInstaller',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `installation was cancelled`
+  String get tenvpnUpdateDeclined {
+    return Intl.message(
+      'installation was cancelled',
+      name: 'tenvpnUpdateDeclined',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Check for updates`
+  String get tenvpnCheckUpdate {
+    return Intl.message(
+      'Check for updates',
+      name: 'tenvpnCheckUpdate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You have the latest version`
+  String get tenvpnUpToDate {
+    return Intl.message(
+      'You have the latest version',
+      name: 'tenvpnUpToDate',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

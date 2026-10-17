@@ -666,6 +666,28 @@ void main() {
       expect(result.appSettingProps.onlyStatisticsProxy, false);
     });
 
+    test('a fresh Windows install starts with TUN and AmneziaWG first', () {
+      final windows = Config.fresh(isWindows: true);
+      expect(windows.patchClashConfig.tun.enable, isTrue);
+      expect(windows.appSettingProps.awgPriority, isTrue);
+      expect(windows.networkProps.systemProxy, isTrue);
+
+      final other = Config.fresh(isWindows: false);
+      expect(other.patchClashConfig.tun.enable, isFalse);
+      expect(other.appSettingProps.awgPriority, isFalse);
+    });
+
+    test('saved settings keep their TUN and protocol choice', () {
+      final saved = Config.fresh(
+        isWindows: true,
+      ).copyWith.appSettingProps(awgPriority: false);
+      final restored = Config.realFromJson(
+        json.decode(json.encode(saved)) as Map<String, Object?>,
+      );
+      expect(restored.appSettingProps.awgPriority, isFalse);
+      expect(restored.patchClashConfig.tun.enable, isTrue);
+    });
+
     test('full config round-trip', () {
       const config = Config(
         currentProfileId: 42,

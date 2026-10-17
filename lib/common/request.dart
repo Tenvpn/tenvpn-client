@@ -9,6 +9,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/update.dart' show tenvpnReleasesUrl;
 
 class Request {
   late final Dio dio;
@@ -109,7 +110,9 @@ class Request {
     try {
       final response = await dio
           .get(
-            'https://api.github.com/repos/$repository/releases/latest',
+            tenvpnReleasesUrl.isNotEmpty
+                ? tenvpnReleasesUrl
+                : 'https://api.github.com/repos/$repository/releases/latest',
             options: Options(responseType: ResponseType.json),
           )
           .timeout(const Duration(seconds: 10));

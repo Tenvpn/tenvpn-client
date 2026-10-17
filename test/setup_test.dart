@@ -59,6 +59,19 @@ void main() {
         ),
         {'APP_ENV': 'stable', 'TENVPN_API_BASE': 'https://api.example.com'},
       );
+      expect(
+        setup.createBuildEnvironment(
+          'stable',
+          environment: const {
+            'TENVPN_RELEASES_URL': 'https://example.com/latest.json',
+            'TENVPN_OTHER': 'ignored',
+          },
+        ),
+        {
+          'APP_ENV': 'stable',
+          'TENVPN_RELEASES_URL': 'https://example.com/latest.json',
+        },
+      );
     });
 
     test('parses iOS bundle identifier override', () {

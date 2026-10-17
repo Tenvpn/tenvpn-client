@@ -404,6 +404,36 @@ void main() {
     expect(container.read(proxyStateProvider).isStart, isFalse);
   });
 
+  test(
+    'an authorized TUN replaces the system proxy, a refused one falls back',
+    () {
+      container
+          .read(patchClashConfigProvider.notifier)
+          .update(
+            (state) => state.copyWith(tun: state.tun.copyWith(enable: true)),
+          );
+      expect(container.read(networkSettingProvider).systemProxy, isTrue);
+      expect(container.read(proxyStateProvider).systemProxy, isTrue);
+
+      final authorization = container.read(
+        authorizedTunEnableProvider.notifier,
+      );
+      authorization.update((_) => TunAuthorizationState.authorized);
+      expect(container.read(proxyStateProvider).systemProxy, isFalse);
+
+      authorization.update((_) => TunAuthorizationState.unauthorized);
+      expect(container.read(proxyStateProvider).systemProxy, isTrue);
+
+      authorization.update((_) => TunAuthorizationState.authorized);
+      container
+          .read(patchClashConfigProvider.notifier)
+          .update(
+            (state) => state.copyWith(tun: state.tun.copyWith(enable: false)),
+          );
+      expect(container.read(proxyStateProvider).systemProxy, isTrue);
+    },
+  );
+
   test('selection and delay providers resolve groups and profile state', () {
     final profile = Profile.normal().copyWith(
       selectedMap: {'Selector': 'Leaf'},

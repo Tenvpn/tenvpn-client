@@ -4,13 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 
 import 'constant.dart';
+import 'launch_args.dart';
 import 'system.dart';
 
 class AutoLaunch {
   static AutoLaunch? _instance;
 
   AutoLaunch._internal() {
-    launcher.setup(appName: appName, appPath: Platform.resolvedExecutable);
+    final executable = Platform.resolvedExecutable;
+    launcher.setup(
+      appName: appName,
+      // Unquoted, "C:\Program Files\..." in the Run key is split at the space.
+      appPath: system.isWindows ? '"$executable"' : executable,
+      args: const [autostartArg],
+    );
   }
 
   factory AutoLaunch() {

@@ -210,7 +210,7 @@ proxies:
 
     test('plain WireGuard has no amnezia options', () {
       final conf = fixture('awg_v1.conf').replaceAll(
-        RegExp(r'^(Jc|Jmin|Jmax|S1|S2|H\d) = .*\n', multiLine: true),
+        RegExp(r'^(Jc|Jmin|Jmax|S1|S2|H\d) = .*\r?\n', multiLine: true),
         '',
       );
       expect(parseAwgConf(conf).containsKey('amnezia-wg-option'), isFalse);

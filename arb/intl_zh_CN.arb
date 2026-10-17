@@ -952,5 +952,21 @@
   "tenvpnExpiryNoticeText": "Paid until {date}. Renew now so the VPN keeps working.",
   "tenvpnTelemetry": "Technical statistics",
   "tenvpnTelemetryDesc": "App version, OS and connection protocol — helps support. No IP, no sites.",
-  "tenvpnPrivacy": "Privacy policy"
+  "tenvpnPrivacy": "Privacy policy",
+  "tenvpnFullTunnel": "All traffic through VPN",
+  "tenvpnFullTunnelDesc": "Every program on this computer. Turn off if another VPN gets in the way: then TENVPN carries browsers and programs that use the system proxy",
+  "tenvpnTrayOpen": "Open TENVPN",
+  "tenvpnReconnect": "Reconnect",
+  "tenvpnTrayAutoStart": "Start with Windows",
+  "tenvpnUpdateTitle": "New version {version}",
+  "tenvpnUpdateText": "TENVPN will download the update and install it. Windows will ask for permission — click Yes.",
+  "tenvpnUpdateNow": "Update",
+  "tenvpnUpdateLater": "Later",
+  "tenvpnUpdateDownloading": "Downloading the update… {percent}%",
+  "tenvpnUpdateFailed": "Could not update: {reason}. You can download the new version manually.",
+  "tenvpnUpdateBroken": "the download is corrupted",
+  "tenvpnUpdateNoInstaller": "this release has no Windows installer",
+  "tenvpnUpdateDeclined": "installation was cancelled",
+  "tenvpnCheckUpdate": "Check for updates",
+  "tenvpnUpToDate": "You have the latest version"
 }

@@ -49,9 +49,15 @@ ProxyState proxyState(Ref ref) {
   final mixedPort = ref.watch(
     patchClashConfigProvider.select((state) => state.mixedPort),
   );
+  final tunActive =
+      ref.watch(patchClashConfigProvider.select((state) => state.tun.enable)) &&
+      ref.watch(authorizedTunEnableProvider) ==
+          TunAuthorizationState.authorized;
   return ProxyState(
     isStart: suspend ? false : isStart,
-    systemProxy: systemProxySelector.systemProxy,
+    // TUN already carries every app; a system proxy on top would leave
+    // browsers pointing at a dead port if the Core exits.
+    systemProxy: systemProxySelector.systemProxy && !tunActive,
     bypassDomain: systemProxySelector.bypassDomain,
     port: mixedPort,
   );

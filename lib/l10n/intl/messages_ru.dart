@@ -120,20 +120,27 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m40(date) => "Оплачено до ${date}";
 
-  static String m41(time) => "Обновлена ${time}";
+  static String m41(percent) => "Скачиваем обновление… ${percent}%";
 
-  static String m42(version) => "Версия ${version}";
+  static String m42(reason) =>
+      "Не получилось обновить: ${reason}. Новую версию можно скачать вручную.";
 
-  static String m43(country) => "Ваш IP: ${country}";
+  static String m43(version) => "Новая версия ${version}";
 
-  static String m44(interval, idleInterval) =>
+  static String m44(time) => "Обновлена ${time}";
+
+  static String m45(version) => "Версия ${version}";
+
+  static String m46(country) => "Ваш IP: ${country}";
+
+  static String m47(interval, idleInterval) =>
       "${interval} · бездействие ${idleInterval}";
 
-  static String m45(interval) => "${interval} · бездействие отключено";
+  static String m48(interval) => "${interval} · бездействие отключено";
 
-  static String m46(label) => "Значение «${label}» должно быть URL";
+  static String m49(label) => "Значение «${label}» должно быть URL";
 
-  static String m47(count) =>
+  static String m50(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -1722,6 +1729,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Вставить другую ссылку",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Пинг"),
+    "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
+      "Проверить обновления",
+    ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Подключить"),
     "tenvpnDaysLeft": m33,
     "tenvpnDevices": m34,
@@ -1737,6 +1747,12 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnFreeAccess": MessageLookupByLibrary.simpleMessage(
       "Бесплатный доступ",
+    ),
+    "tenvpnFullTunnel": MessageLookupByLibrary.simpleMessage(
+      "Весь трафик через VPN",
+    ),
+    "tenvpnFullTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Все программы компьютера. Выключите, если мешает другой VPN: тогда через TENVPN пойдут браузеры и программы, которые используют системный прокси",
     ),
     "tenvpnHintConnecting": MessageLookupByLibrary.simpleMessage(
       "Подключаемся…",
@@ -1791,6 +1807,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Сначала AmneziaWG, остальные — если он недоступен",
     ),
+    "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Переподключиться"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
@@ -1845,21 +1862,45 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnThemeDark": MessageLookupByLibrary.simpleMessage("Тёмная"),
     "tenvpnThemeLight": MessageLookupByLibrary.simpleMessage("Светлая"),
     "tenvpnThemeSystem": MessageLookupByLibrary.simpleMessage("Системная"),
+    "tenvpnTrayAutoStart": MessageLookupByLibrary.simpleMessage(
+      "Запускать вместе с Windows",
+    ),
+    "tenvpnTrayOpen": MessageLookupByLibrary.simpleMessage("Открыть TENVPN"),
+    "tenvpnUpToDate": MessageLookupByLibrary.simpleMessage(
+      "У вас последняя версия",
+    ),
+    "tenvpnUpdateBroken": MessageLookupByLibrary.simpleMessage(
+      "файл скачался с ошибкой",
+    ),
+    "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
+      "установка отменена",
+    ),
+    "tenvpnUpdateDownloading": m41,
+    "tenvpnUpdateFailed": m42,
+    "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Позже"),
+    "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
+      "в выпуске нет установщика для Windows",
+    ),
+    "tenvpnUpdateNow": MessageLookupByLibrary.simpleMessage("Обновить"),
     "tenvpnUpdateSubscription": MessageLookupByLibrary.simpleMessage(
       "Обновить подписку",
     ),
-    "tenvpnUpdatedAt": m41,
+    "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
+      "TENVPN скачает обновление и установит его сам. Windows попросит разрешение на установку — нажмите «Да».",
+    ),
+    "tenvpnUpdateTitle": m43,
+    "tenvpnUpdatedAt": m44,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage(
       "Открытая основа приложения",
     ),
-    "tenvpnVersion": m42,
+    "tenvpnVersion": m45,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку из бота TENVPN или нажмите в боте «Открыть в приложении».",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Подключим за минуту",
     ),
-    "tenvpnYourIp": m43,
+    "tenvpnYourIp": m46,
     "testInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал тестирования",
     ),
@@ -1912,8 +1953,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал обновления информации UI",
     ),
-    "uiUpdateIntervalDesc": m44,
-    "uiUpdateIntervalIdleDisabledDesc": m45,
+    "uiUpdateIntervalDesc": m47,
+    "uiUpdateIntervalIdleDisabledDesc": m48,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Не разрешено"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Единая задержка"),
@@ -1939,7 +1980,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("Исходящий трафик"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m46,
+    "urlTip": m49,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Проверяет записи hosts из конфигурации перед запросом к вышестоящим DNS-серверам",
@@ -1979,7 +2020,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Также устанавливать системные часы",
     ),
-    "yearsAgo": m47,
+    "yearsAgo": m50,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

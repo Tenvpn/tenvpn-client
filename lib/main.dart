@@ -12,12 +12,14 @@ import 'package:rust_api/rust_api.dart';
 import 'application.dart';
 import 'bootstrap.dart';
 import 'common/common.dart';
+import 'common/launch_args.dart';
 import 'common/window.dart';
 
 void main(List<String> args) {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+      launchArgs = LaunchArgs.parse(args);
       if (Platform.isLinux) {
         linkManager.seedInitialLink(args);
       }

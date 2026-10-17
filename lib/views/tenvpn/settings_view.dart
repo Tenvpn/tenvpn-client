@@ -46,6 +46,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                 children: [
                   const _AutoConnectRow(),
                   if (system.isDesktop) const _AutoStartRow(),
+                  if (system.isWindows) const _FullTunnelRow(),
                   if (system.isAndroid)
                     TenvpnSettingsRow(
                       icon: Symbols.restart_alt,
@@ -111,6 +112,16 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnVersion(globalState.packageInfo.version),
                     onTap: () => BaseNavigator.push(context, const AboutView()),
                   ),
+                  if (system.isWindows)
+                    TenvpnSettingsRow(
+                      icon: Symbols.system_update,
+                      title: l.tenvpnCheckUpdate,
+                      onTap: () => unawaited(
+                        ref
+                            .read(commonActionProvider.notifier)
+                            .checkUpdateByUser(),
+                      ),
+                    ),
                 ],
               ),
             ],
@@ -297,6 +308,27 @@ class _AutoStartRow extends ConsumerWidget {
               highPriorityAutoLaunch: value ? s.highPriorityAutoLaunch : false,
             ),
           ),
+    );
+  }
+}
+
+class _FullTunnelRow extends ConsumerWidget {
+  const _FullTunnelRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final value = ref.watch(
+      patchClashConfigProvider.select((s) => s.tun.enable),
+    );
+    return _SwitchRow(
+      icon: Symbols.lan,
+      title: l.tenvpnFullTunnel,
+      subtitle: l.tenvpnFullTunnelDesc,
+      value: value,
+      onChanged: (value) => ref
+          .read(patchClashConfigProvider.notifier)
+          .update((s) => s.copyWith.tun(enable: value)),
     );
   }
 }
