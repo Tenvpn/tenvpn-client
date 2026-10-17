@@ -158,6 +158,11 @@ class App {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openAppSettings');
   }
+
+  Future<bool?> openVpnSettings() async {
+    if (!Platform.isAndroid) return false;
+    return methodChannel.invokeMethod<bool>('openVpnSettings');
+  }
 }
 
 final app = system.isAndroid ? App() : null;

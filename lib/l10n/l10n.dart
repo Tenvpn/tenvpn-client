@@ -1315,10 +1315,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Configure external access to the Mihomo core`
+  /// `Configure external access to the core`
   String get externalControllerDesc {
     return Intl.message(
-      'Configure external access to the Mihomo core',
+      'Configure external access to the core',
       name: 'externalControllerDesc',
       desc: '',
       args: [],
@@ -7208,6 +7208,674 @@ class AppLocalizations {
       desc: '',
       args: [],
     );
+  }
+
+  /// `Connect`
+  String get tenvpnConnect {
+    return Intl.message('Connect', name: 'tenvpnConnect', desc: '', args: []);
+  }
+
+  /// `Disconnect`
+  String get tenvpnDisconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'tenvpnDisconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting`
+  String get tenvpnStatusConnecting {
+    return Intl.message(
+      'Connecting',
+      name: 'tenvpnStatusConnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No connection`
+  String get tenvpnStatusError {
+    return Intl.message(
+      'No connection',
+      name: 'tenvpnStatusError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tap to connect`
+  String get tenvpnHintOff {
+    return Intl.message(
+      'Tap to connect',
+      name: 'tenvpnHintOff',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connecting…`
+  String get tenvpnHintConnecting {
+    return Intl.message(
+      'Connecting…',
+      name: 'tenvpnHintConnecting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The server is not responding. Pick another one or wait a minute`
+  String get tenvpnHintError {
+    return Intl.message(
+      'The server is not responding. Pick another one or wait a minute',
+      name: 'tenvpnHintError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your IP: {country}`
+  String tenvpnYourIp(Object country) {
+    return Intl.message(
+      'Your IP: $country',
+      name: 'tenvpnYourIp',
+      desc: '',
+      args: [country],
+    );
+  }
+
+  /// `Server`
+  String get tenvpnServer {
+    return Intl.message('Server', name: 'tenvpnServer', desc: '', args: []);
+  }
+
+  /// `Auto`
+  String get tenvpnAuto {
+    return Intl.message('Auto', name: 'tenvpnAuto', desc: '', args: []);
+  }
+
+  /// `The fastest server`
+  String get tenvpnAutoDesc {
+    return Intl.message(
+      'The fastest server',
+      name: 'tenvpnAutoDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto · {server}`
+  String tenvpnAutoNow(Object server) {
+    return Intl.message(
+      'Auto · $server',
+      name: 'tenvpnAutoNow',
+      desc: '',
+      args: [server],
+    );
+  }
+
+  /// `Expires: {date}`
+  String tenvpnExpires(Object date) {
+    return Intl.message(
+      'Expires: $date',
+      name: 'tenvpnExpires',
+      desc: '',
+      args: [date],
+    );
+  }
+
+  /// `Expires: —`
+  String get tenvpnExpiresUnknown {
+    return Intl.message(
+      'Expires: —',
+      name: 'tenvpnExpiresUnknown',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, =0{0 days left} =1{1 day left} other{{count} days left}}`
+  String tenvpnDaysLeft(num count) {
+    return Intl.plural(
+      count,
+      zero: '0 days left',
+      one: '1 day left',
+      other: '$count days left',
+      name: 'tenvpnDaysLeft',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Subscription has ended`
+  String get tenvpnExpired {
+    return Intl.message(
+      'Subscription has ended',
+      name: 'tenvpnExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Servers`
+  String get tenvpnServers {
+    return Intl.message('Servers', name: 'tenvpnServers', desc: '', args: []);
+  }
+
+  /// `All servers`
+  String get tenvpnSectionMain {
+    return Intl.message(
+      'All servers',
+      name: 'tenvpnSectionMain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `For allowlisted networks`
+  String get tenvpnSectionMobile {
+    return Intl.message(
+      'For allowlisted networks',
+      name: 'tenvpnSectionMobile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `When mobile internet opens only approved sites`
+  String get tenvpnSectionMobileDesc {
+    return Intl.message(
+      'When mobile internet opens only approved sites',
+      name: 'tenvpnSectionMobileDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Backup connection`
+  String get tenvpnSectionReserve {
+    return Intl.message(
+      'Backup connection',
+      name: 'tenvpnSectionReserve',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `If the others will not connect`
+  String get tenvpnSectionReserveDesc {
+    return Intl.message(
+      'If the others will not connect',
+      name: 'tenvpnSectionReserveDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Mobile`
+  String get tenvpnTagMobile {
+    return Intl.message('Mobile', name: 'tenvpnTagMobile', desc: '', args: []);
+  }
+
+  /// `Backup`
+  String get tenvpnTagReserve {
+    return Intl.message('Backup', name: 'tenvpnTagReserve', desc: '', args: []);
+  }
+
+  /// `Ping`
+  String get tenvpnCheckSpeed {
+    return Intl.message('Ping', name: 'tenvpnCheckSpeed', desc: '', args: []);
+  }
+
+  /// `no reply`
+  String get tenvpnNoReply {
+    return Intl.message('no reply', name: 'tenvpnNoReply', desc: '', args: []);
+  }
+
+  /// `Settings`
+  String get tenvpnSettings {
+    return Intl.message('Settings', name: 'tenvpnSettings', desc: '', args: []);
+  }
+
+  /// `Connection`
+  String get tenvpnSectionConnection {
+    return Intl.message(
+      'Connection',
+      name: 'tenvpnSectionConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect on launch`
+  String get tenvpnAutoConnect {
+    return Intl.message(
+      'Connect on launch',
+      name: 'tenvpnAutoConnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `VPN turns on when you open the app`
+  String get tenvpnAutoConnectDesc {
+    return Intl.message(
+      'VPN turns on when you open the app',
+      name: 'tenvpnAutoConnectDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start with the system`
+  String get tenvpnAutoStart {
+    return Intl.message(
+      'Start with the system',
+      name: 'tenvpnAutoStart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Launch TENVPN when the computer starts`
+  String get tenvpnAutoStartDesc {
+    return Intl.message(
+      'Launch TENVPN when the computer starts',
+      name: 'tenvpnAutoStartDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Always-on VPN`
+  String get tenvpnAlwaysOn {
+    return Intl.message(
+      'Always-on VPN',
+      name: 'tenvpnAlwaysOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keeps VPN on after a reboot. Turned on in Android settings: TENVPN → Always-on VPN`
+  String get tenvpnAlwaysOnDesc {
+    return Intl.message(
+      'Keeps VPN on after a reboot. Turned on in Android settings: TENVPN → Always-on VPN',
+      name: 'tenvpnAlwaysOnDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apps without VPN`
+  String get tenvpnSplitTunnel {
+    return Intl.message(
+      'Apps without VPN',
+      name: 'tenvpnSplitTunnel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose which apps go online directly`
+  String get tenvpnSplitTunnelDesc {
+    return Intl.message(
+      'Choose which apps go online directly',
+      name: 'tenvpnSplitTunnelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protocol`
+  String get tenvpnProtocol {
+    return Intl.message('Protocol', name: 'tenvpnProtocol', desc: '', args: []);
+  }
+
+  /// `Auto`
+  String get tenvpnProtocolAuto {
+    return Intl.message('Auto', name: 'tenvpnProtocolAuto', desc: '', args: []);
+  }
+
+  /// `The fastest available`
+  String get tenvpnProtocolAutoDesc {
+    return Intl.message(
+      'The fastest available',
+      name: 'tenvpnProtocolAutoDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AmneziaWG first`
+  String get tenvpnProtocolAwg {
+    return Intl.message(
+      'AmneziaWG first',
+      name: 'tenvpnProtocolAwg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AmneziaWG first, the others when it is down`
+  String get tenvpnProtocolAwgDesc {
+    return Intl.message(
+      'AmneziaWG first, the others when it is down',
+      name: 'tenvpnProtocolAwgDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription`
+  String get tenvpnSectionSubscription {
+    return Intl.message(
+      'Subscription',
+      name: 'tenvpnSectionSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Refresh subscription`
+  String get tenvpnUpdateSubscription {
+    return Intl.message(
+      'Refresh subscription',
+      name: 'tenvpnUpdateSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Updated {time}`
+  String tenvpnUpdatedAt(Object time) {
+    return Intl.message(
+      'Updated $time',
+      name: 'tenvpnUpdatedAt',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Use another link`
+  String get tenvpnChangeLink {
+    return Intl.message(
+      'Use another link',
+      name: 'tenvpnChangeLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Appearance`
+  String get tenvpnSectionLook {
+    return Intl.message(
+      'Appearance',
+      name: 'tenvpnSectionLook',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Theme`
+  String get tenvpnTheme {
+    return Intl.message('Theme', name: 'tenvpnTheme', desc: '', args: []);
+  }
+
+  /// `Dark`
+  String get tenvpnThemeDark {
+    return Intl.message('Dark', name: 'tenvpnThemeDark', desc: '', args: []);
+  }
+
+  /// `Light`
+  String get tenvpnThemeLight {
+    return Intl.message('Light', name: 'tenvpnThemeLight', desc: '', args: []);
+  }
+
+  /// `System`
+  String get tenvpnThemeSystem {
+    return Intl.message(
+      'System',
+      name: 'tenvpnThemeSystem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Advanced`
+  String get tenvpnAdvanced {
+    return Intl.message('Advanced', name: 'tenvpnAdvanced', desc: '', args: []);
+  }
+
+  /// `Profiles, rules, logs and fine-tuning`
+  String get tenvpnAdvancedDesc {
+    return Intl.message(
+      'Profiles, rules, logs and fine-tuning',
+      name: 'tenvpnAdvancedDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `About`
+  String get tenvpnAbout {
+    return Intl.message('About', name: 'tenvpnAbout', desc: '', args: []);
+  }
+
+  /// `Let's connect in a minute`
+  String get tenvpnWelcomeTitle {
+    return Intl.message(
+      'Let\'s connect in a minute',
+      name: 'tenvpnWelcomeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.`
+  String get tenvpnWelcomeText {
+    return Intl.message(
+      'Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.',
+      name: 'tenvpnWelcomeText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription link`
+  String get tenvpnLinkLabel {
+    return Intl.message(
+      'Subscription link',
+      name: 'tenvpnLinkLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste`
+  String get tenvpnPaste {
+    return Intl.message('Paste', name: 'tenvpnPaste', desc: '', args: []);
+  }
+
+  /// `Add`
+  String get tenvpnAdd {
+    return Intl.message('Add', name: 'tenvpnAdd', desc: '', args: []);
+  }
+
+  /// `Open the bot`
+  String get tenvpnOpenBot {
+    return Intl.message(
+      'Open the bot',
+      name: 'tenvpnOpenBot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No link yet? The TENVPN bot gives you one.`
+  String get tenvpnNoLinkYet {
+    return Intl.message(
+      'No link yet? The TENVPN bot gives you one.',
+      name: 'tenvpnNoLinkYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This does not look like a subscription link. Copy it from the bot in full.`
+  String get tenvpnBadLink {
+    return Intl.message(
+      'This does not look like a subscription link. Copy it from the bot in full.',
+      name: 'tenvpnBadLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add subscription?`
+  String get tenvpnImportTitle {
+    return Intl.message(
+      'Add subscription?',
+      name: 'tenvpnImportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The link points to {host}. Add it to TENVPN?`
+  String tenvpnImportText(Object host) {
+    return Intl.message(
+      'The link points to $host. Add it to TENVPN?',
+      name: 'tenvpnImportText',
+      desc: '',
+      args: [host],
+    );
+  }
+
+  /// `Version {version}`
+  String tenvpnVersion(Object version) {
+    return Intl.message(
+      'Version $version',
+      name: 'tenvpnVersion',
+      desc: '',
+      args: [version],
+    );
+  }
+
+  /// `Open-source base`
+  String get tenvpnUpstream {
+    return Intl.message(
+      'Open-source base',
+      name: 'tenvpnUpstream',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now: {server}`
+  String tenvpnNow(Object server) {
+    return Intl.message(
+      'Now: $server',
+      name: 'tenvpnNow',
+      desc: '',
+      args: [server],
+    );
+  }
+
+  /// `Language`
+  String get tenvpnLanguage {
+    return Intl.message('Language', name: 'tenvpnLanguage', desc: '', args: []);
+  }
+
+  /// `Turn on`
+  String get tenvpnPowerOn {
+    return Intl.message('Turn on', name: 'tenvpnPowerOn', desc: '', args: []);
+  }
+
+  /// `On`
+  String get tenvpnPowerOnState {
+    return Intl.message('On', name: 'tenvpnPowerOnState', desc: '', args: []);
+  }
+
+  /// `{value} ms`
+  String tenvpnMs(Object value) {
+    return Intl.message('$value ms', name: 'tenvpnMs', desc: '', args: [value]);
+  }
+
+  /// `Connected`
+  String get tenvpnHintOn {
+    return Intl.message('Connected', name: 'tenvpnHintOn', desc: '', args: []);
+  }
+
+  /// `Could not download the subscription. Check your internet and try again.`
+  String get tenvpnImportOffline {
+    return Intl.message(
+      'Could not download the subscription. Check your internet and try again.',
+      name: 'tenvpnImportOffline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This link does not work. Copy it from the bot again.`
+  String get tenvpnImportDeadLink {
+    return Intl.message(
+      'This link does not work. Copy it from the bot again.',
+      name: 'tenvpnImportDeadLink',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server list`
+  String get tenvpnListStyle {
+    return Intl.message(
+      'Server list',
+      name: 'tenvpnListStyle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Compact`
+  String get tenvpnListCompact {
+    return Intl.message(
+      'Compact',
+      name: 'tenvpnListCompact',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detailed`
+  String get tenvpnListDetailed {
+    return Intl.message(
+      'Detailed',
+      name: 'tenvpnListDetailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sorting`
+  String get tenvpnSort {
+    return Intl.message('Sorting', name: 'tenvpnSort', desc: '', args: []);
+  }
+
+  /// `As in subscription`
+  String get tenvpnSortSubscription {
+    return Intl.message(
+      'As in subscription',
+      name: 'tenvpnSortSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `By ping`
+  String get tenvpnSortPing {
+    return Intl.message('By ping', name: 'tenvpnSortPing', desc: '', args: []);
   }
 }
 

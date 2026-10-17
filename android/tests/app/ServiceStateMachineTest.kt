@@ -184,6 +184,8 @@ class ServiceStateMachineTest {
         val params = ServiceStateMachine.notificationParams(
             SharedState(
                 currentProfileName = "Work",
+                stopText = "Стоп",
+                connectedText = "Включено",
                 onlyStatisticsProxy = true,
                 networkSpeedNotification = true,
             ),
@@ -191,7 +193,9 @@ class ServiceStateMachineTest {
 
         assertEquals(
             NotificationParams(
-                title = "Work",
+                title = "TENVPN",
+                stopText = "Стоп",
+                connectedText = "Включено",
                 onlyStatisticsProxy = true,
                 networkSpeedNotification = true,
             ),
@@ -621,7 +625,7 @@ class ServiceStateMachineTest {
         assertEquals(
             listOf(
                 NotificationParams(
-                    title = "Work",
+                    title = "TENVPN",
                     onlyStatisticsProxy = true,
                     networkSpeedNotification = true,
                 ),

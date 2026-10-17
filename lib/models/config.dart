@@ -96,8 +96,15 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool silentLaunch,
     @Default(false) bool autoRun,
     @Default(false) bool openLogs,
-    @Default(false) bool closeConnections,
+    @Default(true) bool closeConnections,
     @Default(true) bool promptCloseConnections,
+    @Default(false) bool awgPriority,
+    @Default(ServerListStyle.compact)
+    @JsonKey(unknownEnumValue: ServerListStyle.compact)
+    ServerListStyle serverListStyle,
+    @Default(ServerSort.subscription)
+    @JsonKey(unknownEnumValue: ServerSort.subscription)
+    ServerSort serverSort,
     @Default(defaultTestUrl) String testUrl,
     @Default(true) bool isAnimateToPage,
     @Default(true) bool isSwipeToPage,
@@ -302,8 +309,8 @@ abstract class ThemeProps with _$ThemeProps {
   const factory ThemeProps({
     int? primaryColor,
     @Default(defaultPrimaryColors) List<int> primaryColors,
-    @Default(ThemeMode.system)
-    @JsonKey(unknownEnumValue: ThemeMode.system)
+    @Default(ThemeMode.dark)
+    @JsonKey(unknownEnumValue: ThemeMode.dark)
     ThemeMode themeMode,
     @Default(DynamicSchemeVariant.content)
     @JsonKey(unknownEnumValue: DynamicSchemeVariant.content)

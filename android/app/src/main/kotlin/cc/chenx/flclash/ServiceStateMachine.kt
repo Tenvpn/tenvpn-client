@@ -361,7 +361,9 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
         )
 
         fun notificationParams(state: SharedState): NotificationParams = NotificationParams(
-            title = state.currentProfileName,
+            title = "TENVPN",
+            stopText = state.stopText,
+            connectedText = state.connectedText,
             onlyStatisticsProxy = state.onlyStatisticsProxy,
             showStopAction = state.showStopAction,
             networkSpeedNotification = state.networkSpeedNotification,

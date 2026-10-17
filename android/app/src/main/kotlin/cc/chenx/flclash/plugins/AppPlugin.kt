@@ -187,6 +187,10 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             "openAppSettings" -> {
                 result.success(openAppSettings())
             }
+
+            "openVpnSettings" -> {
+                result.success(openVpnSettings())
+            }
             else -> {
                 result.notImplemented()
             }
@@ -257,6 +261,16 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 data = "package:${GlobalState.application.packageName}".toUri()
             }
             activity.startActivity(intent)
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    private fun openVpnSettings(): Boolean {
+        val activity = activity ?: return false
+        return try {
+            activity.startActivity(Intent(Settings.ACTION_VPN_SETTINGS))
             true
         } catch (_: Exception) {
             false

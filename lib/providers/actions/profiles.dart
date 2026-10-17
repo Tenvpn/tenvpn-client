@@ -140,6 +140,46 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
+  Future<String?> importSubscription(
+    String url, {
+    AwgSource? awg,
+    bool replace = false,
+  }) async {
+    final profile = Profile.normal(url: url);
+    final Profile imported;
+    try {
+      if (awg != null) {
+        await tenvpnConfig.setAwgSource(profile.id, awg);
+      }
+      imported = await profile.update(prepare: prepareProfileConfig);
+    } catch (error, stackTrace) {
+      commonPrint.log(
+        'importSubscription ===> ${compactError(error)}, $stackTrace',
+        logLevel: LogLevel.warning,
+      );
+      await tenvpnConfig.forget(profile.id);
+      return importErrorMessage(error, currentAppLocalizations);
+    }
+    final previous = ref
+        .read(profilesProvider)
+        .map((item) => item.id)
+        .where((id) => id != imported.id)
+        .toList();
+    ref.read(profilesProvider.notifier).put(imported);
+    if (replace || ref.read(currentProfileIdProvider) == null) {
+      ref.read(currentProfileIdProvider.notifier).value = imported.id;
+    }
+    if (replace) {
+      for (final id in previous) {
+        await ref.read(profilesProvider.notifier).del(id);
+        await clearEffect(id);
+      }
+      // Drops the "(1)" the label got while the old profile held the title.
+      ref.read(profilesProvider.notifier).put(imported);
+    }
+    return null;
+  }
+
   void setProfileAndAutoApply(Profile profile) {
     ref.read(profilesProvider.notifier).put(profile);
     if (profile.id == ref.read(currentProfileIdProvider)) {

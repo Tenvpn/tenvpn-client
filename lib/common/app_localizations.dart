@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -78,6 +80,10 @@ String userFacingErrorMessage(Object error, AppLocalizations appLocalizations) {
       };
 }
 
+/// TENVPN speaks Russian unless the user picks another language, whatever
+/// the phone's system language is.
+const appDefaultLocale = Locale('ru');
+
 Locale? getLocaleForString(String? localString) {
   if (localString == null) return null;
   final localSplit = localString.split('_');
@@ -95,4 +101,16 @@ Locale? getLocaleForString(String? localString) {
     );
   }
   return null;
+}
+
+String importErrorMessage(Object error, AppLocalizations appLocalizations) {
+  if (error is DioException && error.type == DioExceptionType.badResponse) {
+    return appLocalizations.tenvpnImportDeadLink;
+  }
+  if (error is DioException ||
+      error is TimeoutException ||
+      error is SocketException) {
+    return appLocalizations.tenvpnImportOffline;
+  }
+  return userFacingErrorMessage(error, appLocalizations);
 }

@@ -180,6 +180,7 @@ class ProxiesAction extends _$ProxiesAction {
   Future<void> changeProxy({
     required String groupName,
     required String proxyName,
+    bool? closeConnections,
   }) async {
     final appSetting = ref.read(appSettingProvider);
     final currentProxyName = ref
@@ -187,7 +188,8 @@ class ProxiesAction extends _$ProxiesAction {
         .getGroup(groupName)
         ?.realNow;
     final isSameProxy = proxyName.isNotEmpty && currentProxyName == proxyName;
-    final closeConnections = appSetting.closeConnections && !isSameProxy;
+    final shouldClose =
+        (closeConnections ?? appSetting.closeConnections) && !isSameProxy;
     final params = ChangeProxyParams(
       groupName: groupName,
       proxyName: proxyName,
@@ -198,7 +200,7 @@ class ProxiesAction extends _$ProxiesAction {
         _currentSelectedName(groupName);
     profilesAction.updateCurrentSelectedMap(groupName, proxyName);
     try {
-      await _core.changeProxy(params, closeConnections: closeConnections);
+      await _core.changeProxy(params, closeConnections: shouldClose);
     } catch (error) {
       commonPrint.log(
         'changeProxy($groupName -> $proxyName) failed: $error',
@@ -211,12 +213,27 @@ class ProxiesAction extends _$ProxiesAction {
       );
       return;
     }
-    if (!isSameProxy &&
-        !closeConnections &&
-        appSetting.promptCloseConnections) {
+    if (!isSameProxy && !shouldClose && appSetting.promptCloseConnections) {
       _showCloseConnectionsSnackBar(params);
     }
     ref.read(checkIpNumProvider.notifier).add();
+  }
+
+  /// `null` means «Авто»; connections always close, or the old exit sticks.
+  Future<void> selectTenvpnServer(String? serverName) async {
+    if (serverName != null) {
+      await changeProxy(
+        groupName: manualGroupName,
+        proxyName: serverName,
+        closeConnections: true,
+      );
+    }
+    await changeProxy(
+      groupName: mainGroupName,
+      proxyName: serverName == null ? autoGroupName : manualGroupName,
+      closeConnections: true,
+    );
+    await updateGroups();
   }
 
   void _showCloseConnectionsSnackBar(ChangeProxyParams params) {

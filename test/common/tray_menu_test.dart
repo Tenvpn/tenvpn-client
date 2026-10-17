@@ -36,6 +36,7 @@ class _TrayProxiesAction extends ProxiesAction {
   Future<void> changeProxy({
     required String groupName,
     required String proxyName,
+    bool? closeConnections,
   }) async {
     selections.add((groupName: groupName, proxyName: proxyName));
   }

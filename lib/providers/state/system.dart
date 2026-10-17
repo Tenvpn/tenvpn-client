@@ -204,6 +204,7 @@ SharedState sharedState(Ref ref) {
     onlyStatisticsProxy: onlyStatisticsProxy,
     showStopAction: appSetting.showStopAction,
     stopText: currentAppLocalizations.stop,
+    connectedText: currentAppLocalizations.tenvpnPowerOnState,
     networkSpeedNotification: vpnSetting.networkSpeedNotification,
     collapseQuickSettingsPanel: appSetting.collapseQuickSettingsPanel,
     excludeSSIDs: ref.watch(excludeSSIDsProvider),

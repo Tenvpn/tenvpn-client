@@ -21,8 +21,23 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
       silentLaunch: json['silentLaunch'] as bool? ?? false,
       autoRun: json['autoRun'] as bool? ?? false,
       openLogs: json['openLogs'] as bool? ?? false,
-      closeConnections: json['closeConnections'] as bool? ?? false,
+      closeConnections: json['closeConnections'] as bool? ?? true,
       promptCloseConnections: json['promptCloseConnections'] as bool? ?? true,
+      awgPriority: json['awgPriority'] as bool? ?? false,
+      serverListStyle:
+          $enumDecodeNullable(
+            _$ServerListStyleEnumMap,
+            json['serverListStyle'],
+            unknownValue: ServerListStyle.compact,
+          ) ??
+          ServerListStyle.compact,
+      serverSort:
+          $enumDecodeNullable(
+            _$ServerSortEnumMap,
+            json['serverSort'],
+            unknownValue: ServerSort.subscription,
+          ) ??
+          ServerSort.subscription,
       testUrl: json['testUrl'] as String? ?? defaultTestUrl,
       isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
       isSwipeToPage: json['isSwipeToPage'] as bool? ?? true,
@@ -86,6 +101,9 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'openLogs': instance.openLogs,
       'closeConnections': instance.closeConnections,
       'promptCloseConnections': instance.promptCloseConnections,
+      'awgPriority': instance.awgPriority,
+      'serverListStyle': _$ServerListStyleEnumMap[instance.serverListStyle]!,
+      'serverSort': _$ServerSortEnumMap[instance.serverSort]!,
       'testUrl': instance.testUrl,
       'isAnimateToPage': instance.isAnimateToPage,
       'isSwipeToPage': instance.isSwipeToPage,
@@ -109,6 +127,16 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'editorLineHeight': _$EditorLineHeightEnumMap[instance.editorLineHeight]!,
       'foregroundTickerIdleInterval': instance.foregroundTickerIdleInterval,
     };
+
+const _$ServerListStyleEnumMap = {
+  ServerListStyle.compact: 'compact',
+  ServerListStyle.detailed: 'detailed',
+};
+
+const _$ServerSortEnumMap = {
+  ServerSort.subscription: 'subscription',
+  ServerSort.ping: 'ping',
+};
 
 const _$RestoreStrategyEnumMap = {
   RestoreStrategy.compatible: 'compatible',
@@ -430,9 +458,9 @@ _ThemeProps _$ThemePropsFromJson(Map<String, dynamic> json) => _ThemeProps(
       $enumDecodeNullable(
         _$ThemeModeEnumMap,
         json['themeMode'],
-        unknownValue: ThemeMode.system,
+        unknownValue: ThemeMode.dark,
       ) ??
-      ThemeMode.system,
+      ThemeMode.dark,
   schemeVariant:
       $enumDecodeNullable(
         _$DynamicSchemeVariantEnumMap,

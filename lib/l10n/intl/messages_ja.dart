@@ -84,14 +84,33 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "${count} 件選択中";
 
-  static String m31(interval, idleInterval) =>
+  static String m31(server) => "Auto · ${server}";
+
+  static String m32(count) =>
+      "${Intl.plural(count, zero: '0 days left', one: '1 day left', other: '${count} days left')}";
+
+  static String m33(date) => "Expires: ${date}";
+
+  static String m34(host) => "The link points to ${host}. Add it to TENVPN?";
+
+  static String m35(value) => "${value} ms";
+
+  static String m36(server) => "Now: ${server}";
+
+  static String m37(time) => "Updated ${time}";
+
+  static String m38(version) => "Version ${version}";
+
+  static String m39(country) => "Your IP: ${country}";
+
+  static String m40(interval, idleInterval) =>
       "${interval} · アイドル ${idleInterval}";
 
-  static String m32(interval) => "${interval} · アイドル無効";
+  static String m41(interval) => "${interval} · アイドル無効";
 
-  static String m33(label) => "${label} は URL である必要があります";
+  static String m42(label) => "${label} は URL である必要があります";
 
-  static String m34(count) => "${count} 年前";
+  static String m43(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1303,6 +1322,149 @@ class MessageLookup extends MessageLookupByLibrary {
     "tapToAuthorize": MessageLookupByLibrary.simpleMessage("タップして許可"),
     "tcpConcurrent": MessageLookupByLibrary.simpleMessage("TCP 並列処理"),
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage("TCP 並列処理を許可"),
+    "tenvpnAbout": MessageLookupByLibrary.simpleMessage("About"),
+    "tenvpnAdd": MessageLookupByLibrary.simpleMessage("Add"),
+    "tenvpnAdvanced": MessageLookupByLibrary.simpleMessage("Advanced"),
+    "tenvpnAdvancedDesc": MessageLookupByLibrary.simpleMessage(
+      "Profiles, rules, logs and fine-tuning",
+    ),
+    "tenvpnAlwaysOn": MessageLookupByLibrary.simpleMessage("Always-on VPN"),
+    "tenvpnAlwaysOnDesc": MessageLookupByLibrary.simpleMessage(
+      "Keeps VPN on after a reboot. Turned on in Android settings: TENVPN → Always-on VPN",
+    ),
+    "tenvpnAuto": MessageLookupByLibrary.simpleMessage("Auto"),
+    "tenvpnAutoConnect": MessageLookupByLibrary.simpleMessage(
+      "Connect on launch",
+    ),
+    "tenvpnAutoConnectDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN turns on when you open the app",
+    ),
+    "tenvpnAutoDesc": MessageLookupByLibrary.simpleMessage(
+      "The fastest server",
+    ),
+    "tenvpnAutoNow": m31,
+    "tenvpnAutoStart": MessageLookupByLibrary.simpleMessage(
+      "Start with the system",
+    ),
+    "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
+      "Launch TENVPN when the computer starts",
+    ),
+    "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
+      "This does not look like a subscription link. Copy it from the bot in full.",
+    ),
+    "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
+      "Use another link",
+    ),
+    "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
+    "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
+    "tenvpnDaysLeft": m32,
+    "tenvpnDisconnect": MessageLookupByLibrary.simpleMessage("Disconnect"),
+    "tenvpnExpired": MessageLookupByLibrary.simpleMessage(
+      "Subscription has ended",
+    ),
+    "tenvpnExpires": m33,
+    "tenvpnExpiresUnknown": MessageLookupByLibrary.simpleMessage("Expires: —"),
+    "tenvpnHintConnecting": MessageLookupByLibrary.simpleMessage("Connecting…"),
+    "tenvpnHintError": MessageLookupByLibrary.simpleMessage(
+      "The server is not responding. Pick another one or wait a minute",
+    ),
+    "tenvpnHintOff": MessageLookupByLibrary.simpleMessage("Tap to connect"),
+    "tenvpnHintOn": MessageLookupByLibrary.simpleMessage("Connected"),
+    "tenvpnImportDeadLink": MessageLookupByLibrary.simpleMessage(
+      "This link does not work. Copy it from the bot again.",
+    ),
+    "tenvpnImportOffline": MessageLookupByLibrary.simpleMessage(
+      "Could not download the subscription. Check your internet and try again.",
+    ),
+    "tenvpnImportText": m34,
+    "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
+      "Add subscription?",
+    ),
+    "tenvpnLanguage": MessageLookupByLibrary.simpleMessage("Language"),
+    "tenvpnLinkLabel": MessageLookupByLibrary.simpleMessage(
+      "Subscription link",
+    ),
+    "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Compact"),
+    "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Detailed"),
+    "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Server list"),
+    "tenvpnMs": m35,
+    "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
+      "No link yet? The TENVPN bot gives you one.",
+    ),
+    "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("no reply"),
+    "tenvpnNow": m36,
+    "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
+    "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),
+    "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Turn on"),
+    "tenvpnPowerOnState": MessageLookupByLibrary.simpleMessage("On"),
+    "tenvpnProtocol": MessageLookupByLibrary.simpleMessage("Protocol"),
+    "tenvpnProtocolAuto": MessageLookupByLibrary.simpleMessage("Auto"),
+    "tenvpnProtocolAutoDesc": MessageLookupByLibrary.simpleMessage(
+      "The fastest available",
+    ),
+    "tenvpnProtocolAwg": MessageLookupByLibrary.simpleMessage(
+      "AmneziaWG first",
+    ),
+    "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
+      "AmneziaWG first, the others when it is down",
+    ),
+    "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
+      "Connection",
+    ),
+    "tenvpnSectionLook": MessageLookupByLibrary.simpleMessage("Appearance"),
+    "tenvpnSectionMain": MessageLookupByLibrary.simpleMessage("All servers"),
+    "tenvpnSectionMobile": MessageLookupByLibrary.simpleMessage(
+      "For allowlisted networks",
+    ),
+    "tenvpnSectionMobileDesc": MessageLookupByLibrary.simpleMessage(
+      "When mobile internet opens only approved sites",
+    ),
+    "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
+      "Backup connection",
+    ),
+    "tenvpnSectionReserveDesc": MessageLookupByLibrary.simpleMessage(
+      "If the others will not connect",
+    ),
+    "tenvpnSectionSubscription": MessageLookupByLibrary.simpleMessage(
+      "Subscription",
+    ),
+    "tenvpnServer": MessageLookupByLibrary.simpleMessage("Server"),
+    "tenvpnServers": MessageLookupByLibrary.simpleMessage("Servers"),
+    "tenvpnSettings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "tenvpnSort": MessageLookupByLibrary.simpleMessage("Sorting"),
+    "tenvpnSortPing": MessageLookupByLibrary.simpleMessage("By ping"),
+    "tenvpnSortSubscription": MessageLookupByLibrary.simpleMessage(
+      "As in subscription",
+    ),
+    "tenvpnSplitTunnel": MessageLookupByLibrary.simpleMessage(
+      "Apps without VPN",
+    ),
+    "tenvpnSplitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Choose which apps go online directly",
+    ),
+    "tenvpnStatusConnecting": MessageLookupByLibrary.simpleMessage(
+      "Connecting",
+    ),
+    "tenvpnStatusError": MessageLookupByLibrary.simpleMessage("No connection"),
+    "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Mobile"),
+    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Backup"),
+    "tenvpnTheme": MessageLookupByLibrary.simpleMessage("Theme"),
+    "tenvpnThemeDark": MessageLookupByLibrary.simpleMessage("Dark"),
+    "tenvpnThemeLight": MessageLookupByLibrary.simpleMessage("Light"),
+    "tenvpnThemeSystem": MessageLookupByLibrary.simpleMessage("System"),
+    "tenvpnUpdateSubscription": MessageLookupByLibrary.simpleMessage(
+      "Refresh subscription",
+    ),
+    "tenvpnUpdatedAt": m37,
+    "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
+    "tenvpnVersion": m38,
+    "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
+      "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
+    ),
+    "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Let\'s connect in a minute",
+    ),
+    "tenvpnYourIp": m39,
     "testInterval": MessageLookupByLibrary.simpleMessage("テスト間隔"),
     "testUrl": MessageLookupByLibrary.simpleMessage("URL テスト"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("使用時にテスト"),
@@ -1341,8 +1503,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "アプリウィンドウがフォーカスを失ったときにアイドル更新間隔を使用",
     ),
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage("UI 情報の更新間隔"),
-    "uiUpdateIntervalDesc": m31,
-    "uiUpdateIntervalIdleDisabledDesc": m32,
+    "uiUpdateIntervalDesc": m40,
+    "uiUpdateIntervalIdleDisabledDesc": m41,
     "unauthorized": MessageLookupByLibrary.simpleMessage("未許可"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("統一遅延"),
@@ -1364,7 +1526,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("アップロード通信量"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL 経由でプロファイルを取得"),
-    "urlTip": m33,
+    "urlTip": m42,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hostsを使用"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "上流 DNS へ問い合わせる前に、設定内の hosts エントリを確認します",
@@ -1390,7 +1552,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("システムに書き込む"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("システムクロックも設定します"),
-    "yearsAgo": m34,
+    "yearsAgo": m43,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };
