@@ -69,6 +69,7 @@
                 <data android:scheme="mihomo" />
 
                 <data android:host="install-config" />
+                <data android:host="import" />
             </intent-filter>
         </activity>
 

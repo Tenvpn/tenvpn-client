@@ -120,6 +120,7 @@ flutter:
     - assets/images/icon/
     - assets/images/networking/
     - assets/images/mascot/
+    - docs/privacy.md
   fonts:
     - family: Geologica
       fonts:

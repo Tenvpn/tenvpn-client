@@ -9,12 +9,14 @@ class ServerEntry {
   final String name;
   final String type;
   final String? network;
+  final String? security;
   final String? section;
 
   const ServerEntry({
     required this.name,
     required this.type,
     this.network,
+    this.security,
     this.section,
   });
 
@@ -102,6 +104,9 @@ ParsedSubscription parseSubscription(String text) {
         name: unique,
         type: type,
         network: network is String && network != 'tcp' ? network : null,
+        security: proxy['reality-opts'] is Map
+            ? 'reality'
+            : (proxy['tls'] == true ? 'tls' : null),
         section: section,
       ),
     );

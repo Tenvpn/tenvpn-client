@@ -46,14 +46,17 @@ class _FakeProxiesAction extends ProxiesAction {
 class _FakeProfilesAction extends ProfilesAction {
   String? result;
   final imported = <(String, AwgSource?, bool)>[];
+  final tokens = <String?>[];
 
   @override
   Future<String?> importSubscription(
     String url, {
     AwgSource? awg,
+    String? token,
     bool replace = false,
   }) async {
     imported.add((url, awg, replace));
+    tokens.add(token);
     return result;
   }
 }
@@ -538,9 +541,18 @@ void main() {
       await tester.pump();
       expect(container.read(appSettingProvider).serverSort, ServerSort.ping);
 
+      await tester.scrollUntilVisible(text('Refresh subscription'), -200);
       expect(text('Refresh subscription'), findsOneWidget);
       await tester.scrollUntilVisible(text('Advanced'), 200);
       expect(text('Advanced'), findsOneWidget);
+
+      await tester.scrollUntilVisible(text('Technical statistics'), 200);
+      expect(container.read(appSettingProvider).tenvpnTelemetry, isTrue);
+      await tester.tap(text('Technical statistics'));
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnTelemetry, isFalse);
+      await tester.scrollUntilVisible(text('Privacy policy'), 200);
+      expect(text('Privacy policy'), findsOneWidget);
     });
 
     _tv('advanced keeps the base client reachable', (tester) async {

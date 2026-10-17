@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 
+import 'account.dart';
 import 'awg_source.dart';
 import 'configgen/subscription.dart';
 
@@ -26,36 +27,83 @@ class AwgCache {
   };
 }
 
+class AccountCache {
+  final AccountInfo account;
+  final DateTime fetchedAt;
+
+  const AccountCache({required this.account, required this.fetchedAt});
+
+  factory AccountCache.fromJson(Map<String, dynamic> json) => AccountCache(
+    account: AccountInfo.fromJson(json['account'] as Map<String, dynamic>),
+    fetchedAt: DateTime.parse(json['fetched_at'] as String),
+  );
+
+  Map<String, dynamic> toJson() => {
+    'account': account.toJson(),
+    'fetched_at': fetchedAt.toUtc().toIso8601String(),
+  };
+
+  DateTime get expiry => account.expiry(fetchedAt.toLocal());
+}
+
 class TenvpnProfileState {
   final AwgSource? awgSource;
   final AwgCache? awgCache;
+  final String? appToken;
+  final AccountCache? account;
+  final String? expiryNoticeFor;
   final List<ServerEntry> servers;
 
   const TenvpnProfileState({
     this.awgSource,
     this.awgCache,
+    this.appToken,
+    this.account,
+    this.expiryNoticeFor,
     this.servers = const [],
   });
 
   TenvpnProfileState copyWith({
     AwgSource? Function()? awgSource,
     AwgCache? Function()? awgCache,
+    String? Function()? appToken,
+    AccountCache? Function()? account,
+    String? Function()? expiryNoticeFor,
     List<ServerEntry>? servers,
   }) => TenvpnProfileState(
     awgSource: awgSource == null ? this.awgSource : awgSource(),
     awgCache: awgCache == null ? this.awgCache : awgCache(),
+    appToken: appToken == null ? this.appToken : appToken(),
+    account: account == null ? this.account : account(),
+    expiryNoticeFor: expiryNoticeFor == null
+        ? this.expiryNoticeFor
+        : expiryNoticeFor(),
     servers: servers ?? this.servers,
   );
 
   factory TenvpnProfileState.fromJson(Map<String, dynamic> json) {
     final source = json['awg_source'];
     final cache = json['awg_cache'];
+    final token = json['app_token'];
+    final account = json['account'];
+    final notice = json['expiry_notice_for'];
     final servers = json['servers'];
+    AccountCache? accountCache;
+    if (account is Map<String, dynamic>) {
+      try {
+        accountCache = AccountCache.fromJson(account);
+      } on Object {
+        accountCache = null;
+      }
+    }
     return TenvpnProfileState(
       awgSource: source is Map<String, dynamic>
           ? AwgSource.fromJson(source)
           : null,
       awgCache: cache is Map<String, dynamic> ? AwgCache.fromJson(cache) : null,
+      appToken: token is String && token.isNotEmpty ? token : null,
+      account: accountCache,
+      expiryNoticeFor: notice is String ? notice : null,
       servers: servers is List
           ? [
               for (final item in servers.cast<Map<String, dynamic>>())
@@ -63,6 +111,7 @@ class TenvpnProfileState {
                   name: item['name'] as String,
                   type: item['type'] as String,
                   network: item['network'] as String?,
+                  security: item['security'] as String?,
                   section: item['section'] as String?,
                 ),
             ]
@@ -73,12 +122,16 @@ class TenvpnProfileState {
   Map<String, dynamic> toJson() => {
     'awg_source': ?awgSource?.toJson(),
     'awg_cache': ?awgCache?.toJson(),
+    'app_token': ?appToken,
+    'account': ?account?.toJson(),
+    'expiry_notice_for': ?expiryNoticeFor,
     'servers': [
       for (final server in servers)
         {
           'name': server.name,
           'type': server.type,
           'network': ?server.network,
+          'security': ?server.security,
           'section': ?server.section,
         },
     ],

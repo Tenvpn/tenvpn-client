@@ -233,9 +233,10 @@ int daysLeft(DateTime expiry, DateTime now) {
   return end.difference(today).inDays;
 }
 
-typedef ImportLink = ({String url, AwgSource? awg});
+typedef ImportLink = ({String url, AwgSource? awg, String? token});
 
-/// A bare https link or the bot's `tenvpn://install-config` one.
+/// A bare https link, the bot's `tenvpn://import?sub=&token=` or the older
+/// `tenvpn://install-config?url=&awg=&awg_token=`.
 ImportLink? parseImportLink(String input) {
   var text = input.trim();
   while (text.endsWith('.') || text.endsWith(',')) {
@@ -243,6 +244,17 @@ ImportLink? parseImportLink(String input) {
   }
   final uri = Uri.tryParse(text);
   if (uri == null) return null;
+  if (uri.scheme == 'tenvpn' && uri.host == 'import') {
+    final sub = uri.queryParameters['sub'];
+    final nested = sub == null ? null : parseImportLink(sub);
+    if (nested == null || nested.token != null) return null;
+    final token = uri.queryParameters['token']?.trim();
+    return (
+      url: nested.url,
+      awg: null,
+      token: token == null || token.isEmpty ? null : token,
+    );
+  }
   if (uri.scheme == 'tenvpn' || uri.scheme == 'clash') {
     final inner = uri.queryParameters['url'];
     final nested = inner == null ? null : parseImportLink(inner);
@@ -252,10 +264,10 @@ ImportLink? parseImportLink(String input) {
     final awg = awgUrl != null && awgToken != null && awgToken.isNotEmpty
         ? AwgSource(url: awgUrl, token: awgToken)
         : null;
-    return (url: nested.url, awg: awg);
+    return (url: nested.url, awg: awg, token: null);
   }
   if ((uri.scheme == 'https' || uri.scheme == 'http') && uri.host.isNotEmpty) {
-    return (url: text, awg: null);
+    return (url: text, awg: null, token: null);
   }
   return null;
 }

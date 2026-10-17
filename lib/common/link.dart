@@ -7,8 +7,7 @@ import 'print.dart';
 import 'protocol.dart';
 
 typedef InstallConfigCallBack = void Function(String url);
-typedef InstallTenvpnCallBack =
-    void Function(String url, String awgUrl, String awgToken);
+typedef InstallTenvpnCallBack = void Function(Uri link);
 
 class LinkManager {
   static LinkManager? _instance;
@@ -53,17 +52,20 @@ class LinkManager {
     InstallTenvpnCallBack? installTenvpnCallBack,
   ) {
     commonPrint.log('onAppLink: ${uri.scheme}://${uri.host}');
+    if (uri.host == 'import' && uri.scheme == 'tenvpn') {
+      installTenvpnCallBack?.call(uri);
+      return;
+    }
     if (uri.host == 'install-config') {
       final parameters = uri.queryParameters;
       final url = parameters['url'];
       if (url == null) return;
-      final awgUrl = parameters['awg'];
       final awgToken = parameters['awg_token'];
       if (installTenvpnCallBack != null &&
-          awgUrl != null &&
+          parameters['awg'] != null &&
           awgToken != null &&
           awgToken.isNotEmpty) {
-        installTenvpnCallBack(url, awgUrl, awgToken);
+        installTenvpnCallBack(uri);
       } else {
         installConfigCallBack(url);
       }

@@ -87,6 +87,24 @@ class Request {
         .timeout(const Duration(seconds: 10));
   }
 
+  Future<Response<String>> postTextAnyStatus(
+    String url, {
+    required String body,
+    Map<String, String> headers = const {},
+  }) {
+    return _clashDio
+        .post<String>(
+          url,
+          data: body,
+          options: Options(
+            responseType: ResponseType.plain,
+            headers: headers,
+            validateStatus: (_) => true,
+          ),
+        )
+        .timeout(const Duration(seconds: 10));
+  }
+
   Future<Map<String, dynamic>?> checkForUpdate() async {
     try {
       final response = await dio
