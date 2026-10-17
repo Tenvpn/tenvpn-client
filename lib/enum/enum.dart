@@ -328,6 +328,12 @@ enum FontFamily {
   const FontFamily(this.value);
 }
 
+/// Looks of the TENVPN server list; new looks are added here and picked in
+/// the settings.
+enum ServerListStyle { compact, detailed }
+
+enum ServerSort { subscription, ping }
+
 enum EditorFontSize {
   small(14),
   standard(16),

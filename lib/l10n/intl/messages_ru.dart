@@ -97,14 +97,33 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m30(count) => "Выбрано: ${count}";
 
-  static String m31(interval, idleInterval) =>
+  static String m31(server) => "Авто · ${server}";
+
+  static String m32(count) =>
+      "${Intl.plural(count, zero: 'сегодня', one: 'остался ${count} день', few: 'осталось ${count} дня', many: 'осталось ${count} дней', other: 'осталось ${count} дня')}";
+
+  static String m33(date) => "Истекает: ${date}";
+
+  static String m34(host) => "Ссылка ведёт на ${host}. Добавить её в TENVPN?";
+
+  static String m35(value) => "${value} мс";
+
+  static String m36(server) => "Сейчас: ${server}";
+
+  static String m37(time) => "Обновлена ${time}";
+
+  static String m38(version) => "Версия ${version}";
+
+  static String m39(country) => "Ваш IP: ${country}";
+
+  static String m40(interval, idleInterval) =>
       "${interval} · бездействие ${idleInterval}";
 
-  static String m32(interval) => "${interval} · бездействие отключено";
+  static String m41(interval) => "${interval} · бездействие отключено";
 
-  static String m33(label) => "Значение «${label}» должно быть URL";
+  static String m42(label) => "Значение «${label}» должно быть URL";
 
-  static String m34(count) =>
+  static String m43(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -664,7 +683,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Внешний контроллер",
     ),
     "externalControllerDesc": MessageLookupByLibrary.simpleMessage(
-      "Настройка внешнего доступа к ядру Mihomo",
+      "Настройка внешнего доступа к ядру",
     ),
     "externalFetch": MessageLookupByLibrary.simpleMessage("Внешнее получение"),
     "externalLink": MessageLookupByLibrary.simpleMessage("Внешняя ссылка"),
@@ -1660,6 +1679,153 @@ class MessageLookup extends MessageLookupByLibrary {
     "tcpConcurrentDesc": MessageLookupByLibrary.simpleMessage(
       "При включении разрешает параллельные TCP-подключения",
     ),
+    "tenvpnAbout": MessageLookupByLibrary.simpleMessage("О приложении"),
+    "tenvpnAdd": MessageLookupByLibrary.simpleMessage("Добавить"),
+    "tenvpnAdvanced": MessageLookupByLibrary.simpleMessage("Для продвинутых"),
+    "tenvpnAdvancedDesc": MessageLookupByLibrary.simpleMessage(
+      "Профили, правила, журналы и тонкие настройки",
+    ),
+    "tenvpnAlwaysOn": MessageLookupByLibrary.simpleMessage("Постоянный VPN"),
+    "tenvpnAlwaysOnDesc": MessageLookupByLibrary.simpleMessage(
+      "Включает VPN сам после перезагрузки. Настраивается в Android: TENVPN → «Постоянная VPN»",
+    ),
+    "tenvpnAuto": MessageLookupByLibrary.simpleMessage("Авто"),
+    "tenvpnAutoConnect": MessageLookupByLibrary.simpleMessage(
+      "Подключаться при запуске",
+    ),
+    "tenvpnAutoConnectDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN включится сам, когда вы откроете приложение",
+    ),
+    "tenvpnAutoDesc": MessageLookupByLibrary.simpleMessage(
+      "Самый быстрый сервер",
+    ),
+    "tenvpnAutoNow": m31,
+    "tenvpnAutoStart": MessageLookupByLibrary.simpleMessage("Автозапуск"),
+    "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
+      "Запускать TENVPN вместе с компьютером",
+    ),
+    "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
+      "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
+    ),
+    "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
+      "Вставить другую ссылку",
+    ),
+    "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Пинг"),
+    "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Подключить"),
+    "tenvpnDaysLeft": m32,
+    "tenvpnDisconnect": MessageLookupByLibrary.simpleMessage("Отключить"),
+    "tenvpnExpired": MessageLookupByLibrary.simpleMessage(
+      "Подписка закончилась",
+    ),
+    "tenvpnExpires": m33,
+    "tenvpnExpiresUnknown": MessageLookupByLibrary.simpleMessage("Истекает: —"),
+    "tenvpnHintConnecting": MessageLookupByLibrary.simpleMessage(
+      "Подключаемся…",
+    ),
+    "tenvpnHintError": MessageLookupByLibrary.simpleMessage(
+      "Сервер не отвечает. Выберите другой или подождите минуту",
+    ),
+    "tenvpnHintOff": MessageLookupByLibrary.simpleMessage(
+      "Нажмите, чтобы подключиться",
+    ),
+    "tenvpnHintOn": MessageLookupByLibrary.simpleMessage("Подключено"),
+    "tenvpnImportDeadLink": MessageLookupByLibrary.simpleMessage(
+      "Ссылка не работает. Скопируйте её из бота заново.",
+    ),
+    "tenvpnImportOffline": MessageLookupByLibrary.simpleMessage(
+      "Не удалось скачать подписку. Проверьте интернет и попробуйте ещё раз.",
+    ),
+    "tenvpnImportText": m34,
+    "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
+      "Добавить подписку?",
+    ),
+    "tenvpnLanguage": MessageLookupByLibrary.simpleMessage("Язык"),
+    "tenvpnLinkLabel": MessageLookupByLibrary.simpleMessage(
+      "Ссылка на подписку",
+    ),
+    "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Компактный"),
+    "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Подробный"),
+    "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Список серверов"),
+    "tenvpnMs": m35,
+    "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
+      "Нет ссылки? Её выдаёт бот TENVPN.",
+    ),
+    "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("нет ответа"),
+    "tenvpnNow": m36,
+    "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
+    "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),
+    "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Включить"),
+    "tenvpnPowerOnState": MessageLookupByLibrary.simpleMessage("Включено"),
+    "tenvpnProtocol": MessageLookupByLibrary.simpleMessage("Протокол"),
+    "tenvpnProtocolAuto": MessageLookupByLibrary.simpleMessage("Авто"),
+    "tenvpnProtocolAutoDesc": MessageLookupByLibrary.simpleMessage(
+      "Самый быстрый из доступных",
+    ),
+    "tenvpnProtocolAwg": MessageLookupByLibrary.simpleMessage(
+      "Сначала AmneziaWG",
+    ),
+    "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
+      "Сначала AmneziaWG, остальные — если он недоступен",
+    ),
+    "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
+      "Подключение",
+    ),
+    "tenvpnSectionLook": MessageLookupByLibrary.simpleMessage("Оформление"),
+    "tenvpnSectionMain": MessageLookupByLibrary.simpleMessage("Все серверы"),
+    "tenvpnSectionMobile": MessageLookupByLibrary.simpleMessage(
+      "Под белые списки",
+    ),
+    "tenvpnSectionMobileDesc": MessageLookupByLibrary.simpleMessage(
+      "Когда мобильный интернет открывает только разрешённые сайты",
+    ),
+    "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
+      "Запасное подключение",
+    ),
+    "tenvpnSectionReserveDesc": MessageLookupByLibrary.simpleMessage(
+      "Если остальные не подключаются",
+    ),
+    "tenvpnSectionSubscription": MessageLookupByLibrary.simpleMessage(
+      "Подписка",
+    ),
+    "tenvpnServer": MessageLookupByLibrary.simpleMessage("Сервер"),
+    "tenvpnServers": MessageLookupByLibrary.simpleMessage("Серверы"),
+    "tenvpnSettings": MessageLookupByLibrary.simpleMessage("Настройки"),
+    "tenvpnSort": MessageLookupByLibrary.simpleMessage("Сортировка"),
+    "tenvpnSortPing": MessageLookupByLibrary.simpleMessage("По пингу"),
+    "tenvpnSortSubscription": MessageLookupByLibrary.simpleMessage(
+      "Как в подписке",
+    ),
+    "tenvpnSplitTunnel": MessageLookupByLibrary.simpleMessage(
+      "Приложения без VPN",
+    ),
+    "tenvpnSplitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Выберите, какие приложения ходят в интернет напрямую",
+    ),
+    "tenvpnStatusConnecting": MessageLookupByLibrary.simpleMessage(
+      "Подключаемся",
+    ),
+    "tenvpnStatusError": MessageLookupByLibrary.simpleMessage("Нет связи"),
+    "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Мобильный"),
+    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Запасной"),
+    "tenvpnTheme": MessageLookupByLibrary.simpleMessage("Тема"),
+    "tenvpnThemeDark": MessageLookupByLibrary.simpleMessage("Тёмная"),
+    "tenvpnThemeLight": MessageLookupByLibrary.simpleMessage("Светлая"),
+    "tenvpnThemeSystem": MessageLookupByLibrary.simpleMessage("Системная"),
+    "tenvpnUpdateSubscription": MessageLookupByLibrary.simpleMessage(
+      "Обновить подписку",
+    ),
+    "tenvpnUpdatedAt": m37,
+    "tenvpnUpstream": MessageLookupByLibrary.simpleMessage(
+      "Открытая основа приложения",
+    ),
+    "tenvpnVersion": m38,
+    "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
+      "Вставьте ссылку на подписку из бота TENVPN или нажмите в боте «Открыть в приложении».",
+    ),
+    "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Подключим за минуту",
+    ),
+    "tenvpnYourIp": m39,
     "testInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал тестирования",
     ),
@@ -1712,8 +1878,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал обновления информации UI",
     ),
-    "uiUpdateIntervalDesc": m31,
-    "uiUpdateIntervalIdleDisabledDesc": m32,
+    "uiUpdateIntervalDesc": m40,
+    "uiUpdateIntervalIdleDisabledDesc": m41,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Не разрешено"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Единая задержка"),
@@ -1739,7 +1905,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("Исходящий трафик"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m33,
+    "urlTip": m42,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Проверяет записи hosts из конфигурации перед запросом к вышестоящим DNS-серверам",
@@ -1779,7 +1945,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Также устанавливать системные часы",
     ),
-    "yearsAgo": m34,
+    "yearsAgo": m43,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

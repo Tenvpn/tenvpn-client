@@ -71,7 +71,13 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    final container = ProviderContainer();
+    final container = ProviderContainer(
+      overrides: [
+        appSettingProvider.overrideWithBuild(
+          (_, _) => const AppSettingProps(closeConnections: false),
+        ),
+      ],
+    );
     addTearDown(container.dispose);
     globalState.container = container;
     container.read(viewSizeProvider.notifier).value = const Size(1400, 1400);
@@ -177,7 +183,13 @@ void main() {
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    final container = ProviderContainer();
+    final container = ProviderContainer(
+      overrides: [
+        appSettingProvider.overrideWithBuild(
+          (_, _) => const AppSettingProps(closeConnections: false),
+        ),
+      ],
+    );
     addTearDown(container.dispose);
     globalState.container = container;
     container.read(viewSizeProvider.notifier).value = const Size(1400, 1400);

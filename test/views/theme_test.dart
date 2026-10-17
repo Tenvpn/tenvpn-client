@@ -47,10 +47,10 @@ void main() {
   ThemeProps readTheme() => container.read(themeSettingProvider);
 
   group('theme mode', () {
-    testWidgets('defaults to the system theme', (tester) async {
+    testWidgets('defaults to the dark theme', (tester) async {
       await pumpThemeView(tester);
 
-      expect(readTheme().themeMode, ThemeMode.system);
+      expect(readTheme().themeMode, ThemeMode.dark);
     });
 
     testWidgets('switches to light and back to dark', (tester) async {

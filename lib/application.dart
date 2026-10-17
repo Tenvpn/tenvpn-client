@@ -14,10 +14,10 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
+import 'package:fl_clash/views/tenvpn/home.dart';
+import 'package:fl_clash/views/tenvpn/theme.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'pages/pages.dart';
 
 Widget buildManagerStack({
   required bool isDesktop,
@@ -91,10 +91,6 @@ class ApplicationState extends ConsumerState<Application> {
   late final ProfileAutoUpdater _profileAutoUpdater;
   bool _preHasVpn = false;
 
-  ColorScheme _getAppColorScheme({required Brightness brightness}) {
-    return ref.read(genColorSchemeProvider(brightness));
-  }
-
   @override
   void initState() {
     super.initState();
@@ -135,31 +131,25 @@ class ApplicationState extends ConsumerState<Application> {
 
   Future<void> _confirmInstallConfig(String url, {AwgSource? awg}) async {
     unawaited(window?.show());
-    final message = currentAppLocalizations.createProfileFromUrlTip(url);
-    final parts = message.split(url);
+    final l = currentAppLocalizations;
+    final host = Uri.tryParse(url)?.host ?? '';
     final res = await dialogs.showMessage(
-      title: currentAppLocalizations.addProfile,
-      message: TextSpan(
-        children: [
-          TextSpan(text: parts.first),
-          TextSpan(
-            text: url,
-            style: TextStyle(
-              color: context.colorScheme.primary,
-              decoration: TextDecoration.underline,
-              decorationColor: context.colorScheme.primary,
-            ),
-          ),
-          if (parts.length > 1) TextSpan(text: parts.last),
-        ],
-      ),
+      title: l.tenvpnImportTitle,
+      message: TextSpan(text: l.tenvpnImportText(host.isEmpty ? url : host)),
     );
     if (res != true) return;
-    unawaited(
-      ref
-          .read(profilesActionProvider.notifier)
-          .addProfileFormURL(url, awg: awg),
-    );
+    globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    final error = await ref
+        .read(profilesActionProvider.notifier)
+        .importSubscription(url, awg: awg, replace: true);
+    if (error != null) {
+      unawaited(
+        dialogs.showMessage(
+          title: l.addProfile,
+          message: TextSpan(text: error),
+        ),
+      );
+    }
   }
 
   void _checkProfilesOnResume() {
@@ -225,30 +215,26 @@ class ApplicationState extends ConsumerState<Application> {
                 },
                 scrollBehavior: const BaseScrollBehavior(),
                 title: appName,
-                locale: getLocaleForString(locale),
+                locale: getLocaleForString(locale) ?? appDefaultLocale,
                 supportedLocales: AppLocalizations.delegate.supportedLocales,
                 themeMode: themeProps.themeMode,
-                theme: ThemeData(
-                  useMaterial3: true,
+                theme: buildTenvpnTheme(
+                  brightness: Brightness.light,
                   pageTransitionsTheme: pageTransitionsTheme,
-                  colorScheme: _getAppColorScheme(brightness: Brightness.light),
                   tooltipTheme: _tooltipTheme,
-                ).withAppShapes,
-                darkTheme: ThemeData(
-                  useMaterial3: true,
+                ),
+                darkTheme: buildTenvpnTheme(
+                  brightness: Brightness.dark,
                   pageTransitionsTheme: pageTransitionsTheme,
-                  colorScheme: _getAppColorScheme(
-                    brightness: Brightness.dark,
-                  ).toPureBlack(themeProps.pureBlack),
                   tooltipTheme: _tooltipTheme,
-                ).withAppShapes,
+                ),
                 home: child!,
               ),
             );
           },
         );
       },
-      child: const HomePage(),
+      child: const TenvpnHome(),
     );
   }
 

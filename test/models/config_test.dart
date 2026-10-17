@@ -142,7 +142,7 @@ void main() {
       expect(restored.silentLaunch, false);
       expect(restored.autoRun, false);
       expect(restored.openLogs, false);
-      expect(restored.closeConnections, false);
+      expect(restored.closeConnections, true);
       expect(restored.promptCloseConnections, true);
       expect(restored.isAnimateToPage, true);
       expect(restored.isSwipeToPage, true);
@@ -460,14 +460,14 @@ void main() {
       const props = ThemeProps();
       expect(props.primaryColor, null);
       expect(props.primaryColors, defaultPrimaryColors);
-      expect(props.themeMode, ThemeMode.system);
+      expect(props.themeMode, ThemeMode.dark);
       expect(props.pureBlack, false);
       expect(props.textScale.scale, 1.0);
     });
 
     test('safeFromJson returns default on null', () {
       final result = ThemeProps.safeFromJson(null);
-      expect(result.themeMode, ThemeMode.system);
+      expect(result.themeMode, ThemeMode.dark);
     });
 
     test('round-trip with custom values', () {
@@ -551,7 +551,7 @@ void main() {
         'schemeVariant': 'future',
       });
 
-      expect(props.themeMode, ThemeMode.system);
+      expect(props.themeMode, ThemeMode.dark);
       expect(props.schemeVariant, DynamicSchemeVariant.content);
     });
 

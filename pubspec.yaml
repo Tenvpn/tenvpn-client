@@ -119,7 +119,22 @@ flutter:
       platforms: [ windows ]
     - assets/images/icon/
     - assets/images/networking/
+    - assets/images/mascot/
   fonts:
+    - family: Geologica
+      fonts:
+        - asset: assets/fonts/Geologica-700.ttf
+          weight: 700
+        - asset: assets/fonts/Geologica-800.ttf
+          weight: 800
+    - family: Onest
+      fonts:
+        - asset: assets/fonts/Onest-400.ttf
+          weight: 400
+        - asset: assets/fonts/Onest-500.ttf
+          weight: 500
+        - asset: assets/fonts/Onest-600.ttf
+          weight: 600
     - family: JetBrainsMono
       fonts:
         - asset: assets/fonts/JetBrainsMono-Regular.ttf

@@ -344,7 +344,7 @@ void main() {
       verify(
         () => core.changeProxy(
           const ChangeProxyParams(groupName: 'Proxy', proxyName: ''),
-          closeConnections: false,
+          closeConnections: true,
         ),
       ).called(1);
       expect(container.read(currentProfileProvider)?.selectedMap, isEmpty);
@@ -966,6 +966,78 @@ void main() {
         'Proxy',
         'Auto',
       });
+    });
+  });
+
+  group('selectTenvpnServer', () {
+    setUp(() {
+      when(
+        () => core.changeProxy(
+          any(),
+          closeConnections: any(named: 'closeConnections'),
+        ),
+      ).thenAnswer((_) async => '');
+      when(core.getProxies).thenAnswer(
+        (_) async => ProxiesData(
+          all: const ['TENVPN'],
+          proxies: Map<String, dynamic>.from({
+            'TENVPN': Map<String, dynamic>.from({
+              'name': 'TENVPN',
+              'type': 'Selector',
+              'now': 'Вручную',
+              'all': ['Авто', 'Вручную'],
+            }),
+          }),
+        ),
+      );
+    });
+
+    test(
+      'pins a server through the manual group and closes connections',
+      () async {
+        final container = buildContainer();
+        container.read(appSettingProvider.notifier).value =
+            const AppSettingProps(closeConnections: false);
+
+        await actionOf(container).selectTenvpnServer('NL');
+
+        verifyInOrder([
+          () => core.changeProxy(
+            const ChangeProxyParams(groupName: 'Вручную', proxyName: 'NL'),
+            closeConnections: true,
+          ),
+          () => core.changeProxy(
+            const ChangeProxyParams(groupName: 'TENVPN', proxyName: 'Вручную'),
+            closeConnections: true,
+          ),
+        ]);
+        expect(container.read(groupsProvider).single.name, 'TENVPN');
+      },
+    );
+
+    test('hands the choice back to the url-test group for auto', () async {
+      final container = buildContainer();
+
+      await actionOf(container).selectTenvpnServer(null);
+
+      verify(
+        () => core.changeProxy(
+          const ChangeProxyParams(groupName: 'TENVPN', proxyName: 'Авто'),
+          closeConnections: true,
+        ),
+      ).called(1);
+      verifyNever(
+        () => core.changeProxy(
+          any(
+            that: isA<ChangeProxyParams>().having(
+              (p) => p.groupName,
+              'group',
+              'Вручную',
+            ),
+          ),
+          closeConnections: any(named: 'closeConnections'),
+        ),
+      );
     });
   });
 }

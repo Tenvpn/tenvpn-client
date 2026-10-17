@@ -38,12 +38,12 @@ private data class ExtendedNotificationParams(
 private fun NotificationParams.extended(service: Service) =
     ExtendedNotificationParams(
         title,
-        service.getString(R.string.stop),
+        stopText.ifBlank { service.getString(R.string.stop) },
         showStopAction,
         if (networkSpeedNotification) {
             Core.getSpeedTrafficText(onlyStatisticsProxy)
         } else {
-            service.getString(R.string.connected)
+            connectedText.ifBlank { service.getString(R.string.connected) }
         },
     )
 

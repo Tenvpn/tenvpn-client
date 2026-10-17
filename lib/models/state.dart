@@ -314,6 +314,7 @@ abstract class SharedState with _$SharedState {
     required String startTip,
     required String currentProfileName,
     required String stopText,
+    @Default('') String connectedText,
     required bool onlyStatisticsProxy,
     @Default(true) bool showStopAction,
     @Default(false) bool networkSpeedNotification,

@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
@@ -208,6 +210,47 @@ void main() {
       expect(
         userFacingErrorMessage(timedOut, appLocalizations),
         timedOut.toString(),
+      );
+    });
+  });
+
+  group('importErrorMessage', () {
+    test('a dead link and a network failure read as plain sentences', () {
+      final options = RequestOptions(path: '/');
+      expect(
+        importErrorMessage(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.badResponse,
+          ),
+          appLocalizations,
+        ),
+        appLocalizations.tenvpnImportDeadLink,
+      );
+      expect(
+        importErrorMessage(
+          DioException(
+            requestOptions: options,
+            type: DioExceptionType.connectionTimeout,
+          ),
+          appLocalizations,
+        ),
+        appLocalizations.tenvpnImportOffline,
+      );
+      expect(
+        importErrorMessage(TimeoutException('slow'), appLocalizations),
+        appLocalizations.tenvpnImportOffline,
+      );
+      expect(
+        importErrorMessage(const SocketException('down'), appLocalizations),
+        appLocalizations.tenvpnImportOffline,
+      );
+    });
+
+    test('anything else keeps its own message', () {
+      expect(
+        importErrorMessage(Exception('boom'), appLocalizations),
+        contains('boom'),
       );
     });
   });

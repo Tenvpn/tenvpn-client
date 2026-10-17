@@ -204,6 +204,7 @@ class EmojiText extends StatelessWidget {
   final TextStyle? style;
   final int? maxLines;
   final TextOverflow? overflow;
+  final TextAlign textAlign;
 
   const EmojiText(
     this.text, {
@@ -211,12 +212,14 @@ class EmojiText extends StatelessWidget {
     this.maxLines,
     this.overflow,
     this.style,
+    this.textAlign = TextAlign.start,
   });
 
   @override
   Widget build(BuildContext context) {
     return RichText(
       textScaler: MediaQuery.textScalerOf(context),
+      textAlign: textAlign,
       maxLines: maxLines,
       overflow: overflow ?? TextOverflow.clip,
       text: TextSpan(children: _emojiSpans(text, style)),

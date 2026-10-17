@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName
 
 data class SharedState(
     val currentProfileName: String = "TENVPN",
+    val stopText: String = "",
+    val connectedText: String = "",
     val onlyStatisticsProxy: Boolean = false,
     val showStopAction: Boolean = true,
     val networkSpeedNotification: Boolean = false,
