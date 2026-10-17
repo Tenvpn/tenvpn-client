@@ -193,6 +193,11 @@ class AppPath {
     return join(directory.path, profilesDirectoryName);
   }
 
+  Future<String> get tenvpnStatePath async {
+    final directory = await dataDir.future;
+    return join(directory.path, 'tenvpn');
+  }
+
   Future<String> getProfilePath(String fileName) async {
     return join(await profilesPath, '$fileName.yaml');
   }

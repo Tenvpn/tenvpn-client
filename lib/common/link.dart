@@ -7,6 +7,8 @@ import 'print.dart';
 import 'protocol.dart';
 
 typedef InstallConfigCallBack = void Function(String url);
+typedef InstallTenvpnCallBack =
+    void Function(String url, String awgUrl, String awgToken);
 
 class LinkManager {
   static LinkManager? _instance;
@@ -30,26 +32,39 @@ class LinkManager {
   }
 
   Future<void> initAppLinksListen(
-    Function(String url) installConfigCallBack,
-  ) async {
+    Function(String url) installConfigCallBack, {
+    InstallTenvpnCallBack? installTenvpnCallBack,
+  }) async {
     commonPrint.log('initAppLinksListen');
     destroy();
     subscription = uriLinkStream().listen((uri) {
-      _handle(uri, installConfigCallBack);
+      _handle(uri, installConfigCallBack, installTenvpnCallBack);
     });
     final pending = _pendingUri;
     _pendingUri = null;
     if (pending != null) {
-      _handle(pending, installConfigCallBack);
+      _handle(pending, installConfigCallBack, installTenvpnCallBack);
     }
   }
 
-  void _handle(Uri uri, Function(String url) installConfigCallBack) {
-    commonPrint.log('onAppLink: $uri');
+  void _handle(
+    Uri uri,
+    Function(String url) installConfigCallBack,
+    InstallTenvpnCallBack? installTenvpnCallBack,
+  ) {
+    commonPrint.log('onAppLink: ${uri.scheme}://${uri.host}');
     if (uri.host == 'install-config') {
       final parameters = uri.queryParameters;
       final url = parameters['url'];
-      if (url != null) {
+      if (url == null) return;
+      final awgUrl = parameters['awg'];
+      final awgToken = parameters['awg_token'];
+      if (installTenvpnCallBack != null &&
+          awgUrl != null &&
+          awgToken != null &&
+          awgToken.isNotEmpty) {
+        installTenvpnCallBack(url, awgUrl, awgToken);
+      } else {
         installConfigCallBack(url);
       }
     }

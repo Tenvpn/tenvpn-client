@@ -115,7 +115,11 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
-  Future<void> addProfileFormURL(String url, {String? ageSecretKey}) async {
+  Future<void> addProfileFormURL(
+    String url, {
+    String? ageSecretKey,
+    AwgSource? awg,
+  }) async {
     if (globalState.navigatorKey.currentState?.canPop() ?? false) {
       globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
     }
@@ -123,10 +127,11 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
-        return Profile.normal(
-          url: url,
-          ageSecretKey: ageSecretKey,
-        ).update(prepare: prepareProfileConfig);
+        final profile = Profile.normal(url: url, ageSecretKey: ageSecretKey);
+        if (awg != null) {
+          await tenvpnConfig.setAwgSource(profile.id, awg);
+        }
+        return profile.update(prepare: prepareProfileConfig);
       },
       title: currentAppLocalizations.addProfile,
     );
@@ -153,6 +158,7 @@ class ProfilesAction extends _$ProfilesAction {
   }
 
   Future<void> clearEffect(int profileId) async {
+    await tenvpnConfig.forget(profileId);
     final profilePath = await appPath.getProfilePath(profileId.toString());
     final profileFile = File(profilePath);
     final isExists = await profileFile.exists();

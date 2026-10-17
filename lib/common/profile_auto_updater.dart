@@ -7,15 +7,20 @@ class ProfileAutoUpdater {
     required this.profiles,
     required this.update,
     required this.onError,
+    this.refreshOnStart = false,
     DateTime Function()? now,
   }) : _now = now ?? DateTime.now;
+
+  static const startupRefreshMinAge = Duration(minutes: 15);
 
   final List<Profile> Function() profiles;
   final Future<void> Function(Profile profile) update;
   final void Function(Object error) onError;
+  final bool refreshOnStart;
   final DateTime Function() _now;
   final _attempts = <int, DateTime>{};
   final _enrolledAt = <int, DateTime>{};
+  final _startupIds = <int>{};
   Timer? _timer;
   DateTime? _startedAt;
   bool _running = false;
@@ -24,6 +29,18 @@ class ProfileAutoUpdater {
   void start() {
     if (_disposed || _startedAt != null) return;
     _startedAt = _now();
+    if (refreshOnStart) {
+      final staleBefore = _startedAt!.subtract(startupRefreshMinAge);
+      _startupIds.addAll(
+        profiles()
+            .where(
+              (profile) =>
+                  profile.realAutoUpdate &&
+                  (profile.lastUpdateDate?.isBefore(staleBefore) ?? true),
+            )
+            .map((profile) => profile.id),
+      );
+    }
     reschedule();
   }
 
@@ -34,7 +51,8 @@ class ProfileAutoUpdater {
     final attempted = _attempts[profile.id];
     final enrolled = _enrolledAt.putIfAbsent(profile.id, _now);
     if (attempted == null &&
-        (profile.lastUpdateDate == null ||
+        (_startupIds.contains(profile.id) ||
+            profile.lastUpdateDate == null ||
             !profile.lastUpdateDate!.add(interval).isAfter(enrolled))) {
       return enrolled;
     }

@@ -279,4 +279,36 @@ void main() {
     await tester.pump(const Duration(days: 1));
     expect(calls, 1);
   });
+
+  testWidgets('refreshOnStart updates stale-enough profiles right away', (
+    tester,
+  ) async {
+    final now = tester.binding.clock.now;
+    final started = now();
+    final calls = <int>[];
+    Profile profile(int id, Duration age) => Profile(
+      id: id,
+      url: 'https://example.com/$id',
+      autoUpdateDuration: const Duration(hours: 12),
+      lastUpdateDate: started.subtract(age),
+    );
+    final profiles = [
+      profile(1, const Duration(hours: 1)),
+      profile(2, const Duration(minutes: 5)),
+    ];
+    final updater = ProfileAutoUpdater(
+      profiles: () => profiles,
+      now: now,
+      refreshOnStart: true,
+      update: (profile) async => calls.add(profile.id),
+      onError: (error) => fail('$error'),
+    );
+    addTearDown(updater.dispose);
+    updater.start();
+    await tester.pump(Duration.zero);
+    expect(calls, [1]);
+    await tester.pump(const Duration(hours: 1));
+    expect(calls, [1]);
+    updater.dispose();
+  });
 }
