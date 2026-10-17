@@ -258,10 +258,19 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     @SuppressLint("BatteryLife")
     private fun openBatteryOptimizationSettings(): Boolean {
         // VPN continuity is the user-requested core function, so the direct exemption is intentional.
+        // The Play build drops that permission and gets the system list instead.
         val activity = activity ?: return false
         return try {
-            val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                data = "package:${GlobalState.application.packageName}".toUri()
+            val canRequest = ContextCompat.checkSelfPermission(
+                GlobalState.application,
+                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+            ) == PackageManager.PERMISSION_GRANTED
+            val intent = if (canRequest) {
+                Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                    data = "package:${GlobalState.application.packageName}".toUri()
+                }
+            } else {
+                Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
             }
             activity.startActivity(intent)
             true
