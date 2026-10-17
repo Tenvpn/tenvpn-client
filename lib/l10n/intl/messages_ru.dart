@@ -109,8 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m35(date) => "Истекает: ${date}";
 
-  static String m36(date) =>
-      "Оплачено до ${date}. Продлите сейчас, чтобы VPN не отключился.";
+  static String m36(date) => "Подписка действует до ${date}.";
 
   static String m37(host) => "Ссылка ведёт на ${host}. Добавить её в TENVPN?";
 
@@ -118,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m39(server) => "Сейчас: ${server}";
 
-  static String m40(date) => "Оплачено до ${date}";
+  static String m40(date) => "Подписка до ${date}";
 
   static String m41(time) => "Обновлена ${time}";
 

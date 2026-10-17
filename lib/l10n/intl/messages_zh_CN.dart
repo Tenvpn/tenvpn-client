@@ -96,8 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m35(date) => "Expires: ${date}";
 
-  static String m36(date) =>
-      "Paid until ${date}. Renew now so the VPN keeps working.";
+  static String m36(date) => "Your subscription is active until ${date}.";
 
   static String m37(host) => "The link points to ${host}. Add it to TENVPN?";
 
@@ -105,7 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m39(server) => "Now: ${server}";
 
-  static String m40(date) => "Paid until ${date}";
+  static String m40(date) => "Subscription until ${date}";
 
   static String m41(time) => "Updated ${time}";
 

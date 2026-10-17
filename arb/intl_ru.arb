@@ -941,7 +941,7 @@
   "tenvpnSort": "Сортировка",
   "tenvpnSortSubscription": "Как в подписке",
   "tenvpnSortPing": "По пингу",
-  "tenvpnPaidUntil": "Оплачено до {date}",
+  "tenvpnPaidUntil": "Подписка до {date}",
   "tenvpnBalance": "Баланс {balance} ₽ · {rate} ₽ в день",
   "tenvpnDevices": "{count, plural, one{{count} устройство} few{{count} устройства} many{{count} устройств} other{{count} устройства}}",
   "tenvpnSuspended": "Доступ приостановлен — пополните баланс",
@@ -949,7 +949,7 @@
   "tenvpnRenew": "Продлить",
   "tenvpnNoticeChannel": "Подписка",
   "tenvpnExpiryNoticeTitle": "Подписка заканчивается",
-  "tenvpnExpiryNoticeText": "Оплачено до {date}. Продлите сейчас, чтобы VPN не отключился.",
+  "tenvpnExpiryNoticeText": "Подписка действует до {date}.",
   "tenvpnTelemetry": "Техническая статистика",
   "tenvpnTelemetryDesc": "Версия приложения, система и протокол подключения — помогает поддержке. Без IP и сайтов.",
   "tenvpnPrivacy": "Политика конфиденциальности"

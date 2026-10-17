@@ -134,10 +134,8 @@ void main() {
           required channelName,
           required title,
           required text,
-          required actionLabel,
-          required actionUrl,
         }) async {
-          notices.add({'title': title, 'text': text, 'url': actionUrl});
+          notices.add({'title': title, 'text': text});
           return true;
         }),
         sendConnectEventProvider.overrideWithValue((token, event) async {
@@ -175,19 +173,16 @@ void main() {
 
   Finder text(String value) => find.textContaining(value, findRichText: true);
 
-  testWidgets('balance, devices and Renew come from the account', (
+  testWidgets('shows only how long the subscription lasts, nothing to pay', (
     tester,
   ) async {
     container = build(account: _account());
     await pump(tester, const TenvpnExpiryLine());
-    expect(text('Paid until'), findsOneWidget);
+    expect(text('Subscription until'), findsOneWidget);
     expect(text('13 days left'), findsOneWidget);
-    expect(text('Balance 91 ₽ · 9 ₽ a day · 3 devices'), findsOneWidget);
-    expect(find.byKey(const ValueKey('tenvpn-renew')), findsOneWidget);
-    expect(
-      container.read(tenvpnRenewUrlProvider),
-      'https://t.me/Tenvpnrobot?start=app_renew',
-    );
+    expect(text('₽'), findsNothing);
+    expect(find.byKey(const ValueKey('tenvpn-renew')), findsNothing);
+    expect(find.byType(OutlinedButton), findsNothing);
     await unmount(tester);
   });
 
@@ -200,15 +195,15 @@ void main() {
     container = build(account: _account(status: 'free', daysLeft: 999));
     await pump(tester, const TenvpnExpiryLine());
     expect(text('Free access'), findsOneWidget);
-    expect(find.byKey(const ValueKey('tenvpn-balance')), findsNothing);
     await unmount(tester);
   });
 
-  testWidgets('without an account Renew opens the bot', (tester) async {
+  testWidgets('without an account the line says the date is unknown', (
+    tester,
+  ) async {
     container = build();
     await pump(tester, const TenvpnExpiryLine());
     expect(text('Expires: —'), findsOneWidget);
-    expect(container.read(tenvpnRenewUrlProvider), tenvpnBotUrl);
     await unmount(tester);
   });
 
@@ -220,7 +215,7 @@ void main() {
     await tester.pump();
     expect(notices, hasLength(1));
     expect(notices.single['title'], 'Your subscription is ending');
-    expect(notices.single['url'], 'https://t.me/Tenvpnrobot?start=app_renew');
+    expect(notices.single['text'], isNot(contains('Renew')));
     expect(config.notice, isNotNull);
     await unmount(tester);
 
