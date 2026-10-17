@@ -52,10 +52,35 @@ begin
   Result := '';
 end;
 
+procedure RemoveAutoStart;
+var
+  ResultCode: Integer;
+begin
+  RegDeleteValue(HKEY_CURRENT_USER, 'Software\Microsoft\Windows\CurrentVersion\Run', '{{APP_NAME}}');
+  Exec('schtasks.exe', '/Delete /TN {{APP_NAME}} /F', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+end;
+
+procedure RemoveLinkSchemes;
+var
+  Schemes: TArrayOfString;
+  Command: String;
+  i: Integer;
+begin
+  Schemes := ['tenvpn', 'clash', 'clashmeta', 'mihomo'];
+  for i := 0 to GetArrayLength(Schemes)-1 do
+  begin
+    if RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Classes\' + Schemes[i] + '\shell\open\command', '', Command) and
+       (Pos(LowerCase(ExpandConstant('{app}')), LowerCase(Command)) > 0) then
+      RegDeleteKeyIncludingSubkeys(HKEY_CURRENT_USER, 'Software\Classes\' + Schemes[i]);
+  end;
+end;
+
 function InitializeUninstall(): Boolean;
 begin
   UnregisterHelperService;
   KillProcesses;
+  RemoveAutoStart;
+  RemoveLinkSchemes;
   Result := True;
 end;
 
@@ -100,4 +125,13 @@ Source: "{{SOURCE_DIR}}\\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdi
 Name: "{autoprograms}\\{{DISPLAY_NAME}}"; Filename: "{app}\\{{EXECUTABLE_NAME}}"
 Name: "{autodesktop}\\{{DISPLAY_NAME}}"; Filename: "{app}\\{{EXECUTABLE_NAME}}"; Tasks: desktopicon
 [Run]
-Filename: "{app}\\{{EXECUTABLE_NAME}}"; Description: "{cm:LaunchProgram,{{DISPLAY_NAME}}}"; Flags: {% if PRIVILEGES_REQUIRED == 'admin' %}runascurrentuser{% endif %} nowait postinstall skipifsilent
+; Registered here, while the installer is elevated, so turning TUN on later
+; never asks for UAC again.
+Filename: "{app}\\TENVPNHelperService.exe"; Parameters: "install"; StatusMsg: "{cm:InstallingService}"; Flags: runhidden waituntilterminated
+Filename: "{app}\\{{EXECUTABLE_NAME}}"; Description: "{cm:LaunchProgram,{{DISPLAY_NAME}}}"; Flags: runasoriginaluser nowait postinstall skipifsilent
+; An in-app update runs the installer with /SILENT /relaunch=<args>.
+Filename: "{app}\\{{EXECUTABLE_NAME}}"; Parameters: "{param:relaunch|}"; Flags: runasoriginaluser nowait; Check: WizardSilent
+
+[CustomMessages]
+english.InstallingService=Registering the TENVPN service...
+russian.InstallingService=Регистрация службы TENVPN...

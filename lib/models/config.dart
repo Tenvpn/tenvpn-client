@@ -363,8 +363,21 @@ abstract class Config with _$Config {
 
   factory Config.realFromJson(Map<String, Object?>? json) {
     if (json == null) {
-      return const Config(themeProps: defaultThemeProps);
+      return Config.fresh(isWindows: system.isWindows);
     }
     return Config.fromJson(json);
+  }
+
+  /// The installer registers the Helper, so TUN starts without a prompt on
+  /// Windows; home wired internet there is where AmneziaWG wins.
+  factory Config.fresh({required bool isWindows}) {
+    if (!isWindows) {
+      return const Config(themeProps: defaultThemeProps);
+    }
+    return Config(
+      themeProps: defaultThemeProps,
+      appSettingProps: defaultAppSettingProps.copyWith(awgPriority: true),
+      patchClashConfig: defaultClashConfig.copyWith.tun(enable: true),
+    );
   }
 }

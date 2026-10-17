@@ -33,6 +33,14 @@ abstract interface class NavigationPort {
   });
 }
 
+typedef UpdateTask = Future<void> Function(void Function(double) onProgress);
+
+abstract interface class UpdateProgressPort {
+  /// Runs [task] under a progress dialog; completes with its error, or null.
+  Future<Object?> run(UpdateTask task);
+}
+
 WindowPort? windowPort;
+UpdateProgressPort? updateProgressPort;
 TrayPort? trayPort;
 NavigationPort? navigationPort;

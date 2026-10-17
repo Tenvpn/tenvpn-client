@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:ffi/ffi.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/launch_args.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/core/desktop/helper_client.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -375,7 +376,7 @@ class Windows {
     <Enabled>true</Enabled><Hidden>false</Hidden><RunOnlyIfIdle>false</RunOnlyIfIdle>
     <WakeToRun>false</WakeToRun><ExecutionTimeLimit>PT0S</ExecutionTimeLimit><Priority>7</Priority>
   </Settings>
-  <Actions Context="Author"><Exec><Command>$executable</Command></Exec></Actions>
+  <Actions Context="Author"><Exec><Command>$executable</Command><Arguments>$autostartArg</Arguments></Exec></Actions>
 </Task>''';
     final taskPath = path.join(await appPath.tempPath, 'task.xml');
     await File(

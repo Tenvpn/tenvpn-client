@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:fl_clash/common/app_ports.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/update.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -62,6 +66,33 @@ Future<void> tapCancel(WidgetTester tester) async {
   await tester.tap(find.byType(TextButton).first);
   await tester.pumpAndSettle();
 }
+
+class _FakeProgress implements UpdateProgressPort {
+  final Object? result;
+  int runs = 0;
+
+  _FakeProgress(this.result);
+
+  @override
+  Future<Object?> run(UpdateTask task) async {
+    runs++;
+    return result;
+  }
+}
+
+Map<String, dynamic> windowsRelease() => <String, dynamic>{
+  ...release(_bulletsOnly),
+  'assets': [
+    {
+      'name': 'TENVPN-0.8.96-windows-amd64-setup.exe',
+      'browser_download_url': 'https://example.com/setup.exe',
+    },
+    {
+      'name': 'SHA256SUMS.txt',
+      'browser_download_url': 'https://example.com/SHA256SUMS.txt',
+    },
+  ],
+};
 
 void main() {
   setUpAll(() {
@@ -155,5 +186,43 @@ void main() {
     await tapCancel(tester);
     await shown;
     expect(container.read(appSettingProvider).autoCheckUpdate, isTrue);
+  });
+
+  group('Windows self-update', () {
+    tearDown(() => updateProgressPort = null);
+
+    testWidgets('«Later» keeps reminding', (tester) async {
+      final progress = updateProgressPort = _FakeProgress(null);
+      final container = await pumpApp(tester);
+      final shown = container
+          .read(commonActionProvider.notifier)
+          .checkUpdateResultHandle(data: windowsRelease());
+      await tester.pumpAndSettle();
+      expect(find.text('New version 0.8.96'), findsOneWidget);
+      await tester.tap(find.text('Later'));
+      await tester.pumpAndSettle();
+      await shown;
+      expect(progress.runs, 0);
+      expect(container.read(appSettingProvider).autoCheckUpdate, isTrue);
+    }, skip: !Platform.isWindows);
+
+    testWidgets('a declined UAC prompt explains and offers the download', (
+      tester,
+    ) async {
+      final progress = updateProgressPort = _FakeProgress(
+        const UpdateException(UpdateFailure.declined),
+      );
+      final container = await pumpApp(tester);
+      final shown = container
+          .read(commonActionProvider.notifier)
+          .checkUpdateResultHandle(data: windowsRelease());
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Update'));
+      await tester.pumpAndSettle();
+      expect(progress.runs, 1);
+      expect(find.textContaining('installation was cancelled'), findsOneWidget);
+      await tapCancel(tester);
+      await shown;
+    }, skip: !Platform.isWindows);
   });
 }

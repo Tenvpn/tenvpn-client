@@ -115,7 +115,10 @@ class SetupAction extends _$SetupAction {
     if (shouldRestoreServiceRunTime) {
       await _updateStartTime();
     }
-    final shouldRun = _isRunning || ref.read(appSettingProvider).autoRun;
+    final shouldRun =
+        _isRunning ||
+        ref.read(appSettingProvider).autoRun ||
+        launchArgs.connect;
     if (shouldRun) {
       await setRunning(true, initialize: true);
     } else {

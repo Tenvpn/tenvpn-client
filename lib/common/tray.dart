@@ -4,6 +4,7 @@ import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/configgen/constants.dart';
 import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:flutter/services.dart';
 import 'package:tray/tray.dart';
@@ -166,22 +167,49 @@ class _TrayDelaySnapshot {
   }
 }
 
+/// The TENVPN tray picks a server the way the home screen does: «Авто» or
+/// one entry of «Вручную» behind the top «TENVPN» selector.
+@visibleForTesting
+({bool auto, List<String> servers, String? selected}) tenvpnTraySelection(
+  List<Group> groups,
+) {
+  final manual = groups.getGroup(manualGroupName);
+  if (manual == null) {
+    return (auto: true, servers: const [], selected: null);
+  }
+  final auto = groups.getGroup(mainGroupName)?.now != manualGroupName;
+  return (
+    auto: auto,
+    servers: [for (final proxy in manual.all) proxy.name],
+    selected: auto ? null : manual.now,
+  );
+}
+
 class AppTray implements TrayPort {
   static AppTray? _instance;
 
   final bool isMacOS;
   final bool isWindows;
 
+  /// Upstream's menu (modes, every group, TUN and proxy toggles) stays behind
+  /// developer mode; people get the short TENVPN one.
+  final bool tenvpnMenu;
+
   bool _isShutDown = false;
   final Set<String> _testingGroups = {};
   List<Group> _menuGroups = const [];
 
-  AppTray._internal({required this.isMacOS, required this.isWindows});
+  AppTray._internal({
+    required this.isMacOS,
+    required this.isWindows,
+    this.tenvpnMenu = false,
+  });
 
   factory AppTray() {
     _instance ??= AppTray._internal(
       isMacOS: system.isMacOS,
       isWindows: system.isWindows,
+      tenvpnMenu: true,
     );
     return _instance!;
   }
@@ -190,8 +218,13 @@ class AppTray implements TrayPort {
   factory AppTray.forPlatform({
     required bool isMacOS,
     required bool isWindows,
+    bool tenvpnMenu = false,
   }) {
-    return AppTray._internal(isMacOS: isMacOS, isWindows: isWindows);
+    return AppTray._internal(
+      isMacOS: isMacOS,
+      isWindows: isWindows,
+      tenvpnMenu: tenvpnMenu,
+    );
   }
 
   String get _trayIconSuffix {
@@ -244,8 +277,12 @@ class AppTray implements TrayPort {
           isTemplate: isMacOS,
           size: 18,
         ),
-        toolTip: appName,
-        menu: _buildMenu(trayState: trayState, read: read),
+        toolTip: tenvpnMenu && trayState.isStart
+            ? '$appName · ${currentAppLocalizations.tenvpnPowerOnState}'
+            : appName,
+        menu: tenvpnMenu && !read(appSettingProvider).developerMode
+            ? _buildTenvpnMenu(trayState: trayState, read: read)
+            : _buildMenu(trayState: trayState, read: read),
         brightness: read(currentBrightnessProvider),
       ),
     );
@@ -399,6 +436,70 @@ class AppTray implements TrayPort {
           systemAction.handleExit();
         },
       ),
+    ];
+  }
+
+  List<TrayMenuItem> _buildTenvpnMenu({
+    required TrayState trayState,
+    required ProviderReader read,
+  }) {
+    final l = currentAppLocalizations;
+    final commonAction = read(commonActionProvider.notifier);
+    final systemAction = read(systemActionProvider.notifier);
+    final proxiesAction = read(proxiesActionProvider.notifier);
+    final selection = tenvpnTraySelection(trayState.groups);
+    return [
+      TrayMenuAction(
+        label: l.tenvpnTrayOpen,
+        onSelectedWithDetails: (details) {
+          window?.show(
+            activationTimestamp: details.activationTimestamp,
+            activationToken: details.activationToken,
+          );
+        },
+      ),
+      const TrayMenuSeparator(),
+      TrayMenuAction(
+        label: trayState.isStart ? l.tenvpnDisconnect : l.tenvpnConnect,
+        onSelected: commonAction.toggleRunning,
+      ),
+      TrayMenuAction(
+        label: l.tenvpnReconnect,
+        enabled: trayState.isStart,
+        onSelected: () => unawaited(commonAction.reconnect()),
+      ),
+      if (selection.servers.isNotEmpty)
+        TrayMenuSubmenu(
+          key: 'tenvpn:servers',
+          label: l.tenvpnServer,
+          sublabel: selection.auto ? l.tenvpnAuto : selection.selected,
+          items: [
+            TrayMenuCheckbox(
+              key: 'tenvpn:auto',
+              label: l.tenvpnAuto,
+              checked: selection.auto,
+              onSelected: () =>
+                  unawaited(proxiesAction.selectTenvpnServer(null)),
+            ),
+            const TrayMenuSeparator(),
+            for (final server in selection.servers)
+              TrayMenuCheckbox(
+                key: 'tenvpn:server:${Uri.encodeComponent(server)}',
+                label: server,
+                checked: server == selection.selected,
+                onSelected: () =>
+                    unawaited(proxiesAction.selectTenvpnServer(server)),
+              ),
+          ],
+        ),
+      const TrayMenuSeparator(),
+      TrayMenuCheckbox(
+        label: l.tenvpnTrayAutoStart,
+        checked: trayState.autoLaunch,
+        onSelected: systemAction.updateAutoLaunch,
+      ),
+      const TrayMenuSeparator(),
+      TrayMenuAction(label: l.exit, onSelected: systemAction.handleExit),
     ];
   }
 

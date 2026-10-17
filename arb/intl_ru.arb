@@ -952,5 +952,21 @@
   "tenvpnExpiryNoticeText": "Оплачено до {date}. Продлите сейчас, чтобы VPN не отключился.",
   "tenvpnTelemetry": "Техническая статистика",
   "tenvpnTelemetryDesc": "Версия приложения, система и протокол подключения — помогает поддержке. Без IP и сайтов.",
-  "tenvpnPrivacy": "Политика конфиденциальности"
+  "tenvpnPrivacy": "Политика конфиденциальности",
+  "tenvpnFullTunnel": "Весь трафик через VPN",
+  "tenvpnFullTunnelDesc": "Все программы компьютера. Выключите, если мешает другой VPN: тогда через TENVPN пойдут браузеры и программы, которые используют системный прокси",
+  "tenvpnTrayOpen": "Открыть TENVPN",
+  "tenvpnReconnect": "Переподключиться",
+  "tenvpnTrayAutoStart": "Запускать вместе с Windows",
+  "tenvpnUpdateTitle": "Новая версия {version}",
+  "tenvpnUpdateText": "TENVPN скачает обновление и установит его сам. Windows попросит разрешение на установку — нажмите «Да».",
+  "tenvpnUpdateNow": "Обновить",
+  "tenvpnUpdateLater": "Позже",
+  "tenvpnUpdateDownloading": "Скачиваем обновление… {percent}%",
+  "tenvpnUpdateFailed": "Не получилось обновить: {reason}. Новую версию можно скачать вручную.",
+  "tenvpnUpdateBroken": "файл скачался с ошибкой",
+  "tenvpnUpdateNoInstaller": "в выпуске нет установщика для Windows",
+  "tenvpnUpdateDeclined": "установка отменена",
+  "tenvpnCheckUpdate": "Проверить обновления",
+  "tenvpnUpToDate": "У вас последняя версия"
 }

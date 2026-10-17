@@ -517,12 +517,15 @@ void main() {
       await tester.pump();
       expect(container.read(appSettingProvider).autoRun, isTrue);
 
+      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsOneWidget);
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.dark);
+      await tester.scrollUntilVisible(find.text('Light'), 200);
+      await tester.ensureVisible(find.text('Light'));
+      await tester.pumpAndSettle();
       await tester.tap(find.text('Light'));
       await tester.pump();
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.light);
 
-      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsOneWidget);
       await tester.scrollUntilVisible(
         find.byKey(const ValueKey('tenvpn-sort')),
         200,

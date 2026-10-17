@@ -210,16 +210,19 @@ List<String> createFlutterBuildArgs({
   return flutterBuildArgs;
 }
 
-/// `TENVPN_API_BASE` comes from the build machine's environment (a CI
-/// secret or a local export), so the backend address never sits in git.
+const tenvpnBuildVariables = ['TENVPN_API_BASE', 'TENVPN_RELEASES_URL'];
+
+/// `TENVPN_*` come from the build machine's environment (a CI secret or a
+/// local export), so the backend and update addresses never sit in git.
 Map<String, String> createBuildEnvironment(
   String env, {
   Map<String, String>? environment,
 }) {
-  final apiBase = (environment ?? Platform.environment)['TENVPN_API_BASE'];
+  final source = environment ?? Platform.environment;
   return {
     'APP_ENV': env,
-    if (apiBase != null && apiBase.isNotEmpty) 'TENVPN_API_BASE': apiBase,
+    for (final key in tenvpnBuildVariables)
+      if (source[key]?.isNotEmpty == true) key: source[key]!,
   };
 }
 

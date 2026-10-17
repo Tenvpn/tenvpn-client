@@ -22,6 +22,17 @@ class CommonAction extends _$CommonAction {
     );
   }
 
+  /// Stop and start again: drops stuck connections, re-reads the subscription
+  /// if due and lets «Авто» pick afresh.
+  Future<void> reconnect() async {
+    if (!ref.read(isStartProvider)) return;
+    final setup = ref.read(setupActionProvider.notifier);
+    await globalState.safeRun(() async {
+      await setup.setRunning(false);
+      await setup.setRunning(true);
+    });
+  }
+
   void updateSpeedStatistics() {
     ref
         .read(vpnSettingProvider.notifier)
@@ -130,11 +141,84 @@ class CommonAction extends _$CommonAction {
     ];
   }
 
+  /// Settings → «Проверить обновления»: unlike the start-up check, says so
+  /// when there is nothing newer.
+  Future<void> checkUpdateByUser() async {
+    await globalState.safeRun(() async {
+      final data = await request.checkForUpdate();
+      if (data == null) {
+        await dialogs.showMessage(
+          title: currentAppLocalizations.tenvpnCheckUpdate,
+          message: TextSpan(text: currentAppLocalizations.tenvpnUpToDate),
+          cancelable: false,
+        );
+        return;
+      }
+      await checkUpdateResultHandle(data: data, isUser: true);
+    });
+  }
+
+  Future<void> _offerWindowsUpdate(
+    UpdateProgressPort port,
+    UpdateRelease release,
+    String? body,
+  ) async {
+    final l = currentAppLocalizations;
+    final context = globalState.navigatorKey.currentContext!;
+    final accepted = await dialogs.showMessage(
+      title: l.tenvpnUpdateTitle(release.version),
+      message: TextSpan(
+        children: [
+          TextSpan(text: '${l.tenvpnUpdateText}\n\n'),
+          _releaseSpan(context, release.tag, body),
+        ],
+      ),
+      confirmText: l.tenvpnUpdateNow,
+      cancelText: l.tenvpnUpdateLater,
+    );
+    if (accepted != true) return;
+    final reconnect = ref.read(isStartProvider);
+    Future<void> task(void Function(double) onProgress) => tenvpnWindowsUpdater
+        .install(release, reconnect: reconnect, onProgress: onProgress);
+    final error = await port.run(task);
+    if (error == null) {
+      await ref.read(systemActionProvider.notifier).handleExit();
+      return;
+    }
+    commonPrint.log('update failed: $error', logLevel: LogLevel.warning);
+    final reason = switch (error) {
+      UpdateException(failure: UpdateFailure.noInstaller) =>
+        l.tenvpnUpdateNoInstaller,
+      UpdateException(failure: UpdateFailure.broken) => l.tenvpnUpdateBroken,
+      UpdateException(failure: UpdateFailure.declined) =>
+        l.tenvpnUpdateDeclined,
+      _ => compactError(error),
+    };
+    final download = await dialogs.showMessage(
+      title: appName,
+      message: TextSpan(text: l.tenvpnUpdateFailed(reason)),
+      confirmText: l.goDownload,
+    );
+    if (download == true) {
+      unawaited(
+        launchUrl(Uri.parse('https://github.com/$repository/releases/latest')),
+      );
+    }
+  }
+
   Future<void> checkUpdateResultHandle({
     Map<String, dynamic>? data,
     bool isUser = false,
   }) async {
     if (data != null) {
+      final port = updateProgressPort;
+      final release = port != null && system.isWindows && !appPath.isPortable
+          ? UpdateRelease.fromJson(data)
+          : null;
+      if (port != null && release != null) {
+        await _offerWindowsUpdate(port, release, data['body'] as String?);
+        return;
+      }
       final context = globalState.navigatorKey.currentContext!;
       final res = await dialogs.showMessage(
         title: currentAppLocalizations.discoverNewVersion,

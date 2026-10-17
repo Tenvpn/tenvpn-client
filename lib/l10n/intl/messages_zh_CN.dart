@@ -107,20 +107,27 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m40(date) => "Paid until ${date}";
 
-  static String m41(time) => "Updated ${time}";
+  static String m41(percent) => "Downloading the update… ${percent}%";
 
-  static String m42(version) => "Version ${version}";
+  static String m42(reason) =>
+      "Could not update: ${reason}. You can download the new version manually.";
 
-  static String m43(country) => "Your IP: ${country}";
+  static String m43(version) => "New version ${version}";
 
-  static String m44(interval, idleInterval) =>
+  static String m44(time) => "Updated ${time}";
+
+  static String m45(version) => "Version ${version}";
+
+  static String m46(country) => "Your IP: ${country}";
+
+  static String m47(interval, idleInterval) =>
       "${interval} · 怠速 ${idleInterval}";
 
-  static String m45(interval) => "${interval} · 怠速已禁用";
+  static String m48(interval) => "${interval} · 怠速已禁用";
 
-  static String m46(label) => "${label} 必须为 URL";
+  static String m49(label) => "${label} 必须为 URL";
 
-  static String m47(count) => "${count} 年前";
+  static String m50(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1195,6 +1202,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use another link",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
+    "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
+      "Check for updates",
+    ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
     "tenvpnDaysLeft": m33,
     "tenvpnDevices": m34,
@@ -1209,6 +1219,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Your subscription is ending",
     ),
     "tenvpnFreeAccess": MessageLookupByLibrary.simpleMessage("Free access"),
+    "tenvpnFullTunnel": MessageLookupByLibrary.simpleMessage(
+      "All traffic through VPN",
+    ),
+    "tenvpnFullTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Every program on this computer. Turn off if another VPN gets in the way: then TENVPN carries browsers and programs that use the system proxy",
+    ),
     "tenvpnHintConnecting": MessageLookupByLibrary.simpleMessage("Connecting…"),
     "tenvpnHintError": MessageLookupByLibrary.simpleMessage(
       "The server is not responding. Pick another one or wait a minute",
@@ -1256,6 +1272,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "AmneziaWG first, the others when it is down",
     ),
+    "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Reconnect"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
@@ -1310,19 +1327,43 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnThemeDark": MessageLookupByLibrary.simpleMessage("Dark"),
     "tenvpnThemeLight": MessageLookupByLibrary.simpleMessage("Light"),
     "tenvpnThemeSystem": MessageLookupByLibrary.simpleMessage("System"),
+    "tenvpnTrayAutoStart": MessageLookupByLibrary.simpleMessage(
+      "Start with Windows",
+    ),
+    "tenvpnTrayOpen": MessageLookupByLibrary.simpleMessage("Open TENVPN"),
+    "tenvpnUpToDate": MessageLookupByLibrary.simpleMessage(
+      "You have the latest version",
+    ),
+    "tenvpnUpdateBroken": MessageLookupByLibrary.simpleMessage(
+      "the download is corrupted",
+    ),
+    "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
+      "installation was cancelled",
+    ),
+    "tenvpnUpdateDownloading": m41,
+    "tenvpnUpdateFailed": m42,
+    "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
+    "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
+      "this release has no Windows installer",
+    ),
+    "tenvpnUpdateNow": MessageLookupByLibrary.simpleMessage("Update"),
     "tenvpnUpdateSubscription": MessageLookupByLibrary.simpleMessage(
       "Refresh subscription",
     ),
-    "tenvpnUpdatedAt": m41,
+    "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
+      "TENVPN will download the update and install it. Windows will ask for permission — click Yes.",
+    ),
+    "tenvpnUpdateTitle": m43,
+    "tenvpnUpdatedAt": m44,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
-    "tenvpnVersion": m42,
+    "tenvpnVersion": m45,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Let\'s connect in a minute",
     ),
-    "tenvpnYourIp": m43,
+    "tenvpnYourIp": m46,
     "testInterval": MessageLookupByLibrary.simpleMessage("测试间隔"),
     "testUrl": MessageLookupByLibrary.simpleMessage("测速链接"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("使用时测试"),
@@ -1357,8 +1398,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "应用窗口失去焦点时使用怠速更新周期",
     ),
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage("UI 信息更新周期"),
-    "uiUpdateIntervalDesc": m44,
-    "uiUpdateIntervalIdleDisabledDesc": m45,
+    "uiUpdateIntervalDesc": m47,
+    "uiUpdateIntervalIdleDisabledDesc": m48,
     "unauthorized": MessageLookupByLibrary.simpleMessage("未授权"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("统一延迟"),
@@ -1378,7 +1419,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("上传流量"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过 URL 获取配置文件"),
-    "urlTip": m46,
+    "urlTip": m49,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用 Hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "查询上游 DNS 前先匹配配置中的 hosts",
@@ -1404,7 +1445,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("写入系统"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("同时设置系统时钟"),
-    "yearsAgo": m47,
+    "yearsAgo": m50,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };
