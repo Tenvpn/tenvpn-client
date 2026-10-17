@@ -1373,7 +1373,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
     "tenvpnBalance": m32,
-    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Account"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Use another link",
     ),

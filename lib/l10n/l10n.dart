@@ -8145,11 +8145,6 @@ class AppLocalizations {
     );
   }
 
-  /// `Account`
-  String get tenvpnCabinet {
-    return Intl.message('Account', name: 'tenvpnCabinet', desc: '', args: []);
-  }
-
   /// `AmneziaWG`
   String get tenvpnSectionAwg {
     return Intl.message(
