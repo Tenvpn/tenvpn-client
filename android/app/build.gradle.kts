@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Base64
 import java.util.Properties
 
 plugins {
@@ -21,6 +22,19 @@ val releaseStoreFile = file(signingValue("ANDROID_KEYSTORE_FILE", "storeFile") ?
 val releaseStorePassword = signingValue("ANDROID_KEYSTORE_PASSWORD", "storePassword")
 val releaseKeyAlias = signingValue("ANDROID_KEY_ALIAS", "keyAlias")
 val releaseKeyPassword = signingValue("ANDROID_KEY_PASSWORD", "keyPassword")
+
+// TENVPN_STORE reaches Gradle as a dart-define (from env.json); the shell
+// variable covers builds that skip setup.dart.
+val dartDefines: Map<String, String> = (project.findProperty("dart-defines") as String?)
+    ?.split(",")
+    ?.mapNotNull { encoded: String ->
+        runCatching { String(Base64.getDecoder().decode(encoded)) }.getOrNull()
+    }
+    ?.mapNotNull { pair -> pair.split("=", limit = 2).takeIf { it.size == 2 } }
+    ?.associate { (key, value) -> key to value }
+    .orEmpty()
+val isPlayStore = (dartDefines["TENVPN_STORE"] ?: System.getenv("TENVPN_STORE")) == "play"
+
 val hasReleaseSigning = releaseStoreFile.exists() &&
     releaseStorePassword != null &&
     releaseKeyAlias != null &&
@@ -88,6 +102,9 @@ android {
     sourceSets {
         // Unit tests live under android/tests/ instead of each module's src/test.
         getByName("test").java.setSrcDirs(listOf("../tests/app"))
+        if (isPlayStore) {
+            getByName("release").manifest.srcFile("src/play/AndroidManifest.xml")
+        }
     }
 }
 

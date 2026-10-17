@@ -5,6 +5,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 
 class _QuickSwitchCard extends StatelessWidget {
   const _QuickSwitchCard({
@@ -126,6 +127,7 @@ class VpnButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (isPlayBuild) return const SizedBox.shrink();
     return _QuickSwitchCard(
       label: 'VPN',
       iconData: Symbols.stacked_line_chart,
