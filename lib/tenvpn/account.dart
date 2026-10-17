@@ -26,10 +26,6 @@ class TenvpnEndpoints {
   String get account => '$base/api/app/v1/account';
 
   String get telemetry => '$base/api/app/v1/telemetry';
-
-  String get cabinetLink => '$base/api/app/v1/cabinet_link';
-
-  String get cabinet => '$base/';
 }
 
 enum AccountStatus { active, suspended, free }

@@ -969,7 +969,6 @@
   "tenvpnUpdateDeclined": "installation was cancelled",
   "tenvpnCheckUpdate": "Check for updates",
   "tenvpnUpToDate": "You have the latest version",
-  "tenvpnCabinet": "Account",
   "tenvpnSectionAwg": "AmneziaWG",
   "tenvpnSectionAwgDesc": "Fastest on home internet",
   "tenvpnAwgMissing": "Connect it through the bot: My devices → Open in the app"

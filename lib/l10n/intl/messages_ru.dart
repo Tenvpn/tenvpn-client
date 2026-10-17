@@ -1729,7 +1729,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
     ),
     "tenvpnBalance": m32,
-    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Кабинет"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Вставить другую ссылку",
     ),
