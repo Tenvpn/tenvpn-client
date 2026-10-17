@@ -30,6 +30,7 @@ const _groupFloors = <String, double>{
   'enum': 86.0,
   'pages': 71.0,
   'plugins': 67.0,
+  'tenvpn': 90.0,
   'lib': 20.0,
 };
 
