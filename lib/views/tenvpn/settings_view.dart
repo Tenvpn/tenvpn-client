@@ -26,7 +26,6 @@ class TenvpnSettingsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.appLocalizations;
-    final hasAwg = ref.watch(tenvpnHasAwgProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.tenvpnSettings)),
       body: Center(
@@ -63,7 +62,6 @@ class TenvpnSettingsView extends ConsumerWidget {
                       onTap: () =>
                           BaseNavigator.push(context, const AccessView()),
                     ),
-                  if (hasAwg || system.isWindows) const _ProtocolRow(),
                 ],
               ),
               TenvpnSettingsGroup(
@@ -329,73 +327,6 @@ class _FullTunnelRow extends ConsumerWidget {
       onChanged: (value) => ref
           .read(patchClashConfigProvider.notifier)
           .update((s) => s.copyWith.tun(enable: value)),
-    );
-  }
-}
-
-class _ProtocolRow extends ConsumerWidget {
-  const _ProtocolRow();
-
-  Future<void> _set(WidgetRef ref, bool awgFirst) async {
-    final current = ref.read(appSettingProvider).awgPriority;
-    if (current == awgFirst) return;
-    ref
-        .read(appSettingProvider.notifier)
-        .update((s) => s.copyWith(awgPriority: awgFirst));
-    final profile = ref.read(currentProfileProvider);
-    if (profile == null) return;
-    await globalState.safeRun(
-      () => ref
-          .read(profilesActionProvider.notifier)
-          .updateProfile(profile, showLoading: true),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.appLocalizations;
-    final p = context.palette;
-    final awgFirst = ref.watch(appSettingProvider.select((s) => s.awgPriority));
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Symbols.swap_horiz, color: p.cocoaText),
-              const SizedBox(width: 16),
-              Text(
-                l.tenvpnProtocol,
-                style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight: FontWeight.w500,
-                  color: p.text,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: SegmentedButton<bool>(
-              key: const ValueKey('tenvpn-protocol'),
-              showSelectedIcon: false,
-              segments: [
-                ButtonSegment(value: false, label: Text(l.tenvpnProtocolAuto)),
-                ButtonSegment(value: true, label: Text(l.tenvpnProtocolAwg)),
-              ],
-              selected: {awgFirst},
-              onSelectionChanged: (value) => _set(ref, value.first),
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            awgFirst ? l.tenvpnProtocolAwgDesc : l.tenvpnProtocolAutoDesc,
-            style: TextStyle(fontSize: 13, color: p.muted),
-          ),
-        ],
-      ),
     );
   }
 }

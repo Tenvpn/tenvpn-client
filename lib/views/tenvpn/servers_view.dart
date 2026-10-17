@@ -9,6 +9,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'main_view.dart' show TenvpnPing;
 import 'state.dart';
@@ -27,7 +28,7 @@ class TenvpnServerList extends ConsumerStatefulWidget {
 
 class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   bool _measured = false;
-  final _opened = <ServerSectionKind>{};
+  final _toggled = <ServerSectionKind>{};
 
   @override
   void initState() {
@@ -90,14 +91,17 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
       detailed: detailed,
       onTap: () => _select(server.name),
     );
+    final awgOnTop = ref.watch(tenvpnDesktopAwgProvider);
+    bool openByDefault(ServerSectionKind kind) => switch (kind) {
+      ServerSectionKind.main => true,
+      ServerSectionKind.reserve => awgOnTop,
+      ServerSectionKind.mobile => false,
+    };
     bool isOpen(ServerSection section) =>
         detailed ||
-        _opened.contains(section.kind) ||
-        section.servers.any(isSelected);
-    final main = ordered([
-      for (final s in sections)
-        if (s.kind == ServerSectionKind.main) ...s.servers,
-    ]);
+        section.servers.any(isSelected) ||
+        openByDefault(section.kind) != _toggled.contains(section.kind);
+    final hasAwg = sections.any((s) => s.kind == ServerSectionKind.reserve);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -130,29 +134,70 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
               current: selection.auto ? selection.server : null,
               onTap: () => _select(null),
             ),
-            ...main.map(tile),
           ],
         ),
-        for (final section in sections)
-          if (section.kind != ServerSectionKind.main) ...[
-            const SizedBox(height: 10),
-            _Group(
-              children: [
-                _SectionHeader(
-                  kind: section.kind,
-                  count: section.servers.length,
-                  open: isOpen(section),
-                  onTap: () => setState(() {
-                    if (!_opened.remove(section.kind)) {
-                      _opened.add(section.kind);
-                    }
-                  }),
-                ),
-                if (isOpen(section)) ...ordered(section.servers).map(tile),
-              ],
-            ),
-          ],
+        if (awgOnTop && !hasAwg && sections.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          const _Group(children: [_AwgMissingTile()]),
+        ],
+        for (final section in sections) ...[
+          const SizedBox(height: 10),
+          _Group(
+            children: [
+              _SectionHeader(
+                kind: section.kind,
+                awgOnTop: awgOnTop,
+                count: section.servers.length,
+                open: isOpen(section),
+                onTap: () => setState(() {
+                  if (!_toggled.remove(section.kind)) {
+                    _toggled.add(section.kind);
+                  }
+                }),
+              ),
+              if (isOpen(section)) ...ordered(section.servers).map(tile),
+            ],
+          ),
+        ],
       ],
+    );
+  }
+}
+
+/// On a PC without AmneziaWG in the profile: the subscription was pasted by
+/// hand, so there is no device token. The bot's button brings both.
+class _AwgMissingTile extends StatelessWidget {
+  const _AwgMissingTile();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    final p = context.palette;
+    return _Row(
+      key: const ValueKey('tenvpn-awg-missing'),
+      onTap: () => launchUrl(
+        Uri.parse(tenvpnBotUrl),
+        mode: LaunchMode.externalApplication,
+      ),
+      leading: Icon(Symbols.shield, color: p.muted, size: 22),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            l.tenvpnSectionAwg,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w500,
+              color: p.text,
+            ),
+          ),
+          Text(
+            l.tenvpnAwgMissing,
+            style: TextStyle(fontSize: 12, color: p.mutedDeep),
+          ),
+        ],
+      ),
+      end: Icon(Symbols.open_in_new, color: p.muted, size: 20),
     );
   }
 }
@@ -224,6 +269,7 @@ class _Row extends StatelessWidget {
   final Widget end;
   final VoidCallback onTap;
   final double minHeight;
+  final bool highlighted;
 
   const _Row({
     super.key,
@@ -233,10 +279,20 @@ class _Row extends StatelessWidget {
     required this.end,
     required this.onTap,
     this.minHeight = 50,
+    this.highlighted = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final p = context.palette;
+    return Material(
+      key: highlighted ? const ValueKey('tenvpn-row-selected') : null,
+      color: highlighted ? p.text.withValues(alpha: 0.08) : Colors.transparent,
+      child: _rowBody(),
+    );
+  }
+
+  Widget _rowBody() {
     return InkWell(
       onTap: onTap,
       child: ConstrainedBox(
@@ -283,6 +339,7 @@ class _AutoTile extends StatelessWidget {
         : presentServer(name: current!, type: '');
     return _Row(
       key: const ValueKey('tenvpn-server-auto'),
+      highlighted: selected,
       onTap: onTap,
       leading: Icon(Symbols.bolt, color: p.cocoaText, size: 24, fill: 1),
       minHeight: detailed ? 60 : 50,
@@ -370,12 +427,14 @@ class _Line extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final ServerSectionKind kind;
+  final bool awgOnTop;
   final int count;
   final bool open;
   final VoidCallback onTap;
 
   const _SectionHeader({
     required this.kind,
+    required this.awgOnTop,
     required this.count,
     required this.open,
     required this.onTap,
@@ -391,6 +450,11 @@ class _SectionHeader extends StatelessWidget {
         Symbols.signal_cellular_alt,
         l.tenvpnSectionMobile,
         l.tenvpnSectionMobileDesc,
+      ),
+      ServerSectionKind.reserve when awgOnTop => (
+        Symbols.shield,
+        l.tenvpnSectionAwg,
+        l.tenvpnSectionAwgDesc,
       ),
       ServerSectionKind.reserve => (
         Symbols.shield,
@@ -413,12 +477,13 @@ class _SectionHeader extends StatelessWidget {
               color: p.text,
             ),
           ),
-          Text(
-            description,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 12, color: p.mutedDeep),
-          ),
+          if (description.isNotEmpty)
+            Text(
+              description,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontSize: 12, color: p.mutedDeep),
+            ),
         ],
       ),
       end: AnimatedRotation(
@@ -453,6 +518,7 @@ class _ServerTile extends StatelessWidget {
     ];
     return _Row(
       key: ValueKey('tenvpn-server-${server.name}'),
+      highlighted: selected,
       onTap: onTap,
       leading: EmojiText(
         server.flag.isNotEmpty

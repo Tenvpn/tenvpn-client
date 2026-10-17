@@ -152,6 +152,7 @@ void main() {
       ipInfo: null,
     ),
     bool loaded = true,
+    bool desktop = false,
   }) {
     common = _FakeCommonAction();
     proxies = _FakeProxiesAction();
@@ -167,6 +168,7 @@ void main() {
         profilesActionProvider.overrideWith(() => profiles),
         networkDetectionProvider.overrideWith(() => _FixedDetection(detection)),
         tenvpnServerEntriesProvider.overrideWith((_) async => _servers),
+        tenvpnDesktopAwgProvider.overrideWithValue(desktop),
         profilesStreamProvider.overrideWith(
           (_) => loaded ? Stream.value(items) : const Stream.empty(),
         ),
@@ -220,7 +222,7 @@ void main() {
       await pump(tester, const TenvpnMainView());
 
       expect(find.text('Turn on'), findsOneWidget);
-      expect(text('Tap to connect'), findsOneWidget);
+      expect(text('Tap to connect'), findsNothing);
       expect(find.byKey(const ValueKey('tenvpn-ring-off')), findsOneWidget);
       expect(text('Now: 🇸🇪 Швеция'), findsOneWidget);
       expect(text('Expires:'), findsOneWidget);
@@ -367,8 +369,10 @@ void main() {
       await tester.pump();
 
       expect(proxies.speedChecks, 1);
+      expect(text('All servers'), findsOneWidget);
       expect(text('For allowlisted networks · 1'), findsOneWidget);
       expect(text('Backup connection · 1'), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-row-selected')), findsOneWidget);
       expect(text('Белые списки 1'), findsNothing);
       expect(container.read(tenvpnHasAwgProvider), isTrue);
 
@@ -394,6 +398,34 @@ void main() {
 
       await tester.tap(find.byKey(const ValueKey('tenvpn-ping')));
       expect(proxies.speedChecks, 2);
+    });
+
+    _tv('on a PC AmneziaWG is its own open section on top', (tester) async {
+      container = build(items: [profile], desktop: true);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+      );
+      await tester.pump();
+
+      final awg = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+      );
+      final main = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-section-main')),
+      );
+      expect(awg.dy, lessThan(main.dy));
+      expect(text('AmneziaWG · 1'), findsOneWidget);
+      expect(text('Backup connection'), findsNothing);
+      expect(find.byKey(const ValueKey('tenvpn-awg-missing')), findsNothing);
+
+      await tester.tap(find.byKey(const ValueKey('tenvpn-section-main')));
+      await tester.pump();
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[1].name}')),
+        findsNothing,
+      );
     });
 
     _tv('detailed look opens every section and keeps ping order', (
@@ -505,7 +537,7 @@ void main() {
   });
 
   group('settings', () {
-    _tv('toggles, theme and the protocol choice', (tester) async {
+    _tv('toggles and theme; no protocol switch to puzzle over', (tester) async {
       container = build(items: [profile]);
       container.read(groupsProvider.notifier).value = _groups(manual: false);
       await pump(tester, const TenvpnSettingsView());
@@ -517,7 +549,7 @@ void main() {
       await tester.pump();
       expect(container.read(appSettingProvider).autoRun, isTrue);
 
-      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsNothing);
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.dark);
       await tester.scrollUntilVisible(find.text('Light'), 200);
       await tester.ensureVisible(find.text('Light'));

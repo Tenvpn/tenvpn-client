@@ -152,10 +152,13 @@ ServerPresentation presentServer({
 }
 
 /// Servers missing from configgen's [entries] are classified by name alone.
+/// [awgFirst] puts AmneziaWG above the rest — on a PC it is the main
+/// protocol, on a phone it stays the fallback at the bottom.
 List<ServerSection> groupServers(
   List<({String name, String type})> proxies,
-  List<ServerEntry> entries,
-) {
+  List<ServerEntry> entries, {
+  bool awgFirst = false,
+}) {
   final byName = {for (final entry in entries) entry.name: entry};
   final buckets = {
     for (final kind in ServerSectionKind.values) kind: <ServerPresentation>[],
@@ -170,8 +173,15 @@ List<ServerSection> groupServers(
     );
     buckets[server.section]!.add(server);
   }
+  final order = awgFirst
+      ? [
+          ServerSectionKind.reserve,
+          ServerSectionKind.main,
+          ServerSectionKind.mobile,
+        ]
+      : ServerSectionKind.values;
   return [
-    for (final kind in ServerSectionKind.values)
+    for (final kind in order)
       if (buckets[kind]!.isNotEmpty) ServerSection(kind, buckets[kind]!),
   ];
 }

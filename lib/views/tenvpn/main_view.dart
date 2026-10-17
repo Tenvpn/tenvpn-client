@@ -37,10 +37,14 @@ class TenvpnMainView extends ConsumerWidget {
             constraints: const BoxConstraints(maxWidth: tenvpnContentWidth),
             child: LayoutBuilder(
               builder: (context, constraints) {
-                final button = [
-                  constraints.maxHeight * 0.3,
-                  constraints.maxWidth * 0.62,
-                ].reduce((a, b) => a < b ? a : b).clamp(140.0, 250.0);
+                // A desktop window is resized freely; a button that tracked
+                // its height made the whole screen swim.
+                final button = system.isDesktop
+                    ? 200.0
+                    : [
+                        constraints.maxHeight * 0.3,
+                        constraints.maxWidth * 0.62,
+                      ].reduce((a, b) => a < b ? a : b).clamp(140.0, 250.0);
                 return ListView(
                   padding: EdgeInsets.fromLTRB(
                     16,
@@ -56,7 +60,7 @@ class TenvpnMainView extends ConsumerWidget {
                     ),
                     const SizedBox(height: 14),
                     _StatusHint(phase: phase),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: 10),
                     const TenvpnExpiryLine(),
                     const SizedBox(height: 18),
                     const TenvpnServerList(),
@@ -134,13 +138,18 @@ class _StatusHint extends ConsumerWidget {
     final l = context.appLocalizations;
     final p = context.palette;
     final (hint, color) = switch (phase) {
-      ConnectionPhase.off => (l.tenvpnHintOff, p.muted),
+      ConnectionPhase.off => ('', p.muted),
       ConnectionPhase.connecting => (l.tenvpnHintConnecting, p.muted),
       ConnectionPhase.on => (_ipText(context, ref, l), p.text),
       ConnectionPhase.error => (l.tenvpnHintError, p.danger),
     };
-    return SizedBox(
-      width: double.infinity,
+    // One line is always reserved, so turning on or off never shifts the
+    // server list.
+    return ConstrainedBox(
+      constraints: const BoxConstraints(
+        minWidth: double.infinity,
+        minHeight: 22,
+      ),
       child: EmojiText(
         hint,
         key: const ValueKey('tenvpn-status-hint'),
@@ -305,6 +314,9 @@ class TenvpnPing extends ConsumerWidget {
 
 /// Paid-until (or the panel's end date), the balance when the backend sent
 /// it, and «Продлить» — a secondary button: lime stays for "connected".
+/// Expiry on the left, «Кабинет» on the right, in one card: the date, how
+/// many days are left and the balance read at a glance, and paying or
+/// managing devices is one tap away.
 class TenvpnExpiryLine extends ConsumerWidget {
   const TenvpnExpiryLine({super.key});
 
@@ -315,74 +327,112 @@ class TenvpnExpiryLine extends ConsumerWidget {
     final expiry = ref.watch(tenvpnExpiryProvider);
     final account = expiry.account;
     final locale = Localizations.localeOf(context).toLanguageTag();
-    var color = p.muted;
-    final String text;
+    var color = p.text;
+    final String head;
+    String? left;
     final date = expiry.date;
     if (expiry.free) {
-      text = l.tenvpnFreeAccess;
+      head = l.tenvpnFreeAccess;
     } else if (expiry.suspended) {
-      text = l.tenvpnSuspended;
+      head = l.tenvpnSuspended;
       color = p.danger;
     } else if (date == null) {
-      text = l.tenvpnExpiresUnknown;
+      head = l.tenvpnExpiresUnknown;
     } else {
-      final left = daysLeft(date, DateTime.now());
+      final days = daysLeft(date, DateTime.now());
       final formatted = DateFormat.yMMMMd(locale).format(date);
-      if (left < 0) {
-        text = l.tenvpnExpired;
+      if (days < 0) {
+        head = l.tenvpnExpired;
         color = p.danger;
       } else {
-        final head = expiry.source == ExpirySource.account
+        head = expiry.source == ExpirySource.account
             ? l.tenvpnPaidUntil(formatted)
             : l.tenvpnExpires(formatted);
-        text = '$head · ${l.tenvpnDaysLeft(left)}';
-        if (left <= 3) color = p.warn;
+        left = _capitalized(l.tenvpnDaysLeft(days));
+        if (days <= 3) color = p.warn;
       }
     }
     final money = NumberFormat.decimalPatternDigits(
       locale: locale,
       decimalDigits: 0,
     );
-    return Column(
-      children: [
-        Text(
-          text,
-          key: const ValueKey('tenvpn-expiry'),
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, color: color),
-        ),
-        if (account != null && !expiry.free) ...[
-          const SizedBox(height: 2),
-          Text(
-            [
-              l.tenvpnBalance(
-                money.format(account.balanceRub.floor()),
-                money.format(account.dailyRateRub.round()),
-              ),
-              if (account.activeDevices > 0)
-                l.tenvpnDevices(account.activeDevices),
-            ].join(' · '),
-            key: const ValueKey('tenvpn-balance'),
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12.5, color: p.muted),
+    final balance = account != null && !expiry.free
+        ? [
+            l.tenvpnBalance(
+              money.format(account.balanceRub.floor()),
+              money.format(account.dailyRateRub.round()),
+            ),
+            if (account.activeDevices > 0)
+              l.tenvpnDevices(account.activeDevices),
+          ].join(' · ')
+        : null;
+    return TenvpnCard(
+      padding: const EdgeInsets.fromLTRB(16, 10, 10, 10),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  head,
+                  key: const ValueKey('tenvpn-expiry'),
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: color,
+                  ),
+                ),
+                if (left != null)
+                  Text(
+                    left,
+                    key: const ValueKey('tenvpn-days-left'),
+                    style: TextStyle(fontSize: 12.5, color: p.muted),
+                  ),
+                if (balance != null)
+                  Text(
+                    balance,
+                    key: const ValueKey('tenvpn-balance'),
+                    style: TextStyle(fontSize: 12.5, color: p.muted),
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          FilledButton.tonalIcon(
+            key: const ValueKey('tenvpn-cabinet'),
+            onPressed: () => ref.read(tenvpnOpenCabinetProvider)(),
+            icon: const Icon(Symbols.account_circle, size: 18),
+            label: Text(l.tenvpnCabinet),
+            style: FilledButton.styleFrom(
+              backgroundColor: p.elevated,
+              foregroundColor: p.text,
+              visualDensity: VisualDensity.compact,
+            ),
           ),
         ],
-        const SizedBox(height: 6),
-        OutlinedButton.icon(
-          key: const ValueKey('tenvpn-renew'),
-          onPressed: () => launchUrl(
-            Uri.parse(ref.read(tenvpnRenewUrlProvider)),
-            mode: LaunchMode.externalApplication,
-          ),
-          icon: const Icon(Symbols.add_card, size: 18),
-          label: Text(l.tenvpnRenew),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: p.text,
-            side: BorderSide(color: p.borderStrong),
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
+
+String _capitalized(String text) =>
+    text.isEmpty ? text : text[0].toUpperCase() + text.substring(1);
+
+/// Opens the web cabinet signed in through the device token when the backend
+/// can, its login page otherwise; without a backend — the bot.
+final tenvpnOpenCabinetProvider = Provider<Future<void> Function()>((ref) {
+  return () async {
+    final profile = ref.read(currentProfileProvider);
+    final token = profile == null
+        ? null
+        : await ref.read(tenvpnConfigProvider).appToken(profile.id);
+    final url = await cabinetUrl(
+      endpoints: TenvpnEndpoints.configured,
+      token: token,
+      fallback: ref.read(tenvpnRenewUrlProvider),
+      post: tenvpnPost,
+    );
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  };
+});

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
@@ -101,10 +102,16 @@ final tenvpnSectionsProvider = Provider<List<ServerSection>>((ref) {
   final manual = ref.watch(groupsProvider).getGroup(manualGroupName);
   final entries = ref.watch(tenvpnServerEntriesProvider).value ?? const [];
   if (manual == null) return const [];
-  return groupServers([
-    for (final proxy in manual.all) (name: proxy.name, type: proxy.type),
-  ], entries);
+  return groupServers(
+    [for (final proxy in manual.all) (name: proxy.name, type: proxy.type)],
+    entries,
+    awgFirst: ref.watch(tenvpnDesktopAwgProvider),
+  );
 });
+
+/// On Windows AmneziaWG is the protocol people come for: it gets its own
+/// section on top, named after itself rather than «Запасное подключение».
+final tenvpnDesktopAwgProvider = Provider<bool>((ref) => system.isWindows);
 
 final tenvpnHasAwgProvider = Provider<bool>((ref) {
   final sections = ref.watch(tenvpnSectionsProvider);

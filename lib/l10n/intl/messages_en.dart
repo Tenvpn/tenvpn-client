@@ -840,9 +840,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1629,10 +1630,14 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Launch TENVPN when the computer starts",
     ),
+    "tenvpnAwgMissing": MessageLookupByLibrary.simpleMessage(
+      "Connect it through the bot: My devices → Open in the app",
+    ),
     "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Account"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Use another link",
     ),
@@ -1709,6 +1714,10 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Reconnect"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
+    "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
+      "Fastest on home internet",
+    ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
     ),
