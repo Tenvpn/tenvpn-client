@@ -202,6 +202,7 @@ GeneratedConfig buildConfig(
       'default-nameserver': tenvpnDefaultNameservers,
       'nameserver': tenvpnNameservers,
       'proxy-server-nameserver': tenvpnProxyServerNameservers,
+      'direct-nameserver': tenvpnProxyServerNameservers,
     },
     'proxies': proxies,
     'proxy-groups': groups,

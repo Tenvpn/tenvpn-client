@@ -385,6 +385,7 @@ proxies:
         expect(server, endsWith('#$mainGroupName'), reason: 'through the VPN');
       }
       expect(dns['proxy-server-nameserver'].first, '77.88.8.8');
+      expect(dns['direct-nameserver'], dns['proxy-server-nameserver']);
       expect(config['external-controller'], '127.0.0.1:9090');
       expect(generated.secret, matches(RegExp(r'^[0-9a-f]{32}$')));
       expect(config['secret'], generated.secret);

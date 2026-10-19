@@ -14,6 +14,7 @@ export 'awg_source.dart';
 export 'expiry.dart';
 export 'telemetry.dart';
 export 'headers.dart';
+export 'network_mode.dart';
 export 'configgen/configgen.dart';
 export 'presentation.dart';
 export 'tenvpn_config.dart';
