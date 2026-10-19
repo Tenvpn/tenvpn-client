@@ -395,7 +395,7 @@ proxies:
       );
     });
 
-    test('AWG sits between the tiers in «Авто» and ends «Вручную»', () {
+    test('AWG stays out of «Авто» and is picked by hand in «Вручную»', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
       final generated = buildConfig(subscription, awg: awg);
       final groups = {
@@ -404,9 +404,18 @@ proxies:
       };
       expect(groups[autoGroupName]['proxies'], [
         autoPrimaryGroupName,
-        awgDefaultName,
         autoWhitelistGroupName,
       ]);
+      final regularOnly = buildConfig(
+        parseSubscription(
+          'proxies:\n'
+          '  - {name: A, type: vless, server: a.example.com, port: 443}\n',
+        ),
+        awg: awg,
+      );
+      final auto = (regularOnly.config['proxy-groups'] as List)[1];
+      expect(auto['type'], 'url-test');
+      expect(auto['proxies'], ['A']);
       for (final tier in autoTierGroupNames) {
         expect(groups[tier]['proxies'], isNot(contains(awgDefaultName)));
       }

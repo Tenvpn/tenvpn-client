@@ -3,8 +3,8 @@ import 'dart:math';
 import 'constants.dart';
 import 'subscription.dart';
 
-/// Order of the tiers inside «Авто»: regular servers → AmneziaWG → servers
-/// for mobile whitelists (CDN traffic is paid and slower, so it goes last).
+/// Order of the tiers inside «Авто»: regular servers → servers for mobile
+/// whitelists (CDN traffic is paid and slower, so it goes last).
 enum AutoStrategy { fastest, awgFirst }
 
 class ConfigGenOptions {
@@ -235,14 +235,18 @@ List<Map<String, dynamic>> _autoGroups(
     if (primary.isNotEmpty) (autoPrimaryGroupName, primary, false),
     if (whitelist.isNotEmpty) (autoWhitelistGroupName, whitelist, true),
   ];
-  if (awg.isEmpty && tiers.length < 2) {
+  // AmneziaWG stalls on mobile and is dead under whitelists, so it joins
+  // «Авто» only when the user asks for it first; otherwise it is manual.
+  final lead = options.autoStrategy == AutoStrategy.awgFirst
+      ? awg
+      : const <String>[];
+  if (lead.isEmpty && tiers.length < 2) {
     final (_, proxies, wl) = tiers.single;
     return [urlTest(autoGroupName, proxies, wl)];
   }
   final members = [
-    if (options.autoStrategy == AutoStrategy.awgFirst) ...awg,
+    ...lead,
     if (primary.isNotEmpty) autoPrimaryGroupName,
-    if (options.autoStrategy == AutoStrategy.fastest) ...awg,
     if (whitelist.isNotEmpty) autoWhitelistGroupName,
   ];
   return [
