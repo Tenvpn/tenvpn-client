@@ -8,6 +8,22 @@ const _intOptions = ['jc', 'jmin', 'jmax', 's1', 's2', 's3', 's4', 'itime'];
 const _headerOptions = ['h1', 'h2', 'h3', 'h4'];
 const _stringOptions = ['i1', 'i2', 'i3', 'i4', 'i5', 'j1', 'j2', 'j3'];
 
+// mihomo applies AmneziaWG 3.x fields only with `version: 3`, which rejects the 1.5-only ones.
+const _v3RangeOptions = {
+  'contentpaddingaddition': 'content-padding-addition',
+  'rekeyaftertime': 'rekey-after-time',
+  'rekeytimeout': 'rekey-timeout',
+  'rejectaftertime': 'reject-after-time',
+  'keepalivetimeout': 'keepalive-timeout',
+  'maxhandshakeattempts': 'max-handshake-attempts',
+};
+const _v3BoolOptions = {
+  'randomtrailers': 'random-trailers',
+  'disablecookies': 'disable-cookies',
+};
+const _v15OnlyOptions = ['j1', 'j2', 'j3', 'itime'];
+final _base64KeyPattern = RegExp(r'^[A-Za-z0-9+/]{43}=$');
+
 /// Turns a wg-quick `.conf` (the file vpnbot renders for AmneziaVPN) into a
 /// mihomo `wireguard` proxy with `amnezia-wg-option`.
 Map<String, dynamic> parseAwgConf(String conf, {String name = awgDefaultName}) {
@@ -65,6 +81,45 @@ Map<String, dynamic> parseAwgConf(String conf, {String name = awgDefaultName}) {
   final amnezia = _amneziaOptions(interface);
   if (amnezia.isNotEmpty) proxy['amnezia-wg-option'] = amnezia;
   return proxy;
+}
+
+Map<String, dynamic> _amneziaV3Options(Map<String, String> interface) {
+  final options = <String, dynamic>{};
+  final headerKey = interface['headerprotectionkey'];
+  if (headerKey != null && headerKey.isNotEmpty) {
+    if (!_base64KeyPattern.hasMatch(headerKey)) {
+      throw const ConfigGenException(
+        ConfigGenErrorCode.awgInvalid,
+        'HeaderProtectionKey is not a base64 key',
+      );
+    }
+    options['header-protection-key'] = headerKey;
+  }
+  _v3RangeOptions.forEach((iniKey, yamlKey) {
+    final value = interface[iniKey];
+    // awg-quick saves an unset padding as `ContentPaddingAddition = 0`.
+    if (value == null || value.isEmpty || value == '0') return;
+    if (!_headerPattern.hasMatch(value)) {
+      throw ConfigGenException(
+        ConfigGenErrorCode.awgInvalid,
+        '$iniKey must be a number or a range',
+      );
+    }
+    options[yamlKey] = value;
+  });
+  _v3BoolOptions.forEach((iniKey, yamlKey) {
+    final value = interface[iniKey]?.toLowerCase();
+    if (value == null || value.isEmpty) return;
+    if (const ['on', 'true', '1'].contains(value)) {
+      options[yamlKey] = true;
+    } else if (!const ['off', 'false', '0'].contains(value)) {
+      throw ConfigGenException(
+        ConfigGenErrorCode.awgInvalid,
+        '$iniKey must be on or off',
+      );
+    }
+  });
+  return options;
 }
 
 Map<String, Map<String, String>> _parseIni(String conf) {
@@ -171,6 +226,15 @@ Map<String, dynamic> _amneziaOptions(Map<String, String> interface) {
   for (final key in _stringOptions) {
     final value = interface[key];
     if (value != null && value.isNotEmpty) options[key] = value;
+  }
+  final v3 = _amneziaV3Options(interface);
+  if (v3.isNotEmpty) {
+    for (final key in _v15OnlyOptions) {
+      options.remove(key);
+    }
+    options
+      ..addAll(v3)
+      ..['version'] = 3;
   }
   final obfuscated = options.entries.any(
     (entry) => entry.value is! int || entry.value != 0,
