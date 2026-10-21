@@ -208,6 +208,47 @@ proxies:
       });
     });
 
+    test('AmneziaWG 3.1 profile switches the core to version 3', () {
+      final proxy = parseAwgConf(fixture('awg_v3.conf'));
+      expect(proxy['amnezia-wg-option'], {
+        'jc': 4,
+        'jmin': 40,
+        'jmax': 70,
+        's1': 15,
+        's2': 23,
+        's3': 18,
+        's4': 16,
+        'h1': '172006388-202361271',
+        'h2': '471800590-525218421',
+        'h3': '1063457287-1121234560',
+        'h4': '1903204218-2004318222',
+        'i1': '<b 0xc2000000011e><r 16><t>',
+        'header-protection-key': 'DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDA=',
+        'content-padding-addition': '2-10',
+        'random-trailers': true,
+        'version': 3,
+      });
+    });
+
+    test('3.x drops the 1.5-only fields, a zero padding stays 2.0', () {
+      final v3 = fixture('awg_v3.conf').replaceFirst(
+        'I1 = ',
+        'J1 = <r 8>\nItime = 120\nI1 = ',
+      );
+      final option = parseAwgConf(v3)['amnezia-wg-option'] as Map;
+      expect(option.containsKey('j1'), isFalse);
+      expect(option.containsKey('itime'), isFalse);
+      expect(option['version'], 3);
+
+      final v2 = fixture('awg_v2.conf').replaceFirst(
+        'I1 = ',
+        'ContentPaddingAddition = 0\nI1 = ',
+      );
+      final legacy = parseAwgConf(v2)['amnezia-wg-option'] as Map;
+      expect(legacy.containsKey('version'), isFalse);
+      expect(legacy.containsKey('content-padding-addition'), isFalse);
+    });
+
     test('plain WireGuard has no amnezia options', () {
       final conf = fixture('awg_v1.conf').replaceAll(
         RegExp(r'^(Jc|Jmin|Jmax|S1|S2|H\d) = .*\n', multiLine: true),
@@ -226,6 +267,12 @@ proxies:
         v2.replaceFirst(RegExp(r'Address = .*'), ''),
         v2.replaceFirst('Jc = 4', 'Jc = four'),
         v2.replaceFirst(RegExp(r'H1 = .*'), 'H1 = 1-two'),
+        fixture('awg_v3.conf').replaceFirst(
+          RegExp(r'HeaderProtectionKey = .*'),
+          'HeaderProtectionKey = short',
+        ),
+        fixture('awg_v3.conf').replaceFirst('2-10', 'two-ten'),
+        fixture('awg_v3.conf').replaceFirst('RandomTrailers = on', 'RandomTrailers = maybe'),
       ]) {
         expect(
           () => parseAwgConf(broken),
