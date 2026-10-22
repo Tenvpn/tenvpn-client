@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
@@ -307,18 +309,16 @@ class _Ring extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           if (phase == ConnectionPhase.on)
-            DecoratedBox(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: p.accent.withValues(alpha: 0.22),
-                    blurRadius: size * 0.1,
-                    spreadRadius: -size * 0.04,
-                  ),
-                ],
+            ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
+              child: SizedBox.square(
+                dimension: size,
+                child: CircularProgressIndicator(
+                  value: 1,
+                  strokeWidth: width * 3,
+                  color: p.accent.withValues(alpha: 0.45),
+                ),
               ),
-              child: SizedBox.square(dimension: size),
             ),
           SizedBox.square(
             dimension: size,

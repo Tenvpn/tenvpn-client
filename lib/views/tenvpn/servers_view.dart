@@ -103,20 +103,31 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
       children: [
         Row(
           children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4),
+            if (p.strict) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 4, right: 10),
                 child: Text(
-                  l.tenvpnServers,
-                  style: TextStyle(
-                    fontFamily: tenvpnDisplayFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: p.text,
+                  p.caps(l.tenvpnServers),
+                  style: p.captionStyle(p.muted),
+                ),
+              ),
+              Expanded(child: Divider(height: 1, color: p.border)),
+              const SizedBox(width: 10),
+            ] else
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    l.tenvpnServers,
+                    style: TextStyle(
+                      fontFamily: tenvpnDisplayFont,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: p.text,
+                    ),
                   ),
                 ),
               ),
-            ),
             _PingButton(onPressed: _checkSpeed),
           ],
         ),

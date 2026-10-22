@@ -353,6 +353,14 @@ ThemeData buildTenvpnTheme({
       focusedBorder: line(palette.accent, 1.5),
       disabledBorder: line(palette.border),
     ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: _strictCorner),
+        ),
+        side: WidgetStatePropertyAll(BorderSide(color: palette.borderStrong)),
+      ),
+    ),
   );
 }
 
