@@ -1366,6 +1366,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "Use another link",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
+    "tenvpnChipOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "tenvpnChipProtected": MessageLookupByLibrary.simpleMessage("Protected"),
+    "tenvpnChipUnprotected": MessageLookupByLibrary.simpleMessage(
+      "Not protected",
+    ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
     "tenvpnDaysLeft": m33,
     "tenvpnDevices": m34,

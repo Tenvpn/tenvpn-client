@@ -956,5 +956,8 @@
   "tenvpnTelemetry": "Technical statistics",
   "tenvpnTelemetryDesc": "App version, OS and connection protocol — helps support. No IP, no sites.",
   "tenvpnPrivacy": "Privacy policy",
-  "tenvpnProviderHint": "You get the subscription link from your TENVPN provider"
+  "tenvpnProviderHint": "You get the subscription link from your TENVPN provider",
+  "tenvpnChipOff": "Off",
+  "tenvpnChipProtected": "Protected",
+  "tenvpnChipUnprotected": "Not protected"
 }

@@ -165,12 +165,18 @@ class _PingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final shape = p.strict
+        ? RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            side: BorderSide(color: p.borderStrong),
+          )
+        : AppShape.full;
     return Material(
-      color: p.elevated,
-      shape: AppShape.full,
+      color: p.strict ? Colors.transparent : p.elevated,
+      shape: shape,
       child: InkWell(
         key: const ValueKey('tenvpn-ping'),
-        customBorder: AppShape.full,
+        customBorder: shape,
         onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 7, 12, 7),
@@ -180,12 +186,14 @@ class _PingButton extends StatelessWidget {
               Icon(Symbols.refresh, size: 16, color: p.muted),
               const SizedBox(width: 6),
               Text(
-                context.appLocalizations.tenvpnCheckSpeed,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: p.muted,
-                ),
+                p.caps(context.appLocalizations.tenvpnCheckSpeed),
+                style: p.strict
+                    ? p.captionStyle(p.text)
+                    : TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: p.muted,
+                      ),
               ),
             ],
           ),
@@ -406,12 +414,14 @@ class _SectionHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '$title · $count',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: p.text,
-            ),
+            p.caps('$title · $count'),
+            style: p.strict
+                ? p.captionStyle(p.text).copyWith(fontSize: 12.5)
+                : TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: p.text,
+                  ),
           ),
           Text(
             description,

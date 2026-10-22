@@ -956,5 +956,8 @@
   "tenvpnTelemetry": "Техническая статистика",
   "tenvpnTelemetryDesc": "Версия приложения, система и протокол подключения — помогает поддержке. Без IP и сайтов.",
   "tenvpnPrivacy": "Политика конфиденциальности",
-  "tenvpnProviderHint": "Ссылку на подписку вы получаете у своего провайдера TENVPN"
+  "tenvpnProviderHint": "Ссылку на подписку вы получаете у своего провайдера TENVPN",
+  "tenvpnChipOff": "Выключено",
+  "tenvpnChipProtected": "Защищено",
+  "tenvpnChipUnprotected": "Не защищено"
 }

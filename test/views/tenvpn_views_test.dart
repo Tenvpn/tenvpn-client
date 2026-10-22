@@ -228,7 +228,8 @@ void main() {
       expect(find.byKey(const ValueKey('tenvpn-ring-off')), findsOneWidget);
       expect(text('Now: 🇸🇪 Швеция'), findsOneWidget);
       expect(text('Expires:'), findsOneWidget);
-      expect(find.byType(FerMascot), findsNothing);
+      expect(find.byType(FerMascot), findsOneWidget);
+      expect(find.text('OFF'), findsOneWidget);
 
       await tester.tap(find.byKey(const ValueKey('tenvpn-connect')));
       expect(common.toggles, 1);
@@ -357,6 +358,93 @@ void main() {
       await tester.pump();
 
       expect(container.read(checkIpNumProvider), before + 1);
+    });
+  });
+
+  group('power button in both looks', () {
+    Future<void> showPhase(
+      WidgetTester tester,
+      ConnectionPhase phase,
+      AppLook look,
+    ) async {
+      container = build(
+        items: [profile],
+        detection: NetworkDetectionState(
+          isLoading: phase != ConnectionPhase.on,
+          ipInfo: phase == ConnectionPhase.on
+              ? const IpInfo(ip: '203.0.113.7', countryCode: 'NL')
+              : null,
+        ),
+      );
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(tester, const TenvpnMainView(), look: look);
+      if (phase == ConnectionPhase.off) return;
+      container.read(runTimeProvider.notifier).value = 42000;
+      await tester.pump();
+      if (phase == ConnectionPhase.on) await tester.pump(connectingAnimation);
+    }
+
+    final cases = {
+      (AppLook.burrow, ConnectionPhase.off): ('Turn on', 'OFF', 1),
+      (AppLook.burrow, ConnectionPhase.connecting): (
+        'Connecting',
+        'NOT PROTECTED',
+        1,
+      ),
+      (AppLook.burrow, ConnectionPhase.on): ('On', 'PROTECTED', 1),
+      (AppLook.strict, ConnectionPhase.off): ('TURN ON', 'OFF', 0),
+      (AppLook.strict, ConnectionPhase.connecting): (
+        'CONNECTING',
+        'NOT PROTECTED',
+        0,
+      ),
+      (AppLook.strict, ConnectionPhase.on): ('ON', 'PROTECTED', 0),
+    };
+    for (final MapEntry(key: (look, phase), value: (label, chip, fer))
+        in cases.entries) {
+      _tv('${look.name} ${phase.name}: $label, $chip', (tester) async {
+        await showPhase(tester, phase, look);
+        expect(container.read(tenvpnPhaseProvider), phase);
+        expect(find.text(label), findsOneWidget);
+        expect(find.text(chip), findsOneWidget);
+        expect(find.byType(FerMascot), findsNWidgets(fer));
+        expect(
+          find.byKey(ValueKey('tenvpn-ring-${phase.name}')),
+          findsOneWidget,
+        );
+        final timer = find.byKey(const ValueKey('tenvpn-session-timer'));
+        if (phase == ConnectionPhase.on) {
+          expect(tester.widget<Text>(timer).data, '00:00:42');
+        } else {
+          expect(timer, findsNothing);
+        }
+        await tester.tap(find.byKey(const ValueKey('tenvpn-connect')));
+        expect(common.toggles, 1);
+        await tester.pump(connectingAnimation);
+      });
+    }
+
+    _tv('the timer follows the session time the core keeps', (tester) async {
+      await showPhase(tester, ConnectionPhase.on, AppLook.strict);
+      container.read(runTimeProvider.notifier).value = 3723000;
+      await tester.pump();
+      expect(find.text('01:02:03'), findsOneWidget);
+    });
+
+    test('the strict palette has visible lines and readable grey', () {
+      double contrast(Color a, Color b) {
+        final (x, y) = (a.computeLuminance(), b.computeLuminance());
+        return (max(x, y) + 0.05) / (min(x, y) + 0.05);
+      }
+
+      const dark = TenvpnPalette.strictDark;
+      const light = TenvpnPalette.strictLight;
+      expect(contrast(dark.border, dark.ink), greaterThan(1.8));
+      expect(contrast(dark.muted, dark.ink), greaterThan(10));
+      expect(contrast(light.mutedDeep, light.ink), greaterThan(4.5));
+      expect(light.ink, const Color(0xFFFAFAF7));
+      expect(dark.strict && light.strict, isTrue);
+      expect(TenvpnPalette.dark.strict, isFalse);
     });
   });
 
