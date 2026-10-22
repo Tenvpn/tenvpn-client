@@ -39,6 +39,13 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
             unknownValue: ServerSort.subscription,
           ) ??
           ServerSort.subscription,
+      look:
+          $enumDecodeNullable(
+            _$AppLookEnumMap,
+            json['look'],
+            unknownValue: AppLook.burrow,
+          ) ??
+          AppLook.burrow,
       testUrl: json['testUrl'] as String? ?? defaultTestUrl,
       isAnimateToPage: json['isAnimateToPage'] as bool? ?? true,
       isSwipeToPage: json['isSwipeToPage'] as bool? ?? true,
@@ -106,6 +113,7 @@ Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
       'tenvpnTelemetry': instance.tenvpnTelemetry,
       'serverListStyle': _$ServerListStyleEnumMap[instance.serverListStyle]!,
       'serverSort': _$ServerSortEnumMap[instance.serverSort]!,
+      'look': _$AppLookEnumMap[instance.look]!,
       'testUrl': instance.testUrl,
       'isAnimateToPage': instance.isAnimateToPage,
       'isSwipeToPage': instance.isSwipeToPage,
@@ -139,6 +147,8 @@ const _$ServerSortEnumMap = {
   ServerSort.subscription: 'subscription',
   ServerSort.ping: 'ping',
 };
+
+const _$AppLookEnumMap = {AppLook.burrow: 'burrow', AppLook.strict: 'strict'};
 
 const _$RestoreStrategyEnumMap = {
   RestoreStrategy.compatible: 'compatible',

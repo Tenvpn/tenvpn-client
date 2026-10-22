@@ -332,6 +332,8 @@ enum FontFamily {
 /// the settings.
 enum ServerListStyle { compact, detailed }
 
+enum AppLook { burrow, strict }
+
 enum ServerSort { subscription, ping }
 
 enum EditorFontSize {

@@ -832,9 +832,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1666,6 +1667,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Compact"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Detailed"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Server list"),
+    "tenvpnLook": MessageLookupByLibrary.simpleMessage("Style"),
+    "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("With Fer"),
+    "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Strict"),
     "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "No link yet? The TENVPN bot gives you one.",

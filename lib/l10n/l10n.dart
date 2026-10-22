@@ -7828,6 +7828,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Style`
+  String get tenvpnLook {
+    return Intl.message('Style', name: 'tenvpnLook', desc: '', args: []);
+  }
+
+  /// `With Fer`
+  String get tenvpnLookBurrow {
+    return Intl.message(
+      'With Fer',
+      name: 'tenvpnLookBurrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Strict`
+  String get tenvpnLookStrict {
+    return Intl.message('Strict', name: 'tenvpnLookStrict', desc: '', args: []);
+  }
+
   /// `Server list`
   String get tenvpnListStyle {
     return Intl.message(

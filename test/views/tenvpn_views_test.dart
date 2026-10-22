@@ -177,7 +177,11 @@ void main() {
     return c;
   }
 
-  Future<void> pump(WidgetTester tester, Widget child) async {
+  Future<void> pump(
+    WidgetTester tester,
+    Widget child, {
+    AppLook look = AppLook.burrow,
+  }) async {
     tester.view.physicalSize = const Size(420, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -187,7 +191,7 @@ void main() {
         container: container,
         child: TestApp(
           child: Theme(
-            data: buildTenvpnTheme(brightness: Brightness.dark),
+            data: buildTenvpnTheme(brightness: Brightness.dark, look: look),
             child: child,
           ),
         ),
@@ -562,6 +566,22 @@ void main() {
       expect(text('Privacy policy'), findsOneWidget);
     });
 
+    _tv('the strict look is picked in settings and hides Fer', (tester) async {
+      container = build(items: [profile]);
+      await pump(tester, const TenvpnSettingsView());
+      await tester.ensureVisible(find.text('Strict'));
+      await tester.pump();
+      await tester.tap(find.text('Strict'));
+      await tester.pump();
+      expect(container.read(appSettingProvider).look, AppLook.strict);
+
+      await pump(tester, const TenvpnSettingsView(), look: AppLook.strict);
+      await tester.drag(find.byType(ListView), const Offset(0, 3000));
+      await tester.pump();
+      expect(find.byType(Image), findsNothing);
+      expect(find.byType(TenvpnLogo), findsOneWidget);
+    });
+
     _tv('advanced keeps the base client reachable', (tester) async {
       container = build(items: [profile]);
       await pump(tester, const TenvpnAdvancedView());
@@ -605,6 +625,21 @@ void main() {
     expect(
       buildTenvpnTheme(brightness: Brightness.light).colorScheme.brightness,
       Brightness.light,
+    );
+  });
+
+  test('the strict palette keeps lime and drops cocoa and Fer', () {
+    for (final brightness in Brightness.values) {
+      final warm = TenvpnPalette.of(brightness, AppLook.burrow);
+      final strict = TenvpnPalette.of(brightness, AppLook.strict);
+      expect(warm.showMascot, isTrue);
+      expect(strict.showMascot, isFalse);
+      expect(strict.accent, warm.accent);
+      expect(strict.cocoaText, isNot(warm.cocoaText));
+    }
+    expect(
+      TenvpnPalette.dark.lerp(TenvpnPalette.strictDark, 0.9).showMascot,
+      isFalse,
     );
   });
 

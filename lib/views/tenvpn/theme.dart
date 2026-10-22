@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/shape.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:material_ui/material_ui.dart';
 
 const tenvpnDisplayFont = 'Geologica';
@@ -28,6 +29,7 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
   final Color warnSoft;
   final Color danger;
   final Color dangerSoft;
+  final bool showMascot;
 
   const TenvpnPalette({
     required this.ink,
@@ -50,6 +52,7 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
     required this.warnSoft,
     required this.danger,
     required this.dangerSoft,
+    this.showMascot = true,
   });
 
   static const dark = TenvpnPalette(
@@ -98,6 +101,64 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
     dangerSoft: Color(0x1AFF6B5E),
   );
 
+  /// «Строгий»: the same Ink and lime, without Fer and with grey instead of
+  /// cocoa, so nothing on screen is warm except the "working" signal.
+  static const strictDark = TenvpnPalette(
+    ink: Color(0xFF0C100E),
+    surface: Color(0xFF141A17),
+    elevated: Color(0xFF1D2521),
+    border: Color(0x12FFFFFF),
+    borderStrong: Color(0x21FFFFFF),
+    accent: Color(0xFFB6E32E),
+    accentText: Color(0xFFB6E32E),
+    accentSoft: Color(0x1FB6E32E),
+    onAccent: Color(0xFF0C100E),
+    cream: Color(0xFFE8EDE6),
+    cocoa: Color(0xFF6E7A72),
+    cocoaText: Color(0xFFAEB8B1),
+    cocoaSoft: Color(0x1AFFFFFF),
+    text: Color(0xFFE8EDE6),
+    muted: Color(0xFF8A968D),
+    mutedDeep: Color(0xFF6E7A72),
+    warn: Color(0xFFFFB245),
+    warnSoft: Color(0x1AFFB245),
+    danger: Color(0xFFFF6B5E),
+    dangerSoft: Color(0x1AFF6B5E),
+    showMascot: false,
+  );
+
+  static const strictLight = TenvpnPalette(
+    ink: Color(0xFFF3F5F3),
+    surface: Color(0xFFFFFFFF),
+    elevated: Color(0xFFE6EAE7),
+    border: Color(0x140C100E),
+    borderStrong: Color(0x260C100E),
+    accent: Color(0xFFB6E32E),
+    accentText: Color(0xFF4A6600),
+    accentSoft: Color(0x33B6E32E),
+    onAccent: Color(0xFF0C100E),
+    cream: Color(0xFF17201B),
+    cocoa: Color(0xFF5B675F),
+    cocoaText: Color(0xFF46524A),
+    cocoaSoft: Color(0x140C100E),
+    text: Color(0xFF17201B),
+    muted: Color(0xFF5B675F),
+    mutedDeep: Color(0xFF7A867E),
+    warn: Color(0xFFB86E00),
+    warnSoft: Color(0x1FFFB245),
+    danger: Color(0xFFC8372B),
+    dangerSoft: Color(0x1AFF6B5E),
+    showMascot: false,
+  );
+
+  static TenvpnPalette of(Brightness brightness, AppLook look) {
+    final dark = brightness == Brightness.dark;
+    return switch (look) {
+      AppLook.burrow => dark ? TenvpnPalette.dark : TenvpnPalette.light,
+      AppLook.strict => dark ? strictDark : strictLight,
+    };
+  }
+
   @override
   TenvpnPalette copyWith() => this;
 
@@ -126,6 +187,7 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
       warnSoft: mix(warnSoft, other.warnSoft),
       danger: mix(danger, other.danger),
       dangerSoft: mix(dangerSoft, other.dangerSoft),
+      showMascot: t < 0.5 ? showMascot : other.showMascot,
     );
   }
 }
@@ -135,10 +197,11 @@ extension TenvpnPaletteContext on BuildContext {
       Theme.of(this).extension<TenvpnPalette>() ?? TenvpnPalette.dark;
 }
 
-ColorScheme tenvpnColorScheme(Brightness brightness) {
-  final p = brightness == Brightness.dark
-      ? TenvpnPalette.dark
-      : TenvpnPalette.light;
+ColorScheme tenvpnColorScheme(
+  Brightness brightness, [
+  AppLook look = AppLook.burrow,
+]) {
+  final p = TenvpnPalette.of(brightness, look);
   final dark = brightness == Brightness.dark;
   return ColorScheme(
     brightness: brightness,
@@ -199,13 +262,12 @@ TextTheme _textTheme(TextTheme base, TenvpnPalette p) {
 
 ThemeData buildTenvpnTheme({
   required Brightness brightness,
+  AppLook look = AppLook.burrow,
   PageTransitionsTheme? pageTransitionsTheme,
   TooltipThemeData? tooltipTheme,
 }) {
-  final palette = brightness == Brightness.dark
-      ? TenvpnPalette.dark
-      : TenvpnPalette.light;
-  final scheme = tenvpnColorScheme(brightness);
+  final palette = TenvpnPalette.of(brightness, look);
+  final scheme = tenvpnColorScheme(brightness, look);
   final base = ThemeData(
     useMaterial3: true,
     brightness: brightness,
