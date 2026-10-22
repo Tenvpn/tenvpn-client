@@ -83,6 +83,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                 title: l.tenvpnSectionLook,
                 children: const [
                   _ThemeRow(),
+                  _LookRow(),
                   _LanguageRow(),
                   _ListStyleRow(),
                   _SortRow(),
@@ -488,8 +489,11 @@ class _SettingsHeader extends ConsumerWidget {
     final phase = ref.watch(tenvpnPhaseProvider);
     return Row(
       children: [
-        FerMascot(pose: ferPoseFor(phase), size: 112),
-        const SizedBox(width: 12),
+        if (p.showMascot) ...[
+          FerMascot(pose: ferPoseFor(phase), size: 112),
+          const SizedBox(width: 12),
+        ] else
+          const SizedBox(height: 72, width: 4),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -556,6 +560,28 @@ class _Choice<T> extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _LookRow extends ConsumerWidget {
+  const _LookRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    return _Choice<AppLook>(
+      key: const ValueKey('tenvpn-look'),
+      icon: Symbols.palette,
+      title: l.tenvpnLook,
+      value: ref.watch(appSettingProvider.select((s) => s.look)),
+      options: [
+        (AppLook.burrow, l.tenvpnLookBurrow),
+        (AppLook.strict, l.tenvpnLookStrict),
+      ],
+      onChanged: (value) => ref
+          .read(appSettingProvider.notifier)
+          .update((s) => s.copyWith(look: value)),
     );
   }
 }

@@ -872,9 +872,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1764,6 +1765,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Компактный"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Подробный"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Список серверов"),
+    "tenvpnLook": MessageLookupByLibrary.simpleMessage("Стиль"),
+    "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("С хорьком"),
+    "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Строгий"),
     "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "Нет ссылки? Её выдаёт бот TENVPN.",

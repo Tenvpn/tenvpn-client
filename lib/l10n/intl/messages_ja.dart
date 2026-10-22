@@ -1403,6 +1403,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Compact"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Detailed"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Server list"),
+    "tenvpnLook": MessageLookupByLibrary.simpleMessage("Style"),
+    "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("With Fer"),
+    "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Strict"),
     "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "No link yet? The TENVPN bot gives you one.",

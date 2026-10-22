@@ -106,6 +106,9 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(ServerSort.subscription)
     @JsonKey(unknownEnumValue: ServerSort.subscription)
     ServerSort serverSort,
+    @Default(AppLook.burrow)
+    @JsonKey(unknownEnumValue: AppLook.burrow)
+    AppLook look,
     @Default(defaultTestUrl) String testUrl,
     @Default(true) bool isAnimateToPage,
     @Default(true) bool isSwipeToPage,

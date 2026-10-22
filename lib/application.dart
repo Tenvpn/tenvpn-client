@@ -202,6 +202,7 @@ class ApplicationState extends ConsumerState<Application> {
           appSettingProvider.select((state) => state.locale),
         );
         final themeProps = ref.watch(themeSettingProvider);
+        final look = ref.watch(appSettingProvider.select((s) => s.look));
         final supportsPredictiveBack = system.supportsPredictiveBack(
           ref.watch(versionProvider),
         );
@@ -242,11 +243,13 @@ class ApplicationState extends ConsumerState<Application> {
                 themeMode: themeProps.themeMode,
                 theme: buildTenvpnTheme(
                   brightness: Brightness.light,
+                  look: look,
                   pageTransitionsTheme: pageTransitionsTheme,
                   tooltipTheme: _tooltipTheme,
                 ),
                 darkTheme: buildTenvpnTheme(
                   brightness: Brightness.dark,
+                  look: look,
                   pageTransitionsTheme: pageTransitionsTheme,
                   tooltipTheme: _tooltipTheme,
                 ),
