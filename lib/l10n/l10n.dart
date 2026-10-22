@@ -8024,6 +8024,31 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Off`
+  String get tenvpnChipOff {
+    return Intl.message('Off', name: 'tenvpnChipOff', desc: '', args: []);
+  }
+
+  /// `Protected`
+  String get tenvpnChipProtected {
+    return Intl.message(
+      'Protected',
+      name: 'tenvpnChipProtected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not protected`
+  String get tenvpnChipUnprotected {
+    return Intl.message(
+      'Not protected',
+      name: 'tenvpnChipUnprotected',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -142,14 +142,7 @@ class TenvpnSettingsGroup extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: p.muted,
-              ),
-            ),
+            child: Text(p.caps(title), style: p.captionStyle(p.muted)),
           ),
           TenvpnCard(
             padding: EdgeInsets.zero,
