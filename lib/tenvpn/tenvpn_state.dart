@@ -173,8 +173,7 @@ class TenvpnStateStore {
   Future<File> _subscriptionFile(int profileId) async =>
       File(join(await directory(), '$profileId.subscription.yaml'));
 
-  /// The last downloaded subscription, so a settings change can rebuild the
-  /// profile without the network.
+  /// The last download, so a settings change rebuilds without the network.
   Future<String?> loadSubscription(int profileId) async {
     final file = await _subscriptionFile(profileId);
     return await file.exists() ? file.readAsString() : null;
