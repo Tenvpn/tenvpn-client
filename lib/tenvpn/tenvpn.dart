@@ -30,11 +30,15 @@ final tenvpnConfig = TenvpnConfigService(
     return AwgHttpResponse(response.statusCode ?? 0, response.data ?? '');
   },
   endpoints: TenvpnEndpoints.configured,
-  options: () => ConfigGenOptions(
-    autoStrategy: globalState.container.read(appSettingProvider).awgPriority
-        ? AutoStrategy.awgFirst
-        : AutoStrategy.fastest,
-  ),
+  options: () {
+    final settings = globalState.container.read(appSettingProvider);
+    return ConfigGenOptions(
+      autoStrategy: settings.awgPriority
+          ? AutoStrategy.awgFirst
+          : AutoStrategy.fastest,
+      russianDirect: settings.tenvpnRussianDirect,
+    );
+  },
   log: (message) => commonPrint.log(message, logLevel: LogLevel.warning),
 );
 

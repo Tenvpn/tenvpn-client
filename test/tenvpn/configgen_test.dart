@@ -231,19 +231,17 @@ proxies:
     });
 
     test('3.x drops the 1.5-only fields, a zero padding stays 2.0', () {
-      final v3 = fixture('awg_v3.conf').replaceFirst(
-        'I1 = ',
-        'J1 = <r 8>\nItime = 120\nI1 = ',
-      );
+      final v3 = fixture(
+        'awg_v3.conf',
+      ).replaceFirst('I1 = ', 'J1 = <r 8>\nItime = 120\nI1 = ');
       final option = parseAwgConf(v3)['amnezia-wg-option'] as Map;
       expect(option.containsKey('j1'), isFalse);
       expect(option.containsKey('itime'), isFalse);
       expect(option['version'], 3);
 
-      final v2 = fixture('awg_v2.conf').replaceFirst(
-        'I1 = ',
-        'ContentPaddingAddition = 0\nI1 = ',
-      );
+      final v2 = fixture(
+        'awg_v2.conf',
+      ).replaceFirst('I1 = ', 'ContentPaddingAddition = 0\nI1 = ');
       final legacy = parseAwgConf(v2)['amnezia-wg-option'] as Map;
       expect(legacy.containsKey('version'), isFalse);
       expect(legacy.containsKey('content-padding-addition'), isFalse);
@@ -272,7 +270,9 @@ proxies:
           'HeaderProtectionKey = short',
         ),
         fixture('awg_v3.conf').replaceFirst('2-10', 'two-ten'),
-        fixture('awg_v3.conf').replaceFirst('RandomTrailers = on', 'RandomTrailers = maybe'),
+        fixture(
+          'awg_v3.conf',
+        ).replaceFirst('RandomTrailers = on', 'RandomTrailers = maybe'),
       ]) {
         expect(
           () => parseAwgConf(broken),
@@ -502,6 +502,56 @@ proxies:
         autoPrimaryGroupName,
         autoWhitelistGroupName,
       ]);
+    });
+  });
+
+  group('Russian services directly', () {
+    List<String> rulesOf(ConfigGenOptions options) =>
+        (buildConfig(
+                  parseSubscription(fixture('remnawave_mihomo.yaml')),
+                  options: options,
+                ).config['rules']
+                as List)
+            .cast<String>();
+
+    test('on by default: DIRECT suffix rules between LAN and MATCH', () {
+      final rules = rulesOf(const ConfigGenOptions());
+      final direct = [
+        for (final rule in rules)
+          if (rule.startsWith('DOMAIN-SUFFIX,')) rule,
+      ];
+      expect(direct, [
+        for (final domain in russianDirectDomains)
+          'DOMAIN-SUFFIX,$domain,DIRECT',
+      ]);
+      for (final service in ['gosuslugi.ru', 'sberbank.ru', 'ozon.ru']) {
+        expect(rules, contains('DOMAIN-SUFFIX,$service,DIRECT'));
+      }
+      expect(rules.take(privateNetworkRules.length), privateNetworkRules);
+      expect(rules.indexOf(direct.last), rules.length - 2);
+      expect(rules.last, 'MATCH,$mainGroupName');
+    });
+
+    test('off: everything goes through the VPN', () {
+      expect(rulesOf(const ConfigGenOptions(russianDirect: false)), [
+        ...privateNetworkRules,
+        'MATCH,$mainGroupName',
+      ]);
+    });
+
+    test('a short list, never the whole zone or geoip', () {
+      expect(
+        russianDirectDomains.toSet(),
+        hasLength(russianDirectDomains.length),
+      );
+      for (final domain in russianDirectDomains) {
+        expect(domain, matches(RegExp(r'^[a-z0-9-]+(\.[a-z0-9-]+)+$')));
+        expect(['ru', 'su', 'xn--p1ai', 'рф'], isNot(contains(domain)));
+        expect(domain, isNot(contains('pikabu')));
+      }
+      final rules = rulesOf(const ConfigGenOptions()).join('\n');
+      expect(rules, isNot(contains('GEOIP')));
+      expect(rules, isNot(contains('DOMAIN-SUFFIX,ru,')));
     });
   });
 

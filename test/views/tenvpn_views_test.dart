@@ -615,13 +615,15 @@ void main() {
       await tester.tap(find.text('Connect on launch'));
       await tester.pump();
       expect(container.read(appSettingProvider).autoRun, isTrue);
+      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsOneWidget);
 
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.dark);
+      await tester.scrollUntilVisible(find.text('Light'), 200);
+      await tester.ensureVisible(find.text('Light'));
+      await tester.pump();
       await tester.tap(find.text('Light'));
       await tester.pump();
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.light);
-
-      expect(find.byKey(const ValueKey('tenvpn-protocol')), findsOneWidget);
       await tester.scrollUntilVisible(
         find.byKey(const ValueKey('tenvpn-sort')),
         200,
@@ -657,7 +659,7 @@ void main() {
     _tv('the strict look is picked in settings and hides Fer', (tester) async {
       container = build(items: [profile]);
       await pump(tester, const TenvpnSettingsView());
-      await tester.ensureVisible(find.text('Strict'));
+      await tester.scrollUntilVisible(find.text('Strict'), 200);
       await tester.pump();
       await tester.tap(find.text('Strict'));
       await tester.pump();
@@ -668,6 +670,23 @@ void main() {
       await tester.pump();
       expect(find.byType(Image), findsNothing);
       expect(find.byType(TenvpnLogo), findsOneWidget);
+    });
+
+    _tv('Russian services go direct by default, in both looks', (tester) async {
+      container = build(items: []);
+      final row = find.byKey(const ValueKey('tenvpn-russian-direct'));
+      await pump(tester, const TenvpnSettingsView());
+      expect(text('Russian services directly'), findsOneWidget);
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isTrue);
+      await tester.tap(row);
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isFalse);
+
+      await pump(tester, const TenvpnSettingsView(), look: AppLook.strict);
+      expect(row, findsOneWidget);
+      await tester.tap(row);
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isTrue);
     });
 
     _tv('advanced keeps the base client reachable', (tester) async {

@@ -832,9 +832,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1702,6 +1703,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "You get the subscription link from your TENVPN provider",
     ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
+      "Russian services directly",
+    ),
+    "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
+    ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
     ),

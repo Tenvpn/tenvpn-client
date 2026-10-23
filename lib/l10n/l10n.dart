@@ -7548,6 +7548,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Russian services directly`
+  String get tenvpnRussianDirect {
+    return Intl.message(
+      'Russian services directly',
+      name: 'tenvpnRussianDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banks, Gosuslugi and marketplaces work without the VPN and don't complain about a foreign IP`
+  String get tenvpnRussianDirectDesc {
+    return Intl.message(
+      'Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP',
+      name: 'tenvpnRussianDirectDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `AmneziaWG first`
   String get tenvpnProtocolAwg {
     return Intl.message(
