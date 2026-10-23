@@ -268,8 +268,7 @@ List<Map<String, dynamic>> _autoGroups(
       'url': options.testUrl,
       'expected-status': '204',
       'interval': options.autoIntervalSeconds,
-      // At start every group tests at once on a cold network; 3 s marked the
-      // regular tier dead and parked «Авто» on CDN for a whole interval.
+      // Cold start: every group tests at once and 3 s killed the regular tier.
       'timeout': options.autoTimeoutMs,
       'lazy': true,
       'max-failed-times': options.maxFailedTimes,

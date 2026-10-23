@@ -42,8 +42,7 @@ class TenvpnConfigService {
     return encodeConfig(generated);
   }
 
-  /// The same profile rebuilt from the cached subscription and AWG with the
-  /// current options, offline; `null` when nothing is cached yet.
+  /// Offline rebuild with the current options; `null` when nothing is cached.
   Future<String?> regenerate(int profileId) async {
     final subscription = await store.loadSubscription(profileId);
     if (subscription == null) return null;
