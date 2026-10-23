@@ -604,10 +604,23 @@ proxies:
       });
     });
 
-    test('Reality offers ML-KEM with the chrome fingerprint', () {
+    test('Reality keeps its fingerprint; ML-KEM only when asked', () {
+      final raw = parseSubscription(fixture('remnawave_mihomo.yaml')).proxies;
       final reality = proxies.where((proxy) => proxy['reality-opts'] != null);
       expect(reality, hasLength(3));
       for (final proxy in reality) {
+        final original = proxyNamed(raw, proxy['name'] as String);
+        expect(proxy['client-fingerprint'], original['client-fingerprint']);
+        expect(proxy['reality-opts'], original['reality-opts']);
+      }
+      final withMlkem =
+          (buildConfig(
+                    parseSubscription(fixture('remnawave_mihomo.yaml')),
+                    options: const ConfigGenOptions(realityMlkem: true),
+                  ).config['proxies']
+                  as List)
+              .cast<Map<String, dynamic>>();
+      for (final proxy in withMlkem.where((p) => p['reality-opts'] != null)) {
         expect(proxy['client-fingerprint'], 'chrome', reason: proxy['name']);
         expect(proxy['reality-opts']['support-x25519mlkem768'], isTrue);
         expect(proxy['reality-opts'], contains('public-key'));

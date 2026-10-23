@@ -28,6 +28,7 @@ class ConfigGenOptions {
   final int mixedPort;
   final AutoStrategy autoStrategy;
   final bool russianDirect;
+  final bool realityMlkem;
 
   const ConfigGenOptions({
     this.testUrl = 'https://www.gstatic.com/generate_204',
@@ -46,6 +47,7 @@ class ConfigGenOptions {
     this.mixedPort = 7890,
     this.autoStrategy = AutoStrategy.fastest,
     this.russianDirect = true,
+    this.realityMlkem = false,
   });
 }
 
@@ -56,8 +58,12 @@ const xrayPaddingDefaults = {
   'x-padding-method': 'repeat-x',
 };
 
-/// Xray defaults empty padding fields and (26.9.8+) demands ML-KEM; mihomo doesn't.
-Map<String, dynamic> alignWithXray(Map<String, dynamic> proxy) {
+/// Xray defaults empty padding fields; mihomo doesn't. ML-KEM with chrome stalls
+/// Reality on our Xray 26.7.28 nodes (field test 23.10), so it waits for 26.9.8+.
+Map<String, dynamic> alignWithXray(
+  Map<String, dynamic> proxy, {
+  bool realityMlkem = false,
+}) {
   final aligned = Map<String, dynamic>.from(proxy);
   final xhttp = aligned['xhttp-opts'];
   if (xhttp is Map && xhttp['x-padding-obfs-mode'] == true) {
@@ -68,7 +74,7 @@ Map<String, dynamic> alignWithXray(Map<String, dynamic> proxy) {
     };
   }
   final reality = aligned['reality-opts'];
-  if (reality is Map) {
+  if (realityMlkem && reality is Map) {
     aligned['reality-opts'] = {...reality, 'support-x25519mlkem768': true};
     aligned['client-fingerprint'] = 'chrome';
   }
@@ -136,7 +142,8 @@ GeneratedConfig buildConfig(
   Random? random,
 }) {
   final proxies = [
-    for (final proxy in subscription.proxies) alignWithXray(proxy),
+    for (final proxy in subscription.proxies)
+      alignWithXray(proxy, realityMlkem: options.realityMlkem),
   ];
   final servers = [...subscription.servers];
   final awgNames = <String>[];
