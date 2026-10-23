@@ -28,6 +28,14 @@ class TenvpnServerList extends ConsumerStatefulWidget {
 class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   bool _measured = false;
   final _opened = <ServerSectionKind>{};
+  final _search = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -73,18 +81,25 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     final testUrl = ref.watch(
       groupsProvider.select((g) => g.getGroup(manualGroupName)?.testUrl),
     );
-    List<ServerPresentation> ordered(List<ServerPresentation> servers) =>
-        look.$2 == ServerSort.ping
-        ? sortByPing(
-            servers,
-            (name) =>
-                ref.watch(delayProvider(proxyName: name, testUrl: testUrl)),
-          )
-        : servers;
+    int? delayOf(String name) =>
+        ref.watch(delayProvider(proxyName: name, testUrl: testUrl));
+    List<ServerPresentation> ordered(List<ServerPresentation> servers) {
+      final found = [
+        for (final s in servers)
+          if (serverMatches(s, _query)) s,
+      ];
+      return look.$2 == ServerSort.ping ? sortByPing(found, delayOf) : found;
+    }
+
     bool isSelected(ServerPresentation s) =>
         !selection.auto && selection.server == s.name;
+    final searching = _query.trim().isNotEmpty;
+    final best = bestServerName([
+      for (final s in sections) ...s.servers,
+    ], delayOf);
     Widget tile(ServerPresentation server) => _ServerTile(
       server: server,
+      best: server.name == best,
       selected: isSelected(server),
       active: active,
       detailed: detailed,
@@ -92,6 +107,7 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     );
     bool isOpen(ServerSection section) =>
         detailed ||
+        searching ||
         _opened.contains(section.kind) ||
         section.servers.any(isSelected);
     final main = ordered([
@@ -132,6 +148,11 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
           ],
         ),
         const SizedBox(height: 8),
+        _SearchField(
+          controller: _search,
+          onChanged: (value) => setState(() => _query = value),
+        ),
+        const SizedBox(height: 8),
         _Group(
           children: [
             _AutoTile(
@@ -144,8 +165,24 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
             ...main.map(tile),
           ],
         ),
+        if (searching &&
+            main.isEmpty &&
+            !sections.any(
+              (s) => s.servers.any((x) => serverMatches(x, _query)),
+            ))
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Text(
+              l.tenvpnNothingFound,
+              key: const ValueKey('tenvpn-nothing-found'),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13.5, color: p.muted),
+            ),
+          ),
         for (final section in sections)
-          if (section.kind != ServerSectionKind.main) ...[
+          if (section.kind != ServerSectionKind.main &&
+              (!searching ||
+                  section.servers.any((s) => serverMatches(s, _query)))) ...[
             const SizedBox(height: 10),
             _Group(
               children: [
@@ -164,6 +201,94 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
             ),
           ],
       ],
+    );
+  }
+}
+
+class _SearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  const _SearchField({required this.controller, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return SizedBox(
+      height: 46,
+      child: TextField(
+        key: const ValueKey('tenvpn-server-search'),
+        controller: controller,
+        onChanged: onChanged,
+        textInputAction: TextInputAction.search,
+        style: TextStyle(fontSize: 14.5, color: p.text),
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          hintText: context.appLocalizations.tenvpnSearchServers,
+          hintStyle: TextStyle(fontSize: 14, color: p.mutedDeep),
+          filled: true,
+          fillColor: p.surface,
+          prefixIcon: Icon(Symbols.search, size: 20, color: p.muted),
+          suffixIcon: ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (context, value, _) => value.text.isEmpty
+                ? const SizedBox.shrink()
+                : IconButton(
+                    tooltip: context.appLocalizations.clear,
+                    icon: Icon(Symbols.close, size: 18, color: p.muted),
+                    onPressed: () {
+                      controller.clear();
+                      onChanged('');
+                    },
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BestTag extends StatelessWidget {
+  const _BestTag({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final label = context.appLocalizations.tenvpnBest;
+    return Padding(
+      padding: const EdgeInsets.only(left: 6),
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: p.strict ? null : p.accentSoft,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(p.strict ? 3 : 20)),
+            side: p.strict ? BorderSide(color: p.accentText) : BorderSide.none,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: p.strict ? 6 : 8,
+            vertical: 2,
+          ),
+          child: Text(
+            p.strict ? label.toUpperCase() : label,
+            style: p.strict
+                ? TextStyle(
+                    fontFamily: tenvpnDisplayFont,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: p.accentText,
+                  )
+                : TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    color: p.accentText,
+                  ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -453,6 +578,7 @@ class _SectionHeader extends StatelessWidget {
 
 class _ServerTile extends StatelessWidget {
   final ServerPresentation server;
+  final bool best;
   final bool selected;
   final bool active;
   final bool detailed;
@@ -460,6 +586,7 @@ class _ServerTile extends StatelessWidget {
 
   const _ServerTile({
     required this.server,
+    this.best = false,
     required this.selected,
     required this.active,
     required this.detailed,
@@ -489,7 +616,13 @@ class _ServerTile extends StatelessWidget {
         title: server.title,
         detail: [server.protocol, ...tags].join(' · '),
       ),
-      trailing: TenvpnPing(proxyName: server.name),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (best) _BestTag(key: ValueKey('tenvpn-best-${server.name}')),
+          TenvpnPing(proxyName: server.name),
+        ],
+      ),
       end: _Check(selected: selected, active: active),
     );
   }

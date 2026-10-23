@@ -961,5 +961,18 @@
   "tenvpnProviderHint": "Ссылку на подписку вы получаете у своего провайдера TENVPN",
   "tenvpnChipOff": "Выключено",
   "tenvpnChipProtected": "Защищено",
-  "tenvpnChipUnprotected": "Не защищено"
+  "tenvpnChipUnprotected": "Не защищено",
+  "tenvpnBest": "лучший",
+  "tenvpnSearchServers": "Страна, протокол или название",
+  "tenvpnNothingFound": "Ничего не нашлось",
+  "tenvpnReport": "Отправить отчёт об ошибке",
+  "tenvpnReportDesc": "Журнал и данные устройства — без ссылок и ключей",
+  "tenvpnReportTitle": "Отчёт об ошибке",
+  "tenvpnReportNote": "Мы ничего не отправляем сами. Проверьте текст — ссылки, ключи и IP-адреса уже убраны — и пришлите его в поддержку.",
+  "tenvpnShare": "Поделиться",
+  "tenvpnOpenSupport": "Поддержка",
+  "tenvpnKillSwitch": "Блокировать интернет без VPN",
+  "tenvpnKillSwitchDesc": "Откроются настройки Android: включите «Постоянный VPN» и «Блокировать соединения без VPN» для TENVPN",
+  "tenvpnOtherDevices": "Подключить другие устройства",
+  "tenvpnOtherDevicesDesc": "Приложения для компьютера, телевизора и других телефонов"
 }

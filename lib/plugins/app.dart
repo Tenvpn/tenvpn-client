@@ -177,6 +177,27 @@ class App {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openVpnSettings');
   }
+
+  /// Null when Android does not tell (hidden settings are closed from 12 on).
+  Future<({bool alwaysOn, bool lockdown})?> alwaysOnVpn() async {
+    if (!Platform.isAndroid) return null;
+    final state = await methodChannel.invokeMapMethod<String, bool>(
+      'getAlwaysOnVpn',
+    );
+    if (state == null) return null;
+    return (
+      alwaysOn: state['alwaysOn'] ?? false,
+      lockdown: state['lockdown'] ?? false,
+    );
+  }
+
+  Future<bool> shareText(String text) async {
+    if (!Platform.isAndroid) return false;
+    final shared = await methodChannel.invokeMethod<bool>('shareText', {
+      'text': text,
+    });
+    return shared ?? false;
+  }
 }
 
 final app = system.isAndroid ? App() : null;

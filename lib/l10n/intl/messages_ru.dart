@@ -872,10 +872,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage":
-        MessageLookupByLibrary.simpleMessage(
-          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-        ),
+    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
+      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+    ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1718,6 +1717,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBest": MessageLookupByLibrary.simpleMessage("лучший"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Вставить другую ссылку",
     ),
@@ -1763,6 +1763,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Добавить подписку?",
     ),
+    "tenvpnKillSwitch": MessageLookupByLibrary.simpleMessage(
+      "Блокировать интернет без VPN",
+    ),
+    "tenvpnKillSwitchDesc": MessageLookupByLibrary.simpleMessage(
+      "Откроются настройки Android: включите «Постоянный VPN» и «Блокировать соединения без VPN» для TENVPN",
+    ),
     "tenvpnLanguage": MessageLookupByLibrary.simpleMessage("Язык"),
     "tenvpnLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Ссылка на подписку",
@@ -1778,9 +1784,19 @@ class MessageLookup extends MessageLookupByLibrary {
       "Нет ссылки? Её выдаёт бот TENVPN.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("нет ответа"),
+    "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage(
+      "Ничего не нашлось",
+    ),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Подписка"),
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
+    "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Поддержка"),
+    "tenvpnOtherDevices": MessageLookupByLibrary.simpleMessage(
+      "Подключить другие устройства",
+    ),
+    "tenvpnOtherDevicesDesc": MessageLookupByLibrary.simpleMessage(
+      "Приложения для компьютера, телевизора и других телефонов",
+    ),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Включить"),
@@ -1803,11 +1819,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ссылку на подписку вы получаете у своего провайдера TENVPN",
     ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "tenvpnReport": MessageLookupByLibrary.simpleMessage(
+      "Отправить отчёт об ошибке",
+    ),
+    "tenvpnReportDesc": MessageLookupByLibrary.simpleMessage(
+      "Журнал и данные устройства — без ссылок и ключей",
+    ),
+    "tenvpnReportNote": MessageLookupByLibrary.simpleMessage(
+      "Мы ничего не отправляем сами. Проверьте текст — ссылки, ключи и IP-адреса уже убраны — и пришлите его в поддержку.",
+    ),
+    "tenvpnReportTitle": MessageLookupByLibrary.simpleMessage(
+      "Отчёт об ошибке",
+    ),
     "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
       "Российские сервисы напрямую",
     ),
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Банки, Госуслуги и маркетплейсы работают без VPN — не ругаются на зарубежный IP",
+    ),
+    "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
+      "Страна, протокол или название",
     ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
@@ -1832,6 +1863,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnServer": MessageLookupByLibrary.simpleMessage("Сервер"),
     "tenvpnServers": MessageLookupByLibrary.simpleMessage("Серверы"),
     "tenvpnSettings": MessageLookupByLibrary.simpleMessage("Настройки"),
+    "tenvpnShare": MessageLookupByLibrary.simpleMessage("Поделиться"),
     "tenvpnSort": MessageLookupByLibrary.simpleMessage("Сортировка"),
     "tenvpnSortPing": MessageLookupByLibrary.simpleMessage("По пингу"),
     "tenvpnSortSubscription": MessageLookupByLibrary.simpleMessage(

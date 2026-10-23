@@ -196,6 +196,14 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             "openVpnSettings" -> {
                 result.success(openVpnSettings())
             }
+
+            "getAlwaysOnVpn" -> {
+                result.success(alwaysOnVpn())
+            }
+
+            "shareText" -> {
+                result.success(shareText(call.argument<String>("text") ?: ""))
+            }
             "showAccountNotice" -> {
                 result.success(
                     showAccountNotice(
@@ -286,6 +294,35 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
                 data = "package:${GlobalState.application.packageName}".toUri()
             }
             activity.startActivity(intent)
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
+
+    // Hidden Secure keys: closed from Android 12 on, then null and just the link.
+    private fun alwaysOnVpn(): Map<String, Boolean>? {
+        val resolver = GlobalState.application.contentResolver
+        return try {
+            val app = Settings.Secure.getString(resolver, "always_on_vpn_app")
+            val lockdown = Settings.Secure.getInt(resolver, "always_on_vpn_lockdown", 0)
+            mapOf(
+                "alwaysOn" to (app == GlobalState.application.packageName),
+                "lockdown" to (lockdown == 1),
+            )
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun shareText(text: String): Boolean {
+        val activity = activity ?: return false
+        return try {
+            val send = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, text)
+            }
+            activity.startActivity(Intent.createChooser(send, null))
             true
         } catch (_: Exception) {
             false

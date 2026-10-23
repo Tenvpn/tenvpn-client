@@ -7,16 +7,19 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/about.dart';
+import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'advanced_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'onboarding_view.dart';
 import 'privacy_view.dart';
+import 'report_view.dart';
 import 'state.dart';
 import 'theme.dart';
 
@@ -46,14 +49,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                 children: [
                   const _AutoConnectRow(),
                   if (system.isDesktop) const _AutoStartRow(),
-                  if (system.isAndroid)
-                    TenvpnSettingsRow(
-                      icon: Symbols.restart_alt,
-                      title: l.tenvpnAlwaysOn,
-                      subtitle: l.tenvpnAlwaysOnDesc,
-                      onTap: () => unawaited(app?.openVpnSettings()),
-                      trailing: const Icon(Symbols.open_in_new, size: 20),
-                    ),
+                  if (system.isAndroid) const TenvpnKillSwitchRow(),
                   if (system.isAndroid)
                     TenvpnSettingsRow(
                       icon: Symbols.call_split,
@@ -99,6 +95,27 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnAdvancedDesc,
                     onTap: () =>
                         BaseNavigator.push(context, const TenvpnAdvancedView()),
+                  ),
+                  TenvpnSettingsRow(
+                    key: const ValueKey('tenvpn-other-devices'),
+                    icon: Symbols.devices,
+                    title: l.tenvpnOtherDevices,
+                    subtitle: l.tenvpnOtherDevicesDesc,
+                    onTap: () => unawaited(
+                      launchUrl(
+                        Uri.parse(tenvpnDevicesUrl),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                    trailing: const Icon(Symbols.open_in_new, size: 20),
+                  ),
+                  TenvpnSettingsRow(
+                    key: const ValueKey('tenvpn-report'),
+                    icon: Symbols.bug_report,
+                    title: l.tenvpnReport,
+                    subtitle: l.tenvpnReportDesc,
+                    onTap: () =>
+                        BaseNavigator.push(context, const TenvpnReportView()),
                   ),
                   const _TelemetryRow(),
                   TenvpnSettingsRow(
@@ -201,6 +218,72 @@ class TenvpnSettingsRow extends StatelessWidget {
           (onTap == null
               ? null
               : Icon(Symbols.chevron_right, color: p.mutedDeep)),
+    );
+  }
+}
+
+typedef AlwaysOnState = ({bool alwaysOn, bool lockdown});
+
+/// Android keeps the kill switch to itself: the row opens its VPN settings
+/// and, where the system tells, shows whether both switches are on.
+class TenvpnKillSwitchRow extends StatefulWidget {
+  final Future<AlwaysOnState?> Function()? read;
+
+  const TenvpnKillSwitchRow({super.key, this.read});
+
+  @override
+  State<TenvpnKillSwitchRow> createState() => _TenvpnKillSwitchRowState();
+}
+
+class _TenvpnKillSwitchRowState extends State<TenvpnKillSwitchRow> {
+  late final AppLifecycleListener _lifecycle;
+  AlwaysOnState? _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _refresh);
+    _refresh();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  void _refresh() {
+    final read = widget.read ?? () async => app?.alwaysOnVpn();
+    unawaited(
+      read().then((state) {
+        if (mounted) setState(() => _state = state);
+      }, onError: (_) {}),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    final p = context.palette;
+    final state = _state;
+    final on = state != null && state.alwaysOn && state.lockdown;
+    return TenvpnSettingsRow(
+      key: const ValueKey('tenvpn-kill-switch'),
+      icon: Symbols.block,
+      title: l.tenvpnKillSwitch,
+      subtitle: l.tenvpnKillSwitchDesc,
+      onTap: () => unawaited(app?.openVpnSettings()),
+      trailing: state == null
+          ? const Icon(Symbols.open_in_new, size: 20)
+          : Text(
+              on ? l.tenvpnPowerOnState : l.tenvpnChipOff,
+              key: const ValueKey('tenvpn-kill-switch-state'),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: on ? p.accentText : p.muted,
+              ),
+            ),
     );
   }
 }
