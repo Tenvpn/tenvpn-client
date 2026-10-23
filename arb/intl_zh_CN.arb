@@ -961,5 +961,18 @@
   "tenvpnProviderHint": "You get the subscription link from your TENVPN provider",
   "tenvpnChipOff": "Off",
   "tenvpnChipProtected": "Protected",
-  "tenvpnChipUnprotected": "Not protected"
+  "tenvpnChipUnprotected": "Not protected",
+  "tenvpnBest": "best",
+  "tenvpnSearchServers": "Country, protocol or name",
+  "tenvpnNothingFound": "Nothing found",
+  "tenvpnReport": "Send a bug report",
+  "tenvpnReportDesc": "Log and device details — no links or keys",
+  "tenvpnReportTitle": "Bug report",
+  "tenvpnReportNote": "Nothing is sent by itself. Check the text — links, keys and IP addresses are already removed — and send it to support.",
+  "tenvpnShare": "Share",
+  "tenvpnOpenSupport": "Support",
+  "tenvpnKillSwitch": "Block internet without VPN",
+  "tenvpnKillSwitchDesc": "Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN",
+  "tenvpnOtherDevices": "Connect other devices",
+  "tenvpnOtherDevicesDesc": "Apps for computers, TVs and other phones"
 }

@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -11,12 +14,14 @@ import 'package:fl_clash/views/tenvpn/home.dart';
 import 'package:fl_clash/views/tenvpn/main_view.dart';
 import 'package:fl_clash/views/tenvpn/mascot.dart';
 import 'package:fl_clash/views/tenvpn/onboarding_view.dart';
+import 'package:fl_clash/views/tenvpn/report_view.dart';
 import 'package:fl_clash/views/tenvpn/servers_view.dart';
 import 'package:fl_clash/views/tenvpn/settings_view.dart';
 import 'package:fl_clash/views/tenvpn/state.dart';
 import 'package:fl_clash/views/tenvpn/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -542,6 +547,158 @@ void main() {
     });
   });
 
+  group('server list extras', () {
+    Future<void> showList(
+      WidgetTester tester, {
+      AppLook look = AppLook.burrow,
+    }) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      final url = container.read(appSettingProvider).testUrl;
+      for (final (name, value) in [
+        (_servers[0].name, 120),
+        (_servers[1].name, 20),
+        (_servers[2].name, 10),
+      ]) {
+        container
+            .read(delayDataSourceProvider.notifier)
+            .setDelay(Delay(name: name, url: url, value: value));
+      }
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+        look: look,
+      );
+    }
+
+    for (final (look, label) in [
+      (AppLook.burrow, 'best'),
+      (AppLook.strict, 'BEST'),
+    ]) {
+      _tv('${look.name}: «best» is the fastest ordinary server', (
+        tester,
+      ) async {
+        await showList(tester, look: look);
+        expect(
+          find.byKey(ValueKey('tenvpn-best-${_servers[0].name}')),
+          findsOneWidget,
+        );
+        expect(find.text(label), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('tenvpn-section-mobile')));
+        await tester.pump();
+        expect(
+          find.byKey(ValueKey('tenvpn-best-${_servers[1].name}')),
+          findsNothing,
+        );
+      });
+    }
+
+    _tv('search keeps «Авто» and the sections that match', (tester) async {
+      await showList(tester);
+      final field = find.byKey(const ValueKey('tenvpn-server-search'));
+      await tester.enterText(field, 'белые');
+      await tester.pump();
+      expect(find.byKey(const ValueKey('tenvpn-server-auto')), findsOneWidget);
+      expect(text('Белые списки 1'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+        findsNothing,
+      );
+
+      await tester.enterText(field, 'sweden');
+      await tester.pump();
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsOneWidget,
+      );
+
+      await tester.enterText(field, 'zzz');
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-nothing-found')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(Symbols.close));
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+        findsOneWidget,
+      );
+    });
+
+    _tv('the bug report shows a clean text before anything is sent', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      container.read(logsProvider.notifier).value = FixedList(
+        10,
+        list: [
+          Log.app(
+            'dial vless://3f2a1b4c-1111-2222-3333-444455556666'
+            '@203.0.113.9:443 failed',
+          ),
+        ],
+      );
+      await pump(
+        tester,
+        TenvpnReportView(connectivity: () async => [ConnectivityResult.wifi]),
+      );
+      await tester.pump();
+      final report = tester
+          .widget<SelectableText>(
+            find.byKey(const ValueKey('tenvpn-report-text')),
+          )
+          .data!;
+      expect(report, startsWith('TENVPN 0.2.0'));
+      expect(report, contains('wifi'));
+      expect(report, contains('<link>'));
+      expect(report, isNot(contains('203.0.113.9')));
+      expect(report, isNot(contains('3f2a1b4c')));
+      expect(
+        find.byKey(const ValueKey('tenvpn-report-support')),
+        findsOneWidget,
+      );
+    });
+
+    _tv('kill switch shows what Android reports, or just the link', (
+      tester,
+    ) async {
+      container = build();
+      await pump(
+        tester,
+        Scaffold(
+          body: Column(
+            children: [
+              TenvpnKillSwitchRow(
+                key: const ValueKey('a'),
+                read: () async => (alwaysOn: true, lockdown: true),
+              ),
+              TenvpnKillSwitchRow(
+                key: const ValueKey('b'),
+                read: () async => (alwaysOn: true, lockdown: false),
+              ),
+              TenvpnKillSwitchRow(
+                key: const ValueKey('c'),
+                read: () async => null,
+              ),
+            ],
+          ),
+        ),
+      );
+      await tester.pump();
+      expect(find.text('Block internet without VPN'), findsNWidgets(3));
+      expect(find.text('On'), findsOneWidget);
+      expect(find.text('Off'), findsOneWidget);
+      expect(find.byIcon(Symbols.open_in_new), findsOneWidget);
+    });
+  });
+
   group('onboarding', () {
     _tv('rejects text that is not a link', (tester) async {
       container = build();
@@ -604,6 +761,16 @@ void main() {
   });
 
   group('settings', () {
+    _tv('other devices and the bug report sit under «Другое»', (tester) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(tester, const TenvpnSettingsView());
+      final report = find.byKey(const ValueKey('tenvpn-report'));
+      await tester.scrollUntilVisible(report, 300);
+      expect(text('Connect other devices'), findsOneWidget);
+      expect(text('Send a bug report'), findsOneWidget);
+    });
+
     _tv('toggles, theme and the protocol choice', (tester) async {
       container = build(items: [profile]);
       container.read(groupsProvider.notifier).value = _groups(manual: false);
@@ -649,6 +816,8 @@ void main() {
 
       await tester.scrollUntilVisible(text('Technical statistics'), 200);
       expect(container.read(appSettingProvider).tenvpnTelemetry, isTrue);
+      await tester.ensureVisible(text('Technical statistics'));
+      await tester.pump();
       await tester.tap(text('Technical statistics'));
       await tester.pump();
       expect(container.read(appSettingProvider).tenvpnTelemetry, isFalse);
