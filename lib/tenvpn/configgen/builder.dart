@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'constants.dart';
+import 'russian_direct.dart';
 import 'subscription.dart';
 
 /// Order of the tiers inside «Авто»: regular servers → servers for mobile
@@ -25,6 +26,7 @@ class ConfigGenOptions {
   final String? controllerSecret;
   final int mixedPort;
   final AutoStrategy autoStrategy;
+  final bool russianDirect;
 
   const ConfigGenOptions({
     this.testUrl = 'https://www.gstatic.com/generate_204',
@@ -41,6 +43,7 @@ class ConfigGenOptions {
     this.controllerSecret,
     this.mixedPort = 7890,
     this.autoStrategy = AutoStrategy.fastest,
+    this.russianDirect = true,
   });
 }
 
@@ -206,7 +209,13 @@ GeneratedConfig buildConfig(
     },
     'proxies': proxies,
     'proxy-groups': groups,
-    'rules': [...privateNetworkRules, 'MATCH,$mainGroupName'],
+    'rules': [
+      ...privateNetworkRules,
+      if (options.russianDirect)
+        for (final domain in russianDirectDomains)
+          'DOMAIN-SUFFIX,$domain,DIRECT',
+      'MATCH,$mainGroupName',
+    ],
   };
   return GeneratedConfig(config: config, servers: servers, secret: secret);
 }

@@ -62,6 +62,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                       onTap: () =>
                           BaseNavigator.push(context, const AccessView()),
                     ),
+                  const _RussianDirectRow(),
                   if (hasAwg || system.isWindows) const _ProtocolRow(),
                 ],
               ),
@@ -212,6 +213,7 @@ class _SwitchRow extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   const _SwitchRow({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -291,6 +293,39 @@ class _AutoStartRow extends ConsumerWidget {
               highPriorityAutoLaunch: value ? s.highPriorityAutoLaunch : false,
             ),
           ),
+    );
+  }
+}
+
+class _RussianDirectRow extends ConsumerWidget {
+  const _RussianDirectRow();
+
+  Future<void> _set(WidgetRef ref, bool value) async {
+    ref
+        .read(appSettingProvider.notifier)
+        .update((s) => s.copyWith(tenvpnRussianDirect: value));
+    final profile = ref.read(currentProfileProvider);
+    if (profile == null) return;
+    await globalState.safeRun(
+      () => ref
+          .read(profilesActionProvider.notifier)
+          .updateProfile(profile, showLoading: true),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final value = ref.watch(
+      appSettingProvider.select((s) => s.tenvpnRussianDirect),
+    );
+    return _SwitchRow(
+      key: const ValueKey('tenvpn-russian-direct'),
+      icon: Symbols.account_balance,
+      title: l.tenvpnRussianDirect,
+      subtitle: l.tenvpnRussianDirectDesc,
+      value: value,
+      onChanged: (value) => _set(ref, value),
     );
   }
 }

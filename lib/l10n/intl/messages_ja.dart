@@ -1439,6 +1439,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "You get the subscription link from your TENVPN provider",
     ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
+      "Russian services directly",
+    ),
+    "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
+    ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
     ),

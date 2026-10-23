@@ -872,9 +872,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1802,6 +1803,12 @@ class MessageLookup extends MessageLookupByLibrary {
       "Ссылку на подписку вы получаете у своего провайдера TENVPN",
     ),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
+      "Российские сервисы напрямую",
+    ),
+    "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Банки, Госуслуги и маркетплейсы работают без VPN — не ругаются на зарубежный IP",
+    ),
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
     ),

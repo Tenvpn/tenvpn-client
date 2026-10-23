@@ -901,6 +901,8 @@
   "tenvpnProtocol": "Protocol",
   "tenvpnProtocolAuto": "Auto",
   "tenvpnProtocolAutoDesc": "The fastest available",
+  "tenvpnRussianDirect": "Russian services directly",
+  "tenvpnRussianDirectDesc": "Banks, Gosuslugi and marketplaces work without the VPN and don't complain about a foreign IP",
   "tenvpnProtocolAwg": "AmneziaWG first",
   "tenvpnProtocolAwgDesc": "AmneziaWG first, the others when it is down",
   "tenvpnSectionSubscription": "Subscription",
