@@ -310,7 +310,7 @@ proxies:
         'url': 'https://www.gstatic.com/generate_204',
         'expected-status': '204',
         'interval': 15,
-        'timeout': 3000,
+        'timeout': 5000,
         'lazy': true,
         'max-failed-times': 3,
       });

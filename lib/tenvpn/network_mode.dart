@@ -50,6 +50,7 @@ class NetworkModeController {
   final DirectProbe probe;
   final PinAuto pin;
   final bool Function() hasWhitelistTier;
+  final Future<void> Function()? revivePrimary;
   NetworkMode? mode;
   String? _pinned;
   int _generation = 0;
@@ -58,6 +59,7 @@ class NetworkModeController {
     required this.probe,
     required this.pin,
     required this.hasWhitelistTier,
+    this.revivePrimary,
   });
 
   Future<NetworkMode?> refresh() async {
@@ -65,6 +67,8 @@ class NetworkModeController {
     final detected = await detectNetworkMode(probe);
     if (generation != _generation) return null;
     mode = detected;
+    if (detected == NetworkMode.open) await revivePrimary?.call();
+    if (generation != _generation) return null;
     final target = autoPinFor(detected, hasWhitelistTier: hasWhitelistTier());
     if (target != null) {
       await pin(target, changed: target != (_pinned ?? ''));

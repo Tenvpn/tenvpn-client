@@ -59,6 +59,37 @@ void main() {
       proxy['name'] as String,
   ];
 
+  test(
+    'a settings change rebuilds offline from the cached subscription',
+    () async {
+      expect(await service.regenerate(1), isNull);
+      await service.setAwgSource(1, source);
+      responses.add(() => awgOk('AWG NL'));
+      await service.generate(1, fixture('remnawave_mihomo.yaml'));
+      expect(requests, hasLength(1));
+
+      var russianDirect = false;
+      final offline = TenvpnConfigService(
+        store: store,
+        transport: (uri, headers) => fail('no network on regenerate'),
+        options: () => ConfigGenOptions(russianDirect: russianDirect),
+      );
+      final rebuilt = await offline.regenerate(1);
+      final rules = (loadYaml(rebuilt!)['rules'] as YamlList).cast<String>();
+      expect(rules.where((rule) => rule.startsWith('DOMAIN-SUFFIX')), isEmpty);
+      expect(proxyNames(rebuilt).last, 'AWG NL');
+      russianDirect = true;
+      final again =
+          (loadYaml((await offline.regenerate(1))!)['rules'] as YamlList)
+              .cast<String>();
+      expect(again, contains('DOMAIN-SUFFIX,gosuslugi.ru,DIRECT'));
+
+      await service.forget(1);
+      expect(await service.regenerate(1), isNull);
+      expect(dir.listSync(), isEmpty);
+    },
+  );
+
   test('without an AWG source the subscription alone is used', () async {
     final yaml = await service.generate(1, fixture('remnawave_mihomo.yaml'));
     expect(proxyNames(yaml), hasLength(8));

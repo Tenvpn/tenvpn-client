@@ -1,5 +1,7 @@
 part of '../action.dart';
 
+const profileRetryDelay = Duration(seconds: 2);
+
 @Riverpod(keepAlive: true)
 class ProfilesAction extends _$ProfilesAction {
   CoreController get _core => ref.read(coreHandlerProvider);
@@ -70,16 +72,38 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
-  Future<void> updateProfile(
+  Future<void> updateProfile(Profile profile, {bool showLoading = false}) =>
+      _refreshProfile(
+        profile,
+        showLoading: showLoading,
+        run: () => profile.update(prepare: prepareProfileConfig),
+      );
+
+  /// Offline from the cached subscription; one retried download if none.
+  Future<void> regenerateProfile(Profile profile) => _refreshProfile(
+    profile,
+    showLoading: true,
+    run: () async {
+      try {
+        return await profile.regenerate(prepare: prepareProfileConfig);
+      } on DioException {
+        await Future<void>.delayed(profileRetryDelay);
+        return profile.regenerate(prepare: prepareProfileConfig);
+      }
+    },
+  );
+
+  Future<void> _refreshProfile(
     Profile profile, {
-    bool showLoading = false,
+    required bool showLoading,
+    required Future<Profile> Function() run,
   }) async {
     final operation = showLoading
         ? ref.read(updatingKeysProvider.notifier).start(profile.updatingKey)
         : null;
     try {
       ref.read(profilesProvider.notifier).put(profile);
-      final newProfile = await profile.update(prepare: prepareProfileConfig);
+      final newProfile = await run();
       ref.read(profilesProvider.notifier).put(newProfile);
       if (profile.id == ref.read(currentProfileIdProvider)) {
         ref

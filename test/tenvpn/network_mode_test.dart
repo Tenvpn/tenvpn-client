@@ -89,6 +89,20 @@ void main() {
       expect(pins, [('', false), (autoWhitelistGroupName, true), ('', true)]);
     });
 
+    test('an open network revives the regular tier before unpinning', () async {
+      final events = <String>[];
+      final reviving = NetworkModeController(
+        probe: (url, _) async => whitelistProbeUrls.contains(url) || open,
+        pin: (tier, {required changed}) async => events.add('pin $tier'),
+        hasWhitelistTier: () => true,
+        revivePrimary: () async => events.add('revive'),
+      );
+      await reviving.refresh();
+      open = false;
+      await reviving.refresh();
+      expect(events, ['revive', 'pin ', 'pin $autoWhitelistGroupName']);
+    });
+
     test('no network leaves «Авто» as it is', () async {
       open = false;
       await controller.refresh();

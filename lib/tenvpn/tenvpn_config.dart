@@ -38,6 +38,22 @@ class TenvpnConfigService {
     final awg = _awgProxy(state);
     final generated = buildConfig(parsed, awg: awg, options: options());
     await store.save(profileId, state.copyWith(servers: generated.servers));
+    await store.saveSubscription(profileId, subscription);
+    return encodeConfig(generated);
+  }
+
+  /// The same profile rebuilt from the cached subscription and AWG with the
+  /// current options, offline; `null` when nothing is cached yet.
+  Future<String?> regenerate(int profileId) async {
+    final subscription = await store.loadSubscription(profileId);
+    if (subscription == null) return null;
+    final state = await store.load(profileId);
+    final generated = buildConfig(
+      parseSubscription(subscription),
+      awg: _awgProxy(state),
+      options: options(),
+    );
+    await store.save(profileId, state.copyWith(servers: generated.servers));
     return encodeConfig(generated);
   }
 
