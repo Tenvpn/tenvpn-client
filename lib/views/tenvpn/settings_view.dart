@@ -307,9 +307,8 @@ class _RussianDirectRow extends ConsumerWidget {
     final profile = ref.read(currentProfileProvider);
     if (profile == null) return;
     await globalState.safeRun(
-      () => ref
-          .read(profilesActionProvider.notifier)
-          .updateProfile(profile, showLoading: true),
+      () =>
+          ref.read(profilesActionProvider.notifier).regenerateProfile(profile),
     );
   }
 
@@ -342,9 +341,8 @@ class _ProtocolRow extends ConsumerWidget {
     final profile = ref.read(currentProfileProvider);
     if (profile == null) return;
     await globalState.safeRun(
-      () => ref
-          .read(profilesActionProvider.notifier)
-          .updateProfile(profile, showLoading: true),
+      () =>
+          ref.read(profilesActionProvider.notifier).regenerateProfile(profile),
     );
   }
 

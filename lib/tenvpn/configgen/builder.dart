@@ -17,6 +17,7 @@ class ConfigGenOptions {
   final int testIntervalSeconds;
   final int whitelistIntervalSeconds;
   final int testTimeoutMs;
+  final int autoTimeoutMs;
   final int whitelistTimeoutMs;
   final int toleranceMs;
   final int whitelistToleranceMs;
@@ -34,6 +35,7 @@ class ConfigGenOptions {
     this.testIntervalSeconds = 120,
     this.whitelistIntervalSeconds = 300,
     this.testTimeoutMs = 3000,
+    this.autoTimeoutMs = 5000,
     this.whitelistTimeoutMs = 5000,
     this.toleranceMs = 100,
     this.whitelistToleranceMs = 150,
@@ -266,7 +268,9 @@ List<Map<String, dynamic>> _autoGroups(
       'url': options.testUrl,
       'expected-status': '204',
       'interval': options.autoIntervalSeconds,
-      'timeout': options.testTimeoutMs,
+      // At start every group tests at once on a cold network; 3 s marked the
+      // regular tier dead and parked «Авто» on CDN for a whole interval.
+      'timeout': options.autoTimeoutMs,
       'lazy': true,
       'max-failed-times': options.maxFailedTimes,
     },

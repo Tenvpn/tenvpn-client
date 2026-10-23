@@ -218,6 +218,15 @@ extension ProfileExtension on Profile {
     ).saveFile(bytes, prepare: prepare);
   }
 
+  /// A settings change rebuilds the profile from the cached subscription; it
+  /// only downloads when nothing is cached yet.
+  Future<Profile> regenerate({required PrepareProfileConfig prepare}) async {
+    final config = await tenvpnConfig.regenerate(id);
+    if (config == null) return update(prepare: prepare);
+    final saved = await saveFile(utf8.encode(config), prepare: prepare);
+    return saved.copyWith(lastUpdateDate: lastUpdateDate);
+  }
+
   Future<Profile> saveFile(
     Uint8List bytes, {
     required PrepareProfileConfig prepare,
