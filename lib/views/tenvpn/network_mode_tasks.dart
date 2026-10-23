@@ -60,15 +60,17 @@ class _TenvpnNetworkModeTasksState
         // alive again, so «Авто» leaves CDN without waiting for its interval.
         revivePrimary: () async {
           final groups = ref.read(groupsProvider);
-          if (groups.getGroup(autoPrimaryGroupName) == null) return;
-          await ref
-              .read(coreHandlerProvider)
-              .getDelay(
-                groups.getGroup(autoGroupName)?.testUrl ??
-                    const ConfigGenOptions().testUrl,
-                autoPrimaryGroupName,
-                timeout: _reviveTimeout,
-              );
+          final tier = groups.getGroup(autoPrimaryGroupName);
+          if (tier == null) return;
+          final core = ref.read(coreHandlerProvider);
+          final url =
+              groups.getGroup(autoGroupName)?.testUrl ??
+              const ConfigGenOptions().testUrl;
+          await Future.wait([
+            for (final proxy in tier.all)
+              core.getDelay(url, proxy.name, timeout: _reviveTimeout),
+          ]);
+          await core.getDelay(url, tier.name, timeout: _reviveTimeout);
         },
       );
   StreamSubscription<List<ConnectivityResult>>? _subscription;
@@ -93,13 +95,16 @@ class _TenvpnNetworkModeTasksState
     ref.listenManual(
       groupsProvider.select((groups) => groups.getGroup(autoGroupName)?.now),
       (_, now) {
-        final last = _lastRefresh;
-        if (now == autoWhitelistGroupName &&
-            _controller.mode != NetworkMode.whitelist &&
-            ref.read(isStartProvider) &&
-            (last == null || DateTime.now().difference(last) > _recheckGap)) {
-          _schedule(_settleDelay);
+        if (now != autoWhitelistGroupName ||
+            _controller.mode == NetworkMode.whitelist ||
+            !ref.read(isStartProvider)) {
+          return;
         }
+        final last = _lastRefresh;
+        final wait = last == null
+            ? Duration.zero
+            : _recheckGap - DateTime.now().difference(last);
+        _schedule(wait > _settleDelay ? wait : _settleDelay);
       },
     );
   }
