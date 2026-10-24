@@ -74,6 +74,10 @@ jobs:
         include:
           - platform: android
             os: ubuntu-latest
+            store: site
+          - platform: android
+            os: ubuntu-latest
+            store: play
           - platform: windows
             os: windows-2022
             arch: amd64
@@ -115,7 +119,7 @@ jobs:
       - name: Setup Rust cache
         uses: Swatinem/rust-cache@v2
         with:
-          key: ${{ matrix.platform }}-${{ matrix.arch || 'all' }}
+          key: ${{ matrix.platform }}-${{ matrix.store || matrix.arch || 'all' }}
           workspaces: services/helper
           cache-directories: .dart_tool/hooks_runner
 
@@ -154,34 +158,67 @@ jobs:
           flutter --version
           flutter pub get
 
+      - name: Check version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version=$(sed -n 's/^version: \([^+]*\)+.*/\1/p' pubspec.yaml)
+          echo "tag=$TAG pubspec=$version"
+          test "${TAG#v}" = "$version" || test "${TAG%%-*}" = "v$version"
+
       - name: Build
         shell: bash
         env:
           ANDROID_NDK_HOME: ${{ steps.build-ndk.outputs.ndk-path }}
+          TENVPN_API_BASE: ${{ secrets.TENVPN_API_BASE }}
+          TENVPN_STORE: ${{ matrix.store }}
         run: |
+          if [ -z "$TENVPN_API_BASE" ]; then
+            echo "::error::TENVPN_API_BASE secret is not set"
+            exit 1
+          fi
           args=(--env stable -v)
           case "${{ matrix.platform }}" in
             ios) args+=(--no-codesign) ;;
             windows) args+=(--arch "${{ matrix.arch }}") ;;
           esac
+          if [ "$TENVPN_STORE" = play ]; then
+            args+=(--targets aab)
+          fi
           dart setup.dart "${{ matrix.platform }}" "${args[@]}"
+          grep -q '"TENVPN_API_BASE"' env.json
           ls -la dist
           test -n "$(ls -A dist)"
 
       - name: Verify APK signature
-        if: matrix.platform == 'android'
+        if: matrix.store == 'site'
         run: |
           apksigner=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n1)
+          count=0
           for apk in dist/*.apk; do
             digest=$("$apksigner" verify --print-certs "$apk" | sed -n 's/.*certificate SHA-256 digest: //p' | head -n1)
             echo "$apk $digest"
             test "$digest" = "$RELEASE_CERT_SHA256"
+            count=$((count + 1))
+          done
+          test "$count" = 3
+
+      - name: Verify AAB signature
+        if: matrix.store == 'play'
+        run: |
+          for aab in dist/*.aab; do
+            digest=$(keytool -printcert -jarfile "$aab" | sed -n 's/^[[:space:]]*SHA256: //p' | head -n1 | tr -d ':' | tr 'A-F' 'a-f')
+            echo "$aab $digest"
+            test "$digest" = "$RELEASE_CERT_SHA256"
           done
 
+      # The Play bundle goes to the console by hand, not into the GitHub release.
       - name: Upload
         uses: actions/upload-artifact@v7
         with:
-          name: artifact-${{ matrix.platform }}${{ matrix.arch && format('-{0}', matrix.arch) }}
+          name: ${{ matrix.store == 'play' && 'play' || 'artifact' }}-${{ matrix.platform }}${{ matrix.arch && format('-{0}', matrix.arch) }}
           path: ./dist
           if-no-files-found: error
 
