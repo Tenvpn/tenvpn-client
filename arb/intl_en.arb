@@ -1031,7 +1031,7 @@
   "tenvpnStep3": "Copy the key",
   "tenvpnStep3Text": "the whole subscription link",
   "tenvpnStep4": "Come back and paste",
-  "tenvpnStep4Text": "with the button below",
+  "tenvpnStep4Text": "with «Paste»",
   "tenvpnOpen": "Open",
   "tenvpnOrManual": "Or paste the link by hand",
   "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot"

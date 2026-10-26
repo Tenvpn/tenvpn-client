@@ -1895,9 +1895,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "the whole subscription link",
     ),
     "tenvpnStep4": MessageLookupByLibrary.simpleMessage("Come back and paste"),
-    "tenvpnStep4Text": MessageLookupByLibrary.simpleMessage(
-      "with the button below",
-    ),
+    "tenvpnStep4Text": MessageLookupByLibrary.simpleMessage("with «Paste»"),
     "tenvpnSuspended": MessageLookupByLibrary.simpleMessage(
       "Access paused — top up your balance",
     ),

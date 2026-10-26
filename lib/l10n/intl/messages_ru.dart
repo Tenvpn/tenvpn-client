@@ -2004,7 +2004,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnStep4": MessageLookupByLibrary.simpleMessage("Вернитесь и вставьте"),
     "tenvpnStep4Text": MessageLookupByLibrary.simpleMessage(
-      "одной кнопкой ниже",
+      "кнопкой «Вставить»",
     ),
     "tenvpnSuspended": MessageLookupByLibrary.simpleMessage(
       "Доступ приостановлен — пополните баланс",

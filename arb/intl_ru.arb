@@ -1031,7 +1031,7 @@
   "tenvpnStep3": "Скопируйте ключ",
   "tenvpnStep3Text": "ссылку на подписку целиком",
   "tenvpnStep4": "Вернитесь и вставьте",
-  "tenvpnStep4Text": "одной кнопкой ниже",
+  "tenvpnStep4Text": "кнопкой «Вставить»",
   "tenvpnOpen": "Открыть",
   "tenvpnOrManual": "Или вставьте ссылку вручную",
   "tenvpnBotFallback": "Нет доступа к сайту? Получите через Telegram-бота"

@@ -8730,10 +8730,10 @@ class AppLocalizations {
     );
   }
 
-  /// `with the button below`
+  /// `with «Paste»`
   String get tenvpnStep4Text {
     return Intl.message(
-      'with the button below',
+      'with «Paste»',
       name: 'tenvpnStep4Text',
       desc: '',
       args: [],
