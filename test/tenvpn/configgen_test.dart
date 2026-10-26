@@ -231,19 +231,17 @@ proxies:
     });
 
     test('3.x drops the 1.5-only fields, a zero padding stays 2.0', () {
-      final v3 = fixture('awg_v3.conf').replaceFirst(
-        'I1 = ',
-        'J1 = <r 8>\nItime = 120\nI1 = ',
-      );
+      final v3 = fixture(
+        'awg_v3.conf',
+      ).replaceFirst('I1 = ', 'J1 = <r 8>\nItime = 120\nI1 = ');
       final option = parseAwgConf(v3)['amnezia-wg-option'] as Map;
       expect(option.containsKey('j1'), isFalse);
       expect(option.containsKey('itime'), isFalse);
       expect(option['version'], 3);
 
-      final v2 = fixture('awg_v2.conf').replaceFirst(
-        'I1 = ',
-        'ContentPaddingAddition = 0\nI1 = ',
-      );
+      final v2 = fixture(
+        'awg_v2.conf',
+      ).replaceFirst('I1 = ', 'ContentPaddingAddition = 0\nI1 = ');
       final legacy = parseAwgConf(v2)['amnezia-wg-option'] as Map;
       expect(legacy.containsKey('version'), isFalse);
       expect(legacy.containsKey('content-padding-addition'), isFalse);
@@ -272,7 +270,9 @@ proxies:
           'HeaderProtectionKey = short',
         ),
         fixture('awg_v3.conf').replaceFirst('2-10', 'two-ten'),
-        fixture('awg_v3.conf').replaceFirst('RandomTrailers = on', 'RandomTrailers = maybe'),
+        fixture(
+          'awg_v3.conf',
+        ).replaceFirst('RandomTrailers = on', 'RandomTrailers = maybe'),
       ]) {
         expect(
           () => parseAwgConf(broken),
@@ -289,7 +289,7 @@ proxies:
       subscription = parseSubscription(fixture('remnawave_mihomo.yaml'));
     });
 
-    test('groups: TENVPN → Авто (url-test) / Вручную (select)', () {
+    test('groups: TENVPN → Авто (regular → whitelist tiers) / Вручную', () {
       final generated = buildConfig(subscription);
       final groups = (generated.config['proxy-groups'] as List)
           .cast<Map<String, dynamic>>();
@@ -297,18 +297,112 @@ proxies:
       expect(groups.map((group) => group['name']), [
         mainGroupName,
         autoGroupName,
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
         manualGroupName,
       ]);
       expect(groups[0]['type'], 'select');
       expect(groups[0]['proxies'], [autoGroupName, manualGroupName]);
-      expect(groups[1]['type'], 'url-test');
-      expect(groups[1]['proxies'], names);
-      expect(groups[1]['url'], 'https://www.gstatic.com/generate_204');
-      expect(groups[1]['interval'], 300);
-      expect(groups[2]['type'], 'select');
-      expect(groups[2]['proxies'], names);
+      expect(groups[1], {
+        'name': autoGroupName,
+        'type': 'fallback',
+        'proxies': [autoPrimaryGroupName, autoWhitelistGroupName],
+        'url': 'https://www.gstatic.com/generate_204',
+        'expected-status': '204',
+        'interval': 15,
+        'timeout': 5000,
+        'lazy': true,
+        'max-failed-times': 3,
+      });
+      expect(groups[2], {
+        'name': autoPrimaryGroupName,
+        'type': 'url-test',
+        'proxies': names.take(6).toList(),
+        'url': 'https://www.gstatic.com/generate_204',
+        'expected-status': '204',
+        'interval': 120,
+        'timeout': 3000,
+        'tolerance': 100,
+        'lazy': true,
+        'max-failed-times': 3,
+        'hidden': true,
+      });
+      expect(groups[3]['type'], 'url-test');
+      expect(groups[3]['proxies'], [
+        '🇪🇺  Обход белых списков 1',
+        '🇪🇺 Обход белых списков 2',
+      ]);
+      expect(groups[3]['interval'], 300);
+      expect(groups[3]['timeout'], 5000);
+      expect(groups[3]['tolerance'], 150);
+      expect(groups[3]['hidden'], isTrue);
+      expect(groups[3].containsKey('max-failed-times'), isFalse);
+      expect(groups[4]['type'], 'select');
+      expect(groups[4]['proxies'], names);
       expect(generated.config['rules'].last, 'MATCH,$mainGroupName');
       expect(generated.config['mode'], 'rule');
+    });
+
+    test('one tier and no AWG: «Авто» is that url-test itself', () {
+      for (final (text, wl) in [
+        (
+          'proxies:\n'
+              '  - {name: A, type: vless, server: a.example.com, port: 443}\n'
+              '  - {name: B, type: vless, server: b.example.com, port: 443}\n',
+          false,
+        ),
+        (
+          'proxies:\n'
+              '  - {name: Белые списки 1, type: vless, server: a.example.com, port: 443}\n',
+          true,
+        ),
+      ]) {
+        final groups =
+            (buildConfig(parseSubscription(text)).config['proxy-groups']
+                    as List)
+                .cast<Map<String, dynamic>>();
+        expect(groups.map((group) => group['name']), [
+          mainGroupName,
+          autoGroupName,
+          manualGroupName,
+        ]);
+        expect(groups[1]['type'], 'url-test');
+        expect(groups[1].containsKey('hidden'), isFalse);
+        expect(groups[1]['interval'], wl ? 300 : 120);
+      }
+    });
+
+    test('a whitelist server is found by its name outside the section', () {
+      final groups = {
+        for (final group
+            in buildConfig(
+                  parseSubscription('''
+proxies:
+  - {name: NL, type: vless, server: a.example.com, port: 443}
+  - {name: 🇪🇺 Обход белых списков 9, type: vless, server: b.example.com, port: 443}
+'''),
+                ).config['proxy-groups']
+                as List)
+          group['name']: group,
+      };
+      expect(groups[autoPrimaryGroupName]['proxies'], ['NL']);
+      expect(groups[autoWhitelistGroupName]['proxies'], [
+        '🇪🇺 Обход белых списков 9',
+      ]);
+      expect(
+        isWhitelistServer(const ServerEntry(name: 'X', type: 'vless')),
+        isFalse,
+      );
+      expect(
+        isWhitelistServer(
+          const ServerEntry(
+            name: 'X',
+            type: 'vless',
+            section: 'Серверы для обхода белых списков',
+          ),
+        ),
+        isTrue,
+      );
     });
 
     test('tun, fake-ip DNS without Chinese resolvers, controller secret', () {
@@ -333,6 +427,12 @@ proxies:
         expect(resolvers, isNot(contains(chinese)));
       }
       expect(dns.containsKey('nameserver-policy'), isFalse);
+      expect(dns['listen'], '127.0.0.1:1053');
+      for (final server in dns['nameserver'] as List) {
+        expect(server, endsWith('#$mainGroupName'), reason: 'through the VPN');
+      }
+      expect(dns['proxy-server-nameserver'].first, '77.88.8.8');
+      expect(dns['direct-nameserver'], dns['proxy-server-nameserver']);
       expect(config['external-controller'], '127.0.0.1:9090');
       expect(generated.secret, matches(RegExp(r'^[0-9a-f]{32}$')));
       expect(config['secret'], generated.secret);
@@ -342,13 +442,31 @@ proxies:
       );
     });
 
-    test('AWG is appended to both groups and tagged', () {
+    test('AWG stays out of «Авто» and is picked by hand in «Вручную»', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
       final generated = buildConfig(subscription, awg: awg);
-      final groups = (generated.config['proxy-groups'] as List)
-          .cast<Map<String, dynamic>>();
-      expect(groups[1]['proxies'].last, awgDefaultName);
-      expect(groups[2]['proxies'].last, awgDefaultName);
+      final groups = {
+        for (final group in (generated.config['proxy-groups'] as List))
+          group['name']: group,
+      };
+      expect(groups[autoGroupName]['proxies'], [
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
+      ]);
+      final regularOnly = buildConfig(
+        parseSubscription(
+          'proxies:\n'
+          '  - {name: A, type: vless, server: a.example.com, port: 443}\n',
+        ),
+        awg: awg,
+      );
+      final auto = (regularOnly.config['proxy-groups'] as List)[1];
+      expect(auto['type'], 'url-test');
+      expect(auto['proxies'], ['A']);
+      for (final tier in autoTierGroupNames) {
+        expect(groups[tier]['proxies'], isNot(contains(awgDefaultName)));
+      }
+      expect(groups[manualGroupName]['proxies'].last, awgDefaultName);
       expect(generated.servers.last.section, awgSectionTitle);
       expect(
         proxyNamed(
@@ -359,7 +477,7 @@ proxies:
       );
     });
 
-    test('awgFirst falls back from AWG to a hidden url-test pool', () {
+    test('awgFirst puts AWG ahead of both tiers', () {
       final awg = parseAwgConf(fixture('awg_v2.conf'));
       final generated = buildConfig(
         subscription,
@@ -373,22 +491,149 @@ proxies:
       expect(groups[autoGroupName]['type'], 'fallback');
       expect(groups[autoGroupName]['proxies'], [
         awgDefaultName,
-        autoPoolGroupName,
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
       ]);
-      expect(groups[autoPoolGroupName]['type'], 'url-test');
-      expect(groups[autoPoolGroupName]['hidden'], isTrue);
-      expect(
-        groups[autoPoolGroupName]['proxies'],
-        isNot(contains(awgDefaultName)),
-      );
       final withoutAwg = buildConfig(
         subscription,
         options: const ConfigGenOptions(autoStrategy: AutoStrategy.awgFirst),
       );
+      expect((withoutAwg.config['proxy-groups'] as List)[1]['proxies'], [
+        autoPrimaryGroupName,
+        autoWhitelistGroupName,
+      ]);
+    });
+  });
+
+  group('Russian services directly', () {
+    List<String> rulesOf(ConfigGenOptions options) =>
+        (buildConfig(
+                  parseSubscription(fixture('remnawave_mihomo.yaml')),
+                  options: options,
+                ).config['rules']
+                as List)
+            .cast<String>();
+
+    test('on by default: DIRECT suffix rules between LAN and MATCH', () {
+      final rules = rulesOf(const ConfigGenOptions());
+      final direct = [
+        for (final rule in rules)
+          if (rule.startsWith('DOMAIN-SUFFIX,')) rule,
+      ];
+      expect(direct, [
+        for (final domain in russianDirectDomains)
+          'DOMAIN-SUFFIX,$domain,DIRECT',
+      ]);
+      for (final service in ['gosuslugi.ru', 'sberbank.ru', 'ozon.ru']) {
+        expect(rules, contains('DOMAIN-SUFFIX,$service,DIRECT'));
+      }
+      expect(rules.take(privateNetworkRules.length), privateNetworkRules);
+      expect(rules.indexOf(direct.last), rules.length - 2);
+      expect(rules.last, 'MATCH,$mainGroupName');
+    });
+
+    test('off: everything goes through the VPN', () {
+      expect(rulesOf(const ConfigGenOptions(russianDirect: false)), [
+        ...privateNetworkRules,
+        'MATCH,$mainGroupName',
+      ]);
+    });
+
+    test('a short list, never the whole zone or geoip', () {
       expect(
-        (withoutAwg.config['proxy-groups'] as List)[1]['type'],
-        'url-test',
+        russianDirectDomains.toSet(),
+        hasLength(russianDirectDomains.length),
       );
+      for (final domain in russianDirectDomains) {
+        expect(domain, matches(RegExp(r'^[a-z0-9-]+(\.[a-z0-9-]+)+$')));
+        expect(['ru', 'su', 'xn--p1ai', 'рф'], isNot(contains(domain)));
+        expect(domain, isNot(contains('pikabu')));
+      }
+      final rules = rulesOf(const ConfigGenOptions()).join('\n');
+      expect(rules, isNot(contains('GEOIP')));
+      expect(rules, isNot(contains('DOMAIN-SUFFIX,ru,')));
+    });
+  });
+
+  group('alignWithXray', () {
+    late List<Map<String, dynamic>> proxies;
+
+    setUp(() {
+      proxies =
+          (buildConfig(
+                    parseSubscription(fixture('remnawave_mihomo.yaml')),
+                  ).config['proxies']
+                  as List)
+              .cast<Map<String, dynamic>>();
+    });
+
+    test('empty xhttp padding fields get the Xray defaults', () {
+      final second = proxyNamed(proxies, '🇪🇺 Обход белых списков 2');
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-header', 'X-Padding'),
+      );
+      expect(second['xhttp-opts'], containsPair('x-padding-key', 'x_padding'));
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-placement', 'header'),
+      );
+      expect(
+        second['xhttp-opts'],
+        containsPair('x-padding-method', 'tokenish'),
+      );
+      final first = proxyNamed(proxies, '🇪🇺  Обход белых списков 1');
+      expect(
+        first['xhttp-opts'],
+        containsPair('x-padding-header', 'X-Cache-Token'),
+      );
+      expect(first['xhttp-opts'], containsPair('x-padding-key', 'tag'));
+      expect(first['client-fingerprint'], 'firefox');
+      final plain = alignWithXray({
+        'name': 'X',
+        'xhttp-opts': {'path': '/', 'x-padding-header': ''},
+      });
+      expect(plain['xhttp-opts'], {'path': '/', 'x-padding-header': ''});
+      final bare = alignWithXray({
+        'name': 'Y',
+        'xhttp-opts': {'x-padding-obfs-mode': true, 'x-padding-key': ''},
+      });
+      expect(bare['xhttp-opts'], {
+        'x-padding-obfs-mode': true,
+        ...xrayPaddingDefaults,
+      });
+    });
+
+    test('Reality keeps its fingerprint; ML-KEM only when asked', () {
+      final raw = parseSubscription(fixture('remnawave_mihomo.yaml')).proxies;
+      final reality = proxies.where((proxy) => proxy['reality-opts'] != null);
+      expect(reality, hasLength(3));
+      for (final proxy in reality) {
+        final original = proxyNamed(raw, proxy['name'] as String);
+        expect(proxy['client-fingerprint'], original['client-fingerprint']);
+        expect(proxy['reality-opts'], original['reality-opts']);
+      }
+      final withMlkem =
+          (buildConfig(
+                    parseSubscription(fixture('remnawave_mihomo.yaml')),
+                    options: const ConfigGenOptions(realityMlkem: true),
+                  ).config['proxies']
+                  as List)
+              .cast<Map<String, dynamic>>();
+      for (final proxy in withMlkem.where((p) => p['reality-opts'] != null)) {
+        expect(proxy['client-fingerprint'], 'chrome', reason: proxy['name']);
+        expect(proxy['reality-opts']['support-x25519mlkem768'], isTrue);
+        expect(proxy['reality-opts'], contains('public-key'));
+      }
+      final hysteria = proxyNamed(proxies, '🇳🇱 ⚡ Нидерланды (Hysteria2) 🚀');
+      expect(hysteria.containsKey('reality-opts'), isFalse);
+    });
+
+    test('the subscription itself is left untouched', () {
+      final parsed = parseSubscription(fixture('remnawave_mihomo.yaml'));
+      buildConfig(parsed);
+      final second = proxyNamed(parsed.proxies, '🇪🇺 Обход белых списков 2');
+      expect(second['xhttp-opts'], isNot(contains('x-padding-header')));
     });
   });
 

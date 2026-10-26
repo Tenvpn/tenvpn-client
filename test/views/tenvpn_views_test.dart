@@ -1,6 +1,9 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
+
+import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -11,12 +14,14 @@ import 'package:fl_clash/views/tenvpn/home.dart';
 import 'package:fl_clash/views/tenvpn/main_view.dart';
 import 'package:fl_clash/views/tenvpn/mascot.dart';
 import 'package:fl_clash/views/tenvpn/onboarding_view.dart';
+import 'package:fl_clash/views/tenvpn/report_view.dart';
 import 'package:fl_clash/views/tenvpn/servers_view.dart';
 import 'package:fl_clash/views/tenvpn/settings_view.dart';
 import 'package:fl_clash/views/tenvpn/state.dart';
 import 'package:fl_clash/views/tenvpn/theme.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -179,7 +184,11 @@ void main() {
     return c;
   }
 
-  Future<void> pump(WidgetTester tester, Widget child) async {
+  Future<void> pump(
+    WidgetTester tester,
+    Widget child, {
+    AppLook look = AppLook.burrow,
+  }) async {
     tester.view.physicalSize = const Size(420, 900);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
@@ -189,7 +198,7 @@ void main() {
         container: container,
         child: TestApp(
           child: Theme(
-            data: buildTenvpnTheme(brightness: Brightness.dark),
+            data: buildTenvpnTheme(brightness: Brightness.dark, look: look),
             child: child,
           ),
         ),
@@ -226,7 +235,8 @@ void main() {
       expect(find.byKey(const ValueKey('tenvpn-ring-off')), findsOneWidget);
       expect(text('Now: 🇸🇪 Швеция'), findsOneWidget);
       expect(text('Expires:'), findsOneWidget);
-      expect(find.byType(FerMascot), findsNothing);
+      expect(find.byType(FerMascot), findsOneWidget);
+      expect(find.text('OFF'), findsOneWidget);
 
       await tester.tap(find.byKey(const ValueKey('tenvpn-connect')));
       expect(common.toggles, 1);
@@ -358,6 +368,93 @@ void main() {
     });
   });
 
+  group('power button in both looks', () {
+    Future<void> showPhase(
+      WidgetTester tester,
+      ConnectionPhase phase,
+      AppLook look,
+    ) async {
+      container = build(
+        items: [profile],
+        detection: NetworkDetectionState(
+          isLoading: phase != ConnectionPhase.on,
+          ipInfo: phase == ConnectionPhase.on
+              ? const IpInfo(ip: '203.0.113.7', countryCode: 'NL')
+              : null,
+        ),
+      );
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(tester, const TenvpnMainView(), look: look);
+      if (phase == ConnectionPhase.off) return;
+      container.read(runTimeProvider.notifier).value = 42000;
+      await tester.pump();
+      if (phase == ConnectionPhase.on) await tester.pump(connectingAnimation);
+    }
+
+    final cases = {
+      (AppLook.burrow, ConnectionPhase.off): ('Turn on', 'OFF', 1),
+      (AppLook.burrow, ConnectionPhase.connecting): (
+        'Connecting',
+        'NOT PROTECTED',
+        1,
+      ),
+      (AppLook.burrow, ConnectionPhase.on): ('On', 'PROTECTED', 1),
+      (AppLook.strict, ConnectionPhase.off): ('TURN ON', 'OFF', 0),
+      (AppLook.strict, ConnectionPhase.connecting): (
+        'CONNECTING',
+        'NOT PROTECTED',
+        0,
+      ),
+      (AppLook.strict, ConnectionPhase.on): ('ON', 'PROTECTED', 0),
+    };
+    for (final MapEntry(key: (look, phase), value: (label, chip, fer))
+        in cases.entries) {
+      _tv('${look.name} ${phase.name}: $label, $chip', (tester) async {
+        await showPhase(tester, phase, look);
+        expect(container.read(tenvpnPhaseProvider), phase);
+        expect(find.text(label), findsOneWidget);
+        expect(find.text(chip), findsOneWidget);
+        expect(find.byType(FerMascot), findsNWidgets(fer));
+        expect(
+          find.byKey(ValueKey('tenvpn-ring-${phase.name}')),
+          findsOneWidget,
+        );
+        final timer = find.byKey(const ValueKey('tenvpn-session-timer'));
+        if (phase == ConnectionPhase.on) {
+          expect(tester.widget<Text>(timer).data, '00:00:42');
+        } else {
+          expect(timer, findsNothing);
+        }
+        await tester.tap(find.byKey(const ValueKey('tenvpn-connect')));
+        expect(common.toggles, 1);
+        await tester.pump(connectingAnimation);
+      });
+    }
+
+    _tv('the timer follows the session time the core keeps', (tester) async {
+      await showPhase(tester, ConnectionPhase.on, AppLook.strict);
+      container.read(runTimeProvider.notifier).value = 3723000;
+      await tester.pump();
+      expect(find.text('01:02:03'), findsOneWidget);
+    });
+
+    test('the strict palette has visible lines and readable grey', () {
+      double contrast(Color a, Color b) {
+        final (x, y) = (a.computeLuminance(), b.computeLuminance());
+        return (max(x, y) + 0.05) / (min(x, y) + 0.05);
+      }
+
+      const dark = TenvpnPalette.strictDark;
+      const light = TenvpnPalette.strictLight;
+      expect(contrast(dark.border, dark.ink), greaterThan(1.8));
+      expect(contrast(dark.muted, dark.ink), greaterThan(10));
+      expect(contrast(light.mutedDeep, light.ink), greaterThan(4.5));
+      expect(light.ink, const Color(0xFFFAFAF7));
+      expect(dark.strict && light.strict, isTrue);
+      expect(TenvpnPalette.dark.strict, isFalse);
+    });
+  });
+
   group('servers screen', () {
     _tv('lists auto first, then labelled sections', (tester) async {
       container = build(items: [profile]);
@@ -369,7 +466,6 @@ void main() {
       await tester.pump();
 
       expect(proxies.speedChecks, 1);
-      expect(text('All servers'), findsOneWidget);
       expect(text('For allowlisted networks · 1'), findsOneWidget);
       expect(text('Backup connection · 1'), findsOneWidget);
       expect(find.byKey(const ValueKey('tenvpn-row-selected')), findsOneWidget);
@@ -412,20 +508,13 @@ void main() {
       final awg = tester.getTopLeft(
         find.byKey(const ValueKey('tenvpn-section-reserve')),
       );
-      final main = tester.getTopLeft(
-        find.byKey(const ValueKey('tenvpn-section-main')),
+      final auto = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-server-auto')),
       );
-      expect(awg.dy, lessThan(main.dy));
+      expect(awg.dy, lessThan(auto.dy));
       expect(text('AmneziaWG · 1'), findsOneWidget);
       expect(text('Backup connection'), findsNothing);
       expect(find.byKey(const ValueKey('tenvpn-awg-missing')), findsNothing);
-
-      await tester.tap(find.byKey(const ValueKey('tenvpn-section-main')));
-      await tester.pump();
-      expect(
-        find.byKey(ValueKey('tenvpn-server-${_servers[1].name}')),
-        findsNothing,
-      );
     });
 
     _tv('detailed look opens every section and keeps ping order', (
@@ -449,29 +538,188 @@ void main() {
       expect(text('AmneziaWG'), findsWidgets);
     });
 
-    test('selection follows the hidden pool in AWG-first mode', () {
+    test('selection looks through the hidden «Авто» tiers', () {
       container = build(items: [profile]);
-      container.read(groupsProvider.notifier).value = [
-        const Group(
-          type: GroupType.Selector,
-          name: mainGroupName,
-          now: autoGroupName,
+      for (final (tier, server) in [
+        (autoPrimaryGroupName, 'NL'),
+        (autoWhitelistGroupName, 'WL 1'),
+        ('AWG', 'AWG'),
+      ]) {
+        container.read(groupsProvider.notifier).value = [
+          const Group(
+            type: GroupType.Selector,
+            name: mainGroupName,
+            now: autoGroupName,
+          ),
+          Group(type: GroupType.Fallback, name: autoGroupName, now: tier),
+          const Group(
+            type: GroupType.URLTest,
+            name: autoPrimaryGroupName,
+            now: 'NL',
+          ),
+          const Group(
+            type: GroupType.URLTest,
+            name: autoWhitelistGroupName,
+            now: 'WL 1',
+          ),
+        ];
+        expect(container.read(tenvpnSelectionProvider), (
+          auto: true,
+          server: server,
+        ));
+      }
+    });
+  });
+
+  group('server list extras', () {
+    Future<void> showList(
+      WidgetTester tester, {
+      AppLook look = AppLook.burrow,
+    }) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      final url = container.read(appSettingProvider).testUrl;
+      for (final (name, value) in [
+        (_servers[0].name, 120),
+        (_servers[1].name, 20),
+        (_servers[2].name, 10),
+      ]) {
+        container
+            .read(delayDataSourceProvider.notifier)
+            .setDelay(Delay(name: name, url: url, value: value));
+      }
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+        look: look,
+      );
+    }
+
+    for (final (look, label) in [
+      (AppLook.burrow, 'best'),
+      (AppLook.strict, 'BEST'),
+    ]) {
+      _tv('${look.name}: «best» is the fastest ordinary server', (
+        tester,
+      ) async {
+        await showList(tester, look: look);
+        expect(
+          find.byKey(ValueKey('tenvpn-best-${_servers[0].name}')),
+          findsOneWidget,
+        );
+        expect(find.text(label), findsOneWidget);
+        await tester.tap(find.byKey(const ValueKey('tenvpn-section-mobile')));
+        await tester.pump();
+        expect(
+          find.byKey(ValueKey('tenvpn-best-${_servers[1].name}')),
+          findsNothing,
+        );
+      });
+    }
+
+    _tv('search keeps «Авто» and the sections that match', (tester) async {
+      await showList(tester);
+      final field = find.byKey(const ValueKey('tenvpn-server-search'));
+      await tester.enterText(field, 'белые');
+      await tester.pump();
+      expect(find.byKey(const ValueKey('tenvpn-server-auto')), findsOneWidget);
+      expect(text('Белые списки 1'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsNothing,
+      );
+      expect(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+        findsNothing,
+      );
+
+      await tester.enterText(field, 'sweden');
+      await tester.pump();
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsOneWidget,
+      );
+
+      await tester.enterText(field, 'zzz');
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-nothing-found')),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.byIcon(Symbols.close));
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+        findsOneWidget,
+      );
+    });
+
+    _tv('the bug report shows a clean text before anything is sent', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      container.read(logsProvider.notifier).value = FixedList(
+        10,
+        list: [
+          Log.app(
+            'dial vless://3f2a1b4c-1111-2222-3333-444455556666'
+            '@203.0.113.9:443 failed',
+          ),
+        ],
+      );
+      await pump(
+        tester,
+        TenvpnReportView(connectivity: () async => [ConnectivityResult.wifi]),
+      );
+      await tester.pump();
+      final report = tester
+          .widget<SelectableText>(
+            find.byKey(const ValueKey('tenvpn-report-text')),
+          )
+          .data!;
+      expect(report, startsWith('TENVPN 0.2.0'));
+      expect(report, contains('wifi'));
+      expect(report, contains('<link>'));
+      expect(report, isNot(contains('203.0.113.9')));
+      expect(report, isNot(contains('3f2a1b4c')));
+      expect(
+        find.byKey(const ValueKey('tenvpn-report-support')),
+        findsOneWidget,
+      );
+    });
+
+    _tv('kill switch shows what Android reports, or just the link', (
+      tester,
+    ) async {
+      container = build();
+      await pump(
+        tester,
+        Scaffold(
+          body: Column(
+            children: [
+              TenvpnKillSwitchRow(
+                key: const ValueKey('a'),
+                read: () async => (alwaysOn: true, lockdown: true),
+              ),
+              TenvpnKillSwitchRow(
+                key: const ValueKey('b'),
+                read: () async => (alwaysOn: true, lockdown: false),
+              ),
+              TenvpnKillSwitchRow(
+                key: const ValueKey('c'),
+                read: () async => null,
+              ),
+            ],
+          ),
         ),
-        const Group(
-          type: GroupType.Fallback,
-          name: autoGroupName,
-          now: autoPoolGroupName,
-        ),
-        const Group(
-          type: GroupType.URLTest,
-          name: autoPoolGroupName,
-          now: 'NL',
-        ),
-      ];
-      expect(container.read(tenvpnSelectionProvider), (
-        auto: true,
-        server: 'NL',
-      ));
+      );
+      await tester.pump();
+      expect(find.text('Block internet without VPN'), findsNWidgets(3));
+      expect(find.text('On'), findsOneWidget);
+      expect(find.text('Off'), findsOneWidget);
+      expect(find.byIcon(Symbols.open_in_new), findsOneWidget);
     });
   });
 
@@ -537,6 +785,16 @@ void main() {
   });
 
   group('settings', () {
+    _tv('other devices and the bug report sit under «Другое»', (tester) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(tester, const TenvpnSettingsView());
+      final report = find.byKey(const ValueKey('tenvpn-report'));
+      await tester.scrollUntilVisible(report, 300);
+      expect(text('Connect other devices'), findsOneWidget);
+      expect(text('Send a bug report'), findsOneWidget);
+    });
+
     _tv('toggles and theme; no protocol switch to puzzle over', (tester) async {
       container = build(items: [profile]);
       container.read(groupsProvider.notifier).value = _groups(manual: false);
@@ -553,11 +811,10 @@ void main() {
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.dark);
       await tester.scrollUntilVisible(find.text('Light'), 200);
       await tester.ensureVisible(find.text('Light'));
-      await tester.pumpAndSettle();
+      await tester.pump();
       await tester.tap(find.text('Light'));
       await tester.pump();
       expect(container.read(themeSettingProvider).themeMode, ThemeMode.light);
-
       await tester.scrollUntilVisible(
         find.byKey(const ValueKey('tenvpn-sort')),
         200,
@@ -583,11 +840,46 @@ void main() {
 
       await tester.scrollUntilVisible(text('Technical statistics'), 200);
       expect(container.read(appSettingProvider).tenvpnTelemetry, isTrue);
+      await tester.ensureVisible(text('Technical statistics'));
+      await tester.pump();
       await tester.tap(text('Technical statistics'));
       await tester.pump();
       expect(container.read(appSettingProvider).tenvpnTelemetry, isFalse);
       await tester.scrollUntilVisible(text('Privacy policy'), 200);
       expect(text('Privacy policy'), findsOneWidget);
+    });
+
+    _tv('the strict look is picked in settings and hides Fer', (tester) async {
+      container = build(items: [profile]);
+      await pump(tester, const TenvpnSettingsView());
+      await tester.scrollUntilVisible(find.text('Strict'), 200);
+      await tester.pump();
+      await tester.tap(find.text('Strict'));
+      await tester.pump();
+      expect(container.read(appSettingProvider).look, AppLook.strict);
+
+      await pump(tester, const TenvpnSettingsView(), look: AppLook.strict);
+      await tester.drag(find.byType(ListView), const Offset(0, 3000));
+      await tester.pump();
+      expect(find.byType(Image), findsNothing);
+      expect(find.byType(TenvpnLogo), findsOneWidget);
+    });
+
+    _tv('Russian services go direct by default, in both looks', (tester) async {
+      container = build(items: []);
+      final row = find.byKey(const ValueKey('tenvpn-russian-direct'));
+      await pump(tester, const TenvpnSettingsView());
+      expect(text('Russian services directly'), findsOneWidget);
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isTrue);
+      await tester.tap(row);
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isFalse);
+
+      await pump(tester, const TenvpnSettingsView(), look: AppLook.strict);
+      expect(row, findsOneWidget);
+      await tester.tap(row);
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnRussianDirect, isTrue);
     });
 
     _tv('advanced keeps the base client reachable', (tester) async {
@@ -633,6 +925,21 @@ void main() {
     expect(
       buildTenvpnTheme(brightness: Brightness.light).colorScheme.brightness,
       Brightness.light,
+    );
+  });
+
+  test('the strict palette keeps lime and drops cocoa and Fer', () {
+    for (final brightness in Brightness.values) {
+      final warm = TenvpnPalette.of(brightness, AppLook.burrow);
+      final strict = TenvpnPalette.of(brightness, AppLook.strict);
+      expect(warm.showMascot, isTrue);
+      expect(strict.showMascot, isFalse);
+      expect(strict.accent, warm.accent);
+      expect(strict.cocoaText, isNot(warm.cocoaText));
+    }
+    expect(
+      TenvpnPalette.dark.lerp(TenvpnPalette.strictDark, 0.9).showMascot,
+      isFalse,
     );
   });
 

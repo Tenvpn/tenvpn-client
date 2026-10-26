@@ -1,3 +1,5 @@
+import 'dart:ui' show ImageFilter;
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
@@ -8,8 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'mascot.dart';
 import 'servers_view.dart';
 import 'settings_view.dart';
 import 'state.dart';
@@ -171,9 +173,9 @@ class _StatusHint extends ConsumerWidget {
   }
 }
 
-/// The one big control of the app: the ring and the icon say whether the
-/// tunnel is up before any text is read — grey when off, a running lime arc
-/// while connecting, a solid lime ring when on, red when there is no link.
+/// The one big control of the app. «С хорьком» puts Fer inside the ring and
+/// the status under it; «Строгий» is a thin ring with everything inside.
+/// «Защищено» and the session timer appear only once the tunnel is checked.
 class TenvpnPowerButton extends ConsumerWidget {
   final ConnectionPhase phase;
   final double size;
@@ -184,79 +186,214 @@ class TenvpnPowerButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.appLocalizations;
     final p = context.palette;
-    final ring = size * 0.055;
-    final (color, fill, label) = switch (phase) {
-      ConnectionPhase.off => (p.muted, p.surface, l.tenvpnPowerOn),
-      ConnectionPhase.connecting => (
-        p.accentText,
-        p.surface,
-        l.tenvpnStatusConnecting,
-      ),
-      ConnectionPhase.on => (p.accentText, p.accentSoft, l.tenvpnPowerOnState),
-      ConnectionPhase.error => (p.danger, p.dangerSoft, l.tenvpnStatusError),
+    final on = phase == ConnectionPhase.on;
+    final label = switch (phase) {
+      ConnectionPhase.off => l.tenvpnPowerOn,
+      ConnectionPhase.connecting => l.tenvpnStatusConnecting,
+      ConnectionPhase.on => l.tenvpnPowerOnState,
+      ConnectionPhase.error => l.tenvpnStatusError,
     };
-    final track = phase == ConnectionPhase.off ? p.elevated : color;
+    final color = switch (phase) {
+      ConnectionPhase.off => p.strict ? p.borderStrong : p.muted,
+      ConnectionPhase.connecting || ConnectionPhase.on => p.accentText,
+      ConnectionPhase.error => p.danger,
+    };
+    final chip = _StatusChip(
+      label: switch (phase) {
+        ConnectionPhase.off => l.tenvpnChipOff,
+        ConnectionPhase.on => l.tenvpnChipProtected,
+        _ => l.tenvpnChipUnprotected,
+      },
+      color: switch (phase) {
+        ConnectionPhase.on => p.accentText,
+        ConnectionPhase.error => p.danger,
+        _ => p.muted,
+      },
+    );
+    final runTime = on ? ref.watch(runTimeProvider) : null;
+    final timer = runTime == null
+        ? null
+        : Text(
+            getTimeText(runTime),
+            key: const ValueKey('tenvpn-session-timer'),
+            style: TextStyle(
+              fontSize: p.strict ? size * 0.06 : 15,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.6,
+              fontFeatures: const [FontFeature.tabularFigures()],
+              color: p.muted,
+            ),
+          );
+    final labelStyle = TextStyle(
+      fontFamily: tenvpnDisplayFont,
+      fontWeight: p.strict ? FontWeight.w800 : FontWeight.w700,
+      fontSize: p.strict ? size * 0.08 : 19,
+      letterSpacing: p.strict ? 1.2 : -0.3,
+      color: phase == ConnectionPhase.off ? p.text : color,
+    );
+    void toggle() => ref.read(commonActionProvider.notifier).toggleRunning();
+    final ringSize = p.strict ? size : size * 0.8;
+    final ring = _Ring(
+      phase: phase,
+      size: ringSize,
+      color: color,
+      width: switch ((p.strict, on || phase == ConnectionPhase.error)) {
+        (true, true) => 2.5,
+        (true, false) => 1.5,
+        (false, true) => 3.5,
+        (false, false) => 2,
+      },
+      onTap: toggle,
+      child: p.strict
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                chip,
+                SizedBox(height: size * 0.04),
+                Icon(
+                  Symbols.power_settings_new,
+                  size: size * 0.18,
+                  color: color,
+                  weight: 300,
+                ),
+                SizedBox(height: size * 0.025),
+                Text(p.caps(label), style: labelStyle),
+                if (timer != null) ...[SizedBox(height: size * 0.02), timer],
+              ],
+            )
+          : ClipOval(
+              child: FerMascot(pose: ferPoseFor(phase), size: ringSize * 0.86),
+            ),
+    );
     return Semantics(
       button: true,
       label: phase == ConnectionPhase.off
           ? l.tenvpnConnect
           : l.tenvpnDisconnect,
       excludeSemantics: true,
-      child: SizedBox.square(
-        dimension: size,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            SizedBox.square(
-              dimension: size,
-              child: CircularProgressIndicator(
-                key: ValueKey('tenvpn-ring-${phase.name}'),
-                value: phase == ConnectionPhase.connecting ? null : 1,
-                strokeWidth: ring,
-                strokeCap: StrokeCap.round,
-                color: track,
-                backgroundColor: phase == ConnectionPhase.connecting
-                    ? p.elevated
-                    : Colors.transparent,
+      child: p.strict
+          ? ring
+          : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ring,
+                const SizedBox(height: 12),
+                chip,
+                const SizedBox(height: 6),
+                GestureDetector(
+                  onTap: toggle,
+                  child: Text(label, style: labelStyle),
+                ),
+                if (timer != null) ...[const SizedBox(height: 2), timer],
+              ],
+            ),
+    );
+  }
+}
+
+class _Ring extends StatelessWidget {
+  final ConnectionPhase phase;
+  final double size;
+  final Color color;
+  final double width;
+  final VoidCallback onTap;
+  final Widget child;
+
+  const _Ring({
+    required this.phase,
+    required this.size,
+    required this.color,
+    required this.width,
+    required this.onTap,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final connecting = phase == ConnectionPhase.connecting;
+    return SizedBox.square(
+      dimension: size,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          if (phase == ConnectionPhase.on)
+            ImageFiltered(
+              imageFilter: ImageFilter.blur(sigmaX: 9, sigmaY: 9),
+              child: SizedBox.square(
+                dimension: size,
+                child: CircularProgressIndicator(
+                  value: 1,
+                  strokeWidth: width * 3,
+                  color: p.accent.withValues(alpha: 0.45),
+                ),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.all(ring * 2),
-              child: Material(
-                color: fill,
-                shape: const CircleBorder(),
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  key: const ValueKey('tenvpn-connect'),
-                  onTap: () =>
-                      ref.read(commonActionProvider.notifier).toggleRunning(),
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Symbols.power_settings_new,
-                          size: size * 0.3,
-                          color: color,
-                          weight: 600,
-                        ),
-                        SizedBox(height: size * 0.03),
-                        Text(
-                          label,
-                          style: TextStyle(
-                            fontFamily: tenvpnDisplayFont,
-                            fontWeight: FontWeight.w700,
-                            fontSize: size * 0.085,
-                            letterSpacing: -0.3,
-                            color: phase == ConnectionPhase.off
-                                ? p.text
-                                : color,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+          SizedBox.square(
+            dimension: size,
+            child: CircularProgressIndicator(
+              key: ValueKey('tenvpn-ring-${phase.name}'),
+              value: connecting ? null : 1,
+              strokeWidth: width,
+              strokeCap: StrokeCap.round,
+              color: color,
+              backgroundColor: connecting ? p.border : Colors.transparent,
+            ),
+          ),
+          Material(
+            color: Colors.transparent,
+            shape: const CircleBorder(),
+            clipBehavior: Clip.antiAlias,
+            child: InkWell(
+              key: const ValueKey('tenvpn-connect'),
+              onTap: onTap,
+              child: SizedBox.square(
+                dimension: size - width * 4,
+                child: Center(child: child),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const _StatusChip({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return DecoratedBox(
+      key: const ValueKey('tenvpn-status-chip'),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(p.strict ? 4 : 20)),
+          side: BorderSide(color: color.withValues(alpha: 0.7)),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(9, 4, 10, 4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+              child: const SizedBox.square(dimension: 6),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label.toUpperCase(),
+              style: TextStyle(
+                fontFamily: tenvpnDisplayFont,
+                fontSize: 10.5,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 1.3,
+                color: color,
               ),
             ),
           ],
@@ -312,8 +449,8 @@ class TenvpnPing extends ConsumerWidget {
   }
 }
 
-/// Paid-until (or the panel's end date), the balance when the backend sent
-/// it, and «Продлить» — a secondary button: lime stays for "connected".
+/// How long the subscription lasts — and nothing about paying for it: the app
+/// is a connector, the account lives in the bot (owner's call, 17.10).
 class TenvpnExpiryLine extends ConsumerWidget {
   const TenvpnExpiryLine({super.key});
 
@@ -322,7 +459,6 @@ class TenvpnExpiryLine extends ConsumerWidget {
     final l = context.appLocalizations;
     final p = context.palette;
     final expiry = ref.watch(tenvpnExpiryProvider);
-    final account = expiry.account;
     final locale = Localizations.localeOf(context).toLanguageTag();
     var color = p.muted;
     final String text;
@@ -348,50 +484,11 @@ class TenvpnExpiryLine extends ConsumerWidget {
         if (left <= 3) color = p.warn;
       }
     }
-    final money = NumberFormat.decimalPatternDigits(
-      locale: locale,
-      decimalDigits: 0,
-    );
-    return Column(
-      children: [
-        Text(
-          text,
-          key: const ValueKey('tenvpn-expiry'),
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 13, color: color),
-        ),
-        if (account != null && !expiry.free) ...[
-          const SizedBox(height: 2),
-          Text(
-            [
-              l.tenvpnBalance(
-                money.format(account.balanceRub.floor()),
-                money.format(account.dailyRateRub.round()),
-              ),
-              if (account.activeDevices > 0)
-                l.tenvpnDevices(account.activeDevices),
-            ].join(' · '),
-            key: const ValueKey('tenvpn-balance'),
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12.5, color: p.muted),
-          ),
-        ],
-        const SizedBox(height: 6),
-        OutlinedButton.icon(
-          key: const ValueKey('tenvpn-renew'),
-          onPressed: () => launchUrl(
-            Uri.parse(ref.read(tenvpnRenewUrlProvider)),
-            mode: LaunchMode.externalApplication,
-          ),
-          icon: const Icon(Symbols.add_card, size: 18),
-          label: Text(l.tenvpnRenew),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: p.text,
-            side: BorderSide(color: p.borderStrong),
-            visualDensity: VisualDensity.compact,
-          ),
-        ),
-      ],
+    return Text(
+      text,
+      key: const ValueKey('tenvpn-expiry'),
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 13, color: color),
     );
   }
 }

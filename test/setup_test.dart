@@ -74,6 +74,23 @@ void main() {
       );
     });
 
+    test('the store flag picks the Play or the website build', () {
+      expect(
+        setup.createBuildEnvironment(
+          'stable',
+          environment: const {'TENVPN_STORE': 'play'},
+        ),
+        {'APP_ENV': 'stable', 'TENVPN_STORE': 'play'},
+      );
+      expect(
+        () => setup.createBuildEnvironment(
+          'stable',
+          environment: const {'TENVPN_STORE': 'appstore'},
+        ),
+        throwsArgumentError,
+      );
+    });
+
     test('parses iOS bundle identifier override', () {
       final results = setup.createSetupArgParser().parse([
         'ios',
@@ -292,6 +309,22 @@ void main() {
       );
 
       expect(args, ['dart-define-from-file=env.json', 'split-per-abi']);
+    });
+
+    test('the Play bundle is not split per ABI and carries its version', () {
+      final args = setup.createFlutterBuildArgs(
+        platform: 'android',
+        verbose: false,
+        targets: 'aab',
+        buildName: '1.0.0',
+        buildNumber: '10000',
+      );
+
+      expect(args, [
+        'dart-define-from-file=env.json',
+        'build-name=1.0.0',
+        'build-number=10000',
+      ]);
     });
 
     test('adds verbose to flutter build args with -v', () {

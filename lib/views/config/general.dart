@@ -10,6 +10,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 
 part 'general/port_dialog.dart';
 part 'general/ua_dialog.dart';
@@ -356,12 +357,13 @@ class GeneralView extends ConsumerWidget {
         select: (state) => state.autoRun,
         update: (state, value) => state.copyWith(autoRun: value),
       ),
-      ListItem.open(
-        title: Text(appLocalizations.onDemand),
-        subtitle: Text(appLocalizations.onDemandDesc),
-        blur: false,
-        widget: const OnDemandView(),
-      ),
+      if (!isPlayBuild)
+        ListItem.open(
+          title: Text(appLocalizations.onDemand),
+          subtitle: Text(appLocalizations.onDemandDesc),
+          blur: false,
+          widget: const OnDemandView(),
+        ),
       _appSettingToggle(
         title: (l) => l.minimizeOnExit,
         subtitle: (l) => l.minimizeOnExitDesc,

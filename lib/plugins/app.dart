@@ -163,16 +163,12 @@ class App {
     required String channelName,
     required String title,
     required String text,
-    required String actionLabel,
-    required String actionUrl,
   }) async {
     if (!Platform.isAndroid) return false;
     final shown = await methodChannel.invokeMethod<bool>('showAccountNotice', {
       'channelName': channelName,
       'title': title,
       'text': text,
-      'actionLabel': actionLabel,
-      'actionUrl': actionUrl,
     });
     return shown ?? false;
   }
@@ -180,6 +176,27 @@ class App {
   Future<bool?> openVpnSettings() async {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openVpnSettings');
+  }
+
+  /// Null when Android does not tell (hidden settings are closed from 12 on).
+  Future<({bool alwaysOn, bool lockdown})?> alwaysOnVpn() async {
+    if (!Platform.isAndroid) return null;
+    final state = await methodChannel.invokeMapMethod<String, bool>(
+      'getAlwaysOnVpn',
+    );
+    if (state == null) return null;
+    return (
+      alwaysOn: state['alwaysOn'] ?? false,
+      lockdown: state['lockdown'] ?? false,
+    );
+  }
+
+  Future<bool> shareText(String text) async {
+    if (!Platform.isAndroid) return false;
+    final shared = await methodChannel.invokeMethod<bool>('shareText', {
+      'text': text,
+    });
+    return shared ?? false;
   }
 }
 

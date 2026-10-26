@@ -7548,6 +7548,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Russian services directly`
+  String get tenvpnRussianDirect {
+    return Intl.message(
+      'Russian services directly',
+      name: 'tenvpnRussianDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banks, Gosuslugi and marketplaces work without the VPN and don't complain about a foreign IP`
+  String get tenvpnRussianDirectDesc {
+    return Intl.message(
+      'Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP',
+      name: 'tenvpnRussianDirectDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `AmneziaWG first`
   String get tenvpnProtocolAwg {
     return Intl.message(
@@ -7828,6 +7848,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Style`
+  String get tenvpnLook {
+    return Intl.message('Style', name: 'tenvpnLook', desc: '', args: []);
+  }
+
+  /// `With Fer`
+  String get tenvpnLookBurrow {
+    return Intl.message(
+      'With Fer',
+      name: 'tenvpnLookBurrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Strict`
+  String get tenvpnLookStrict {
+    return Intl.message('Strict', name: 'tenvpnLookStrict', desc: '', args: []);
+  }
+
   /// `Server list`
   String get tenvpnListStyle {
     return Intl.message(
@@ -7878,10 +7918,10 @@ class AppLocalizations {
     return Intl.message('By ping', name: 'tenvpnSortPing', desc: '', args: []);
   }
 
-  /// `Paid until {date}`
+  /// `Subscription until {date}`
   String tenvpnPaidUntil(Object date) {
     return Intl.message(
-      'Paid until $date',
+      'Subscription until $date',
       name: 'tenvpnPaidUntil',
       desc: '',
       args: [date],
@@ -7955,10 +7995,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Paid until {date}. Renew now so the VPN keeps working.`
+  /// `Your subscription is active until {date}.`
   String tenvpnExpiryNoticeText(Object date) {
     return Intl.message(
-      'Paid until $date. Renew now so the VPN keeps working.',
+      'Your subscription is active until $date.',
       name: 'tenvpnExpiryNoticeText',
       desc: '',
       args: [date],
@@ -8170,6 +8210,161 @@ class AppLocalizations {
     return Intl.message(
       'Connect it through the bot: My devices → Open in the app',
       name: 'tenvpnAwgMissing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You get the subscription link from your TENVPN provider`
+  String get tenvpnProviderHint {
+    return Intl.message(
+      'You get the subscription link from your TENVPN provider',
+      name: 'tenvpnProviderHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off`
+  String get tenvpnChipOff {
+    return Intl.message('Off', name: 'tenvpnChipOff', desc: '', args: []);
+  }
+
+  /// `Protected`
+  String get tenvpnChipProtected {
+    return Intl.message(
+      'Protected',
+      name: 'tenvpnChipProtected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not protected`
+  String get tenvpnChipUnprotected {
+    return Intl.message(
+      'Not protected',
+      name: 'tenvpnChipUnprotected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `best`
+  String get tenvpnBest {
+    return Intl.message('best', name: 'tenvpnBest', desc: '', args: []);
+  }
+
+  /// `Country, protocol or name`
+  String get tenvpnSearchServers {
+    return Intl.message(
+      'Country, protocol or name',
+      name: 'tenvpnSearchServers',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing found`
+  String get tenvpnNothingFound {
+    return Intl.message(
+      'Nothing found',
+      name: 'tenvpnNothingFound',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Send a bug report`
+  String get tenvpnReport {
+    return Intl.message(
+      'Send a bug report',
+      name: 'tenvpnReport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Log and device details — no links or keys`
+  String get tenvpnReportDesc {
+    return Intl.message(
+      'Log and device details — no links or keys',
+      name: 'tenvpnReportDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bug report`
+  String get tenvpnReportTitle {
+    return Intl.message(
+      'Bug report',
+      name: 'tenvpnReportTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Nothing is sent by itself. Check the text — links, keys and IP addresses are already removed — and send it to support.`
+  String get tenvpnReportNote {
+    return Intl.message(
+      'Nothing is sent by itself. Check the text — links, keys and IP addresses are already removed — and send it to support.',
+      name: 'tenvpnReportNote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Share`
+  String get tenvpnShare {
+    return Intl.message('Share', name: 'tenvpnShare', desc: '', args: []);
+  }
+
+  /// `Support`
+  String get tenvpnOpenSupport {
+    return Intl.message(
+      'Support',
+      name: 'tenvpnOpenSupport',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Block internet without VPN`
+  String get tenvpnKillSwitch {
+    return Intl.message(
+      'Block internet without VPN',
+      name: 'tenvpnKillSwitch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN`
+  String get tenvpnKillSwitchDesc {
+    return Intl.message(
+      'Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN',
+      name: 'tenvpnKillSwitchDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect other devices`
+  String get tenvpnOtherDevices {
+    return Intl.message(
+      'Connect other devices',
+      name: 'tenvpnOtherDevices',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Apps for computers, TVs and other phones`
+  String get tenvpnOtherDevicesDesc {
+    return Intl.message(
+      'Apps for computers, TVs and other phones',
+      name: 'tenvpnOtherDevicesDesc',
       desc: '',
       args: [],
     );

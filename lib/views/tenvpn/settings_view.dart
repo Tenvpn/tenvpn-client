@@ -7,16 +7,19 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/about.dart';
+import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'advanced_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'onboarding_view.dart';
 import 'privacy_view.dart';
+import 'report_view.dart';
 import 'state.dart';
 import 'theme.dart';
 
@@ -26,6 +29,7 @@ class TenvpnSettingsView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.appLocalizations;
+    final hasAwg = ref.watch(tenvpnHasAwgProvider);
     return Scaffold(
       appBar: AppBar(title: Text(l.tenvpnSettings)),
       body: Center(
@@ -46,14 +50,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                   const _AutoConnectRow(),
                   if (system.isDesktop) const _AutoStartRow(),
                   if (system.isWindows) const _FullTunnelRow(),
-                  if (system.isAndroid)
-                    TenvpnSettingsRow(
-                      icon: Symbols.restart_alt,
-                      title: l.tenvpnAlwaysOn,
-                      subtitle: l.tenvpnAlwaysOnDesc,
-                      onTap: () => unawaited(app?.openVpnSettings()),
-                      trailing: const Icon(Symbols.open_in_new, size: 20),
-                    ),
+                  if (system.isAndroid) const TenvpnKillSwitchRow(),
                   if (system.isAndroid)
                     TenvpnSettingsRow(
                       icon: Symbols.call_split,
@@ -62,6 +59,8 @@ class TenvpnSettingsView extends ConsumerWidget {
                       onTap: () =>
                           BaseNavigator.push(context, const AccessView()),
                     ),
+                  const _RussianDirectRow(),
+                  if (hasAwg && !system.isWindows) const _ProtocolRow(),
                 ],
               ),
               TenvpnSettingsGroup(
@@ -82,6 +81,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                 title: l.tenvpnSectionLook,
                 children: const [
                   _ThemeRow(),
+                  _LookRow(),
                   _LanguageRow(),
                   _ListStyleRow(),
                   _SortRow(),
@@ -96,6 +96,27 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnAdvancedDesc,
                     onTap: () =>
                         BaseNavigator.push(context, const TenvpnAdvancedView()),
+                  ),
+                  TenvpnSettingsRow(
+                    key: const ValueKey('tenvpn-other-devices'),
+                    icon: Symbols.devices,
+                    title: l.tenvpnOtherDevices,
+                    subtitle: l.tenvpnOtherDevicesDesc,
+                    onTap: () => unawaited(
+                      launchUrl(
+                        Uri.parse(tenvpnDevicesUrl),
+                        mode: LaunchMode.externalApplication,
+                      ),
+                    ),
+                    trailing: const Icon(Symbols.open_in_new, size: 20),
+                  ),
+                  TenvpnSettingsRow(
+                    key: const ValueKey('tenvpn-report'),
+                    icon: Symbols.bug_report,
+                    title: l.tenvpnReport,
+                    subtitle: l.tenvpnReportDesc,
+                    onTap: () =>
+                        BaseNavigator.push(context, const TenvpnReportView()),
                   ),
                   const _TelemetryRow(),
                   TenvpnSettingsRow(
@@ -150,14 +171,7 @@ class TenvpnSettingsGroup extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: p.muted,
-              ),
-            ),
+            child: Text(p.caps(title), style: p.captionStyle(p.muted)),
           ),
           TenvpnCard(
             padding: EdgeInsets.zero,
@@ -219,6 +233,72 @@ class TenvpnSettingsRow extends StatelessWidget {
   }
 }
 
+typedef AlwaysOnState = ({bool alwaysOn, bool lockdown});
+
+/// Android keeps the kill switch to itself: the row opens its VPN settings
+/// and, where the system tells, shows whether both switches are on.
+class TenvpnKillSwitchRow extends StatefulWidget {
+  final Future<AlwaysOnState?> Function()? read;
+
+  const TenvpnKillSwitchRow({super.key, this.read});
+
+  @override
+  State<TenvpnKillSwitchRow> createState() => _TenvpnKillSwitchRowState();
+}
+
+class _TenvpnKillSwitchRowState extends State<TenvpnKillSwitchRow> {
+  late final AppLifecycleListener _lifecycle;
+  AlwaysOnState? _state;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycle = AppLifecycleListener(onResume: _refresh);
+    _refresh();
+  }
+
+  @override
+  void dispose() {
+    _lifecycle.dispose();
+    super.dispose();
+  }
+
+  void _refresh() {
+    final read = widget.read ?? () async => app?.alwaysOnVpn();
+    unawaited(
+      read().then((state) {
+        if (mounted) setState(() => _state = state);
+      }, onError: (_) {}),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.appLocalizations;
+    final p = context.palette;
+    final state = _state;
+    final on = state != null && state.alwaysOn && state.lockdown;
+    return TenvpnSettingsRow(
+      key: const ValueKey('tenvpn-kill-switch'),
+      icon: Symbols.block,
+      title: l.tenvpnKillSwitch,
+      subtitle: l.tenvpnKillSwitchDesc,
+      onTap: () => unawaited(app?.openVpnSettings()),
+      trailing: state == null
+          ? const Icon(Symbols.open_in_new, size: 20)
+          : Text(
+              on ? l.tenvpnPowerOnState : l.tenvpnChipOff,
+              key: const ValueKey('tenvpn-kill-switch-state'),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: on ? p.accentText : p.muted,
+              ),
+            ),
+    );
+  }
+}
+
 class _SwitchRow extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -227,6 +307,7 @@ class _SwitchRow extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   const _SwitchRow({
+    super.key,
     required this.icon,
     required this.title,
     required this.subtitle,
@@ -306,6 +387,104 @@ class _AutoStartRow extends ConsumerWidget {
               highPriorityAutoLaunch: value ? s.highPriorityAutoLaunch : false,
             ),
           ),
+    );
+  }
+}
+
+class _RussianDirectRow extends ConsumerWidget {
+  const _RussianDirectRow();
+
+  Future<void> _set(WidgetRef ref, bool value) async {
+    ref
+        .read(appSettingProvider.notifier)
+        .update((s) => s.copyWith(tenvpnRussianDirect: value));
+    final profile = ref.read(currentProfileProvider);
+    if (profile == null) return;
+    await globalState.safeRun(
+      () =>
+          ref.read(profilesActionProvider.notifier).regenerateProfile(profile),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final value = ref.watch(
+      appSettingProvider.select((s) => s.tenvpnRussianDirect),
+    );
+    return _SwitchRow(
+      key: const ValueKey('tenvpn-russian-direct'),
+      icon: Symbols.account_balance,
+      title: l.tenvpnRussianDirect,
+      subtitle: l.tenvpnRussianDirectDesc,
+      value: value,
+      onChanged: (value) => _set(ref, value),
+    );
+  }
+}
+
+class _ProtocolRow extends ConsumerWidget {
+  const _ProtocolRow();
+
+  Future<void> _set(WidgetRef ref, bool awgFirst) async {
+    final current = ref.read(appSettingProvider).awgPriority;
+    if (current == awgFirst) return;
+    ref
+        .read(appSettingProvider.notifier)
+        .update((s) => s.copyWith(awgPriority: awgFirst));
+    final profile = ref.read(currentProfileProvider);
+    if (profile == null) return;
+    await globalState.safeRun(
+      () =>
+          ref.read(profilesActionProvider.notifier).regenerateProfile(profile),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final p = context.palette;
+    final awgFirst = ref.watch(appSettingProvider.select((s) => s.awgPriority));
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Symbols.swap_horiz, color: p.cocoaText),
+              const SizedBox(width: 16),
+              Text(
+                l.tenvpnProtocol,
+                style: TextStyle(
+                  fontSize: 15.5,
+                  fontWeight: FontWeight.w500,
+                  color: p.text,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: SegmentedButton<bool>(
+              key: const ValueKey('tenvpn-protocol'),
+              showSelectedIcon: false,
+              segments: [
+                ButtonSegment(value: false, label: Text(l.tenvpnProtocolAuto)),
+                ButtonSegment(value: true, label: Text(l.tenvpnProtocolAwg)),
+              ],
+              selected: {awgFirst},
+              onSelectionChanged: (value) => _set(ref, value.first),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            awgFirst ? l.tenvpnProtocolAwgDesc : l.tenvpnProtocolAutoDesc,
+            style: TextStyle(fontSize: 13, color: p.muted),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -451,8 +630,11 @@ class _SettingsHeader extends ConsumerWidget {
     final phase = ref.watch(tenvpnPhaseProvider);
     return Row(
       children: [
-        FerMascot(pose: ferPoseFor(phase), size: 112),
-        const SizedBox(width: 12),
+        if (p.showMascot) ...[
+          FerMascot(pose: ferPoseFor(phase), size: 112),
+          const SizedBox(width: 12),
+        ] else
+          const SizedBox(height: 72, width: 4),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -519,6 +701,28 @@ class _Choice<T> extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _LookRow extends ConsumerWidget {
+  const _LookRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    return _Choice<AppLook>(
+      key: const ValueKey('tenvpn-look'),
+      icon: Symbols.palette,
+      title: l.tenvpnLook,
+      value: ref.watch(appSettingProvider.select((s) => s.look)),
+      options: [
+        (AppLook.burrow, l.tenvpnLookBurrow),
+        (AppLook.strict, l.tenvpnLookStrict),
+      ],
+      onChanged: (value) => ref
+          .read(appSettingProvider.notifier)
+          .update((s) => s.copyWith(look: value)),
     );
   }
 }

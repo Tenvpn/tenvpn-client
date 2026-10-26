@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/shape.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:material_ui/material_ui.dart';
 
 const tenvpnDisplayFont = 'Geologica';
@@ -28,6 +29,11 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
   final Color warnSoft;
   final Color danger;
   final Color dangerSoft;
+  final bool showMascot;
+
+  /// «Строгий»: visible 1 px lines, 8 px corners and capital labels instead
+  /// of soft fills — the clarity comes from lines, not from new colours.
+  final bool strict;
 
   const TenvpnPalette({
     required this.ink,
@@ -50,6 +56,8 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
     required this.warnSoft,
     required this.danger,
     required this.dangerSoft,
+    this.showMascot = true,
+    this.strict = false,
   });
 
   static const dark = TenvpnPalette(
@@ -98,6 +106,65 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
     dangerSoft: Color(0x1AFF6B5E),
   );
 
+  /// Tokens from docs/client-app/hiro-study: lines 1.9:1, grey 10.6:1.
+  static const strictDark = TenvpnPalette(
+    ink: Color(0xFF0C100E),
+    surface: Color(0xFF121714),
+    elevated: Color(0xFF1B211D),
+    border: Color(0xFF3A443E),
+    borderStrong: Color(0xFFE8EDE6),
+    accent: Color(0xFFB6E32E),
+    accentText: Color(0xFFB6E32E),
+    accentSoft: Color(0x14B6E32E),
+    onAccent: Color(0xFF0C100E),
+    cream: Color(0xFFF4F7F2),
+    cocoa: Color(0xFF8A968D),
+    cocoaText: Color(0xFFDCE2DD),
+    cocoaSoft: Color(0x1AFFFFFF),
+    text: Color(0xFFF4F7F2),
+    muted: Color(0xFFB9C3BB),
+    mutedDeep: Color(0xFF8A968D),
+    warn: Color(0xFFFFB245),
+    warnSoft: Color(0x1AFFB245),
+    danger: Color(0xFFFF5A4E),
+    dangerSoft: Color(0x1AFF5A4E),
+    showMascot: false,
+    strict: true,
+  );
+
+  static const strictLight = TenvpnPalette(
+    ink: Color(0xFFFAFAF7),
+    surface: Color(0xFFFFFFFF),
+    elevated: Color(0xFFEEF0EC),
+    border: Color(0xFFC9CDC6),
+    borderStrong: Color(0xFF0C100E),
+    accent: Color(0xFFB6E32E),
+    accentText: Color(0xFF3F5A00),
+    accentSoft: Color(0x29B6E32E),
+    onAccent: Color(0xFF0C100E),
+    cream: Color(0xFF0C100E),
+    cocoa: Color(0xFF6A756D),
+    cocoaText: Color(0xFF2A332D),
+    cocoaSoft: Color(0x140C100E),
+    text: Color(0xFF0C100E),
+    muted: Color(0xFF3E4842),
+    mutedDeep: Color(0xFF6A756D),
+    warn: Color(0xFFB86E00),
+    warnSoft: Color(0x1FFFB245),
+    danger: Color(0xFFC8372B),
+    dangerSoft: Color(0x1AC8372B),
+    showMascot: false,
+    strict: true,
+  );
+
+  static TenvpnPalette of(Brightness brightness, AppLook look) {
+    final dark = brightness == Brightness.dark;
+    return switch (look) {
+      AppLook.burrow => dark ? TenvpnPalette.dark : TenvpnPalette.light,
+      AppLook.strict => dark ? strictDark : strictLight,
+    };
+  }
+
   @override
   TenvpnPalette copyWith() => this;
 
@@ -126,6 +193,8 @@ class TenvpnPalette extends ThemeExtension<TenvpnPalette> {
       warnSoft: mix(warnSoft, other.warnSoft),
       danger: mix(danger, other.danger),
       dangerSoft: mix(dangerSoft, other.dangerSoft),
+      showMascot: t < 0.5 ? showMascot : other.showMascot,
+      strict: t < 0.5 ? strict : other.strict,
     );
   }
 }
@@ -135,10 +204,31 @@ extension TenvpnPaletteContext on BuildContext {
       Theme.of(this).extension<TenvpnPalette>() ?? TenvpnPalette.dark;
 }
 
-ColorScheme tenvpnColorScheme(Brightness brightness) {
-  final p = brightness == Brightness.dark
-      ? TenvpnPalette.dark
-      : TenvpnPalette.light;
+const _strictCorner = BorderRadius.all(Radius.circular(8));
+
+extension TenvpnPaletteShapes on TenvpnPalette {
+  OutlinedBorder cardShape([BorderSide side = BorderSide.none]) => strict
+      ? RoundedRectangleBorder(borderRadius: _strictCorner, side: side)
+      : AppShape.lg.copyWith(side: side);
+
+  String caps(String text) => strict ? text.toUpperCase() : text;
+
+  TextStyle captionStyle(Color color) => strict
+      ? TextStyle(
+          fontFamily: tenvpnDisplayFont,
+          fontSize: 11.5,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 1.4,
+          color: color,
+        )
+      : TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: color);
+}
+
+ColorScheme tenvpnColorScheme(
+  Brightness brightness, [
+  AppLook look = AppLook.burrow,
+]) {
+  final p = TenvpnPalette.of(brightness, look);
   final dark = brightness == Brightness.dark;
   return ColorScheme(
     brightness: brightness,
@@ -199,13 +289,12 @@ TextTheme _textTheme(TextTheme base, TenvpnPalette p) {
 
 ThemeData buildTenvpnTheme({
   required Brightness brightness,
+  AppLook look = AppLook.burrow,
   PageTransitionsTheme? pageTransitionsTheme,
   TooltipThemeData? tooltipTheme,
 }) {
-  final palette = brightness == Brightness.dark
-      ? TenvpnPalette.dark
-      : TenvpnPalette.light;
-  final scheme = tenvpnColorScheme(brightness);
+  final palette = TenvpnPalette.of(brightness, look);
+  final scheme = tenvpnColorScheme(brightness, look);
   final base = ThemeData(
     useMaterial3: true,
     brightness: brightness,
@@ -214,7 +303,7 @@ ThemeData buildTenvpnTheme({
     pageTransitionsTheme: pageTransitionsTheme,
     tooltipTheme: tooltipTheme,
   );
-  return base
+  final themed = base
       .copyWith(
         scaffoldBackgroundColor: palette.ink,
         canvasColor: palette.ink,
@@ -251,6 +340,28 @@ ThemeData buildTenvpnTheme({
         extensions: [palette],
       )
       .withAppShapes;
+  if (!palette.strict) return themed;
+  OutlineInputBorder line(Color color, [double width = 1]) =>
+      OutlineInputBorder(
+        borderRadius: _strictCorner,
+        borderSide: BorderSide(color: color, width: width),
+      );
+  return themed.copyWith(
+    inputDecorationTheme: themed.inputDecorationTheme.copyWith(
+      border: line(palette.borderStrong),
+      enabledBorder: line(palette.borderStrong),
+      focusedBorder: line(palette.accent, 1.5),
+      disabledBorder: line(palette.border),
+    ),
+    segmentedButtonTheme: SegmentedButtonThemeData(
+      style: ButtonStyle(
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(borderRadius: _strictCorner),
+        ),
+        side: WidgetStatePropertyAll(BorderSide(color: palette.borderStrong)),
+      ),
+    ),
+  );
 }
 
 class TenvpnCard extends StatelessWidget {
@@ -274,9 +385,7 @@ class TenvpnCard extends StatelessWidget {
     final p = context.palette;
     return Material(
       color: color ?? p.surface,
-      shape: AppShape.lg.copyWith(
-        side: BorderSide(color: borderColor ?? p.border),
-      ),
+      shape: p.cardShape(BorderSide(color: borderColor ?? p.border)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -317,13 +426,21 @@ class TenvpnBigButton extends StatelessWidget {
             ),
           )
         : Text(
-            label,
-            style: TextStyle(
-              fontFamily: tenvpnTextFont,
-              fontSize: 17,
-              fontWeight: FontWeight.w600,
-              color: foreground,
-            ),
+            p.caps(label),
+            style: p.strict
+                ? TextStyle(
+                    fontFamily: tenvpnDisplayFont,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.5,
+                    color: foreground,
+                  )
+                : TextStyle(
+                    fontFamily: tenvpnTextFont,
+                    fontSize: 17,
+                    fontWeight: FontWeight.w600,
+                    color: foreground,
+                  ),
           );
     return SizedBox(
       height: height,
@@ -335,7 +452,7 @@ class TenvpnBigButton extends StatelessWidget {
                 backgroundColor: p.accent,
                 foregroundColor: p.onAccent,
                 disabledBackgroundColor: p.accent.withValues(alpha: 0.6),
-                shape: AppShape.lg,
+                shape: p.cardShape(),
               ),
               child: child,
             )
@@ -344,7 +461,7 @@ class TenvpnBigButton extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 foregroundColor: p.text,
                 side: BorderSide(color: p.borderStrong),
-                shape: AppShape.lg,
+                shape: p.cardShape(),
               ),
               child: child,
             ),

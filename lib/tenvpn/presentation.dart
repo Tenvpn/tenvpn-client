@@ -59,8 +59,6 @@ final _emojiPattern = RegExp(
   unicode: true,
 );
 final _bracketPattern = RegExp(r'\(([^)]*)\)');
-// Dart's \w is ASCII-only even in unicode mode, hence the explicit ranges.
-final _mobileWords = RegExp(r'бел[а-яё]*\s+спис[а-яё]*', caseSensitive: false);
 final _mobileTitle = RegExp(
   r'(серверы\s+)?(для\s+)?обход[а-яё]*\s+бел[а-яё]*\s+спис[а-яё]*',
   caseSensitive: false,
@@ -111,8 +109,8 @@ ServerPresentation presentServer({
   if (upper.contains('GEMINI')) tags.add(ServerTag.gemini);
   if (upper.contains('YOUTUBE')) tags.add(ServerTag.youtube);
   final isMobile =
-      _mobileWords.hasMatch(name) ||
-      (section != null && _mobileWords.hasMatch(section));
+      whitelistWords.hasMatch(name) ||
+      (section != null && whitelistWords.hasMatch(section));
   final isReserve =
       type.toLowerCase() == 'wireguard' || section == awgSectionTitle;
   if (isMobile) tags.add(ServerTag.mobile);

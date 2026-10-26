@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Google Play build (TENVPN_STORE=play): a plain VPN connector without the
+     proxy-only mode, Wi-Fi rules or the QR scanner, so no permission needs a
+     Play declaration beyond VpnService. -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.CAMERA"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
+        tools:node="remove" />
+
+    <application>
+        <service
+            android:name="cc.chenx.flclash.service.ProxyService"
+            tools:node="remove" />
+    </application>
+</manifest>

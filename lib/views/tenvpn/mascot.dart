@@ -67,6 +67,7 @@ class _FerMascotState extends State<FerMascot> {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    if (!p.showMascot) return const SizedBox.shrink();
     final size = widget.size;
     final asset = ferAsset(widget.pose, _variant);
     return ExcludeSemantics(

@@ -96,8 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m35(date) => "Expires: ${date}";
 
-  static String m36(date) =>
-      "Paid until ${date}. Renew now so the VPN keeps working.";
+  static String m36(date) => "Your subscription is active until ${date}.";
 
   static String m37(host) => "The link points to ${host}. Add it to TENVPN?";
 
@@ -105,7 +104,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m39(server) => "Now: ${server}";
 
-  static String m40(date) => "Paid until ${date}";
+  static String m40(date) => "Subscription until ${date}";
 
   static String m41(percent) => "Downloading the update… ${percent}%";
 
@@ -1201,12 +1200,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBest": MessageLookupByLibrary.simpleMessage("best"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Use another link",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
     "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
       "Check for updates",
+    ),
+    "tenvpnChipOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "tenvpnChipProtected": MessageLookupByLibrary.simpleMessage("Protected"),
+    "tenvpnChipUnprotected": MessageLookupByLibrary.simpleMessage(
+      "Not protected",
     ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
     "tenvpnDaysLeft": m33,
@@ -1244,6 +1249,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Add subscription?",
     ),
+    "tenvpnKillSwitch": MessageLookupByLibrary.simpleMessage(
+      "Block internet without VPN",
+    ),
+    "tenvpnKillSwitchDesc": MessageLookupByLibrary.simpleMessage(
+      "Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN",
+    ),
     "tenvpnLanguage": MessageLookupByLibrary.simpleMessage("Language"),
     "tenvpnLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Subscription link",
@@ -1251,14 +1262,25 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Compact"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Detailed"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Server list"),
+    "tenvpnLook": MessageLookupByLibrary.simpleMessage("Style"),
+    "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("With Fer"),
+    "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Strict"),
     "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "No link yet? The TENVPN bot gives you one.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("no reply"),
+    "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage("Nothing found"),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Subscription"),
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
+    "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Support"),
+    "tenvpnOtherDevices": MessageLookupByLibrary.simpleMessage(
+      "Connect other devices",
+    ),
+    "tenvpnOtherDevicesDesc": MessageLookupByLibrary.simpleMessage(
+      "Apps for computers, TVs and other phones",
+    ),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Turn on"),
@@ -1275,8 +1297,28 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "AmneziaWG first, the others when it is down",
     ),
+    "tenvpnProviderHint": MessageLookupByLibrary.simpleMessage(
+      "You get the subscription link from your TENVPN provider",
+    ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Reconnect"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "tenvpnReport": MessageLookupByLibrary.simpleMessage("Send a bug report"),
+    "tenvpnReportDesc": MessageLookupByLibrary.simpleMessage(
+      "Log and device details — no links or keys",
+    ),
+    "tenvpnReportNote": MessageLookupByLibrary.simpleMessage(
+      "Nothing is sent by itself. Check the text — links, keys and IP addresses are already removed — and send it to support.",
+    ),
+    "tenvpnReportTitle": MessageLookupByLibrary.simpleMessage("Bug report"),
+    "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
+      "Russian services directly",
+    ),
+    "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
+    ),
+    "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
+      "Country, protocol or name",
+    ),
     "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
     "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Fastest on home internet",
@@ -1304,6 +1346,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnServer": MessageLookupByLibrary.simpleMessage("Server"),
     "tenvpnServers": MessageLookupByLibrary.simpleMessage("Servers"),
     "tenvpnSettings": MessageLookupByLibrary.simpleMessage("Settings"),
+    "tenvpnShare": MessageLookupByLibrary.simpleMessage("Share"),
     "tenvpnSort": MessageLookupByLibrary.simpleMessage("Sorting"),
     "tenvpnSortPing": MessageLookupByLibrary.simpleMessage("By ping"),
     "tenvpnSortSubscription": MessageLookupByLibrary.simpleMessage(

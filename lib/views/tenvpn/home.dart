@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'account_tasks.dart';
 import 'main_view.dart';
 import 'mascot.dart';
+import 'network_mode_tasks.dart';
 import 'onboarding_view.dart';
 
 /// The app's home: onboarding until there is a subscription, then the one
@@ -25,7 +26,7 @@ class TenvpnHome extends ConsumerWidget {
     } else if (hasProfile) {
       child = const TenvpnAccountTasks(
         key: ValueKey('tenvpn-main'),
-        child: TenvpnMainView(),
+        child: TenvpnNetworkModeTasks(child: TenvpnMainView()),
       );
     } else {
       child = const TenvpnOnboardingView(key: ValueKey('tenvpn-onboarding'));

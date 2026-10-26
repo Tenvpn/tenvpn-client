@@ -29,6 +29,14 @@ class TenvpnServerList extends ConsumerStatefulWidget {
 class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   bool _measured = false;
   final _toggled = <ServerSectionKind>{};
+  final _search = TextEditingController();
+  String _query = '';
+
+  @override
+  void dispose() {
+    _search.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -74,18 +82,25 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     final testUrl = ref.watch(
       groupsProvider.select((g) => g.getGroup(manualGroupName)?.testUrl),
     );
-    List<ServerPresentation> ordered(List<ServerPresentation> servers) =>
-        look.$2 == ServerSort.ping
-        ? sortByPing(
-            servers,
-            (name) =>
-                ref.watch(delayProvider(proxyName: name, testUrl: testUrl)),
-          )
-        : servers;
+    int? delayOf(String name) =>
+        ref.watch(delayProvider(proxyName: name, testUrl: testUrl));
+    List<ServerPresentation> ordered(List<ServerPresentation> servers) {
+      final found = [
+        for (final s in servers)
+          if (serverMatches(s, _query)) s,
+      ];
+      return look.$2 == ServerSort.ping ? sortByPing(found, delayOf) : found;
+    }
+
     bool isSelected(ServerPresentation s) =>
         !selection.auto && selection.server == s.name;
+    final searching = _query.trim().isNotEmpty;
+    final best = bestServerName([
+      for (final s in sections) ...s.servers,
+    ], delayOf);
     Widget tile(ServerPresentation server) => _ServerTile(
       server: server,
+      best: server.name == best,
       selected: isSelected(server),
       active: active,
       detailed: detailed,
@@ -99,31 +114,87 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     };
     bool isOpen(ServerSection section) =>
         detailed ||
+        searching ||
         section.servers.any(isSelected) ||
         openByDefault(section.kind) != _toggled.contains(section.kind);
     final hasAwg = sections.any((s) => s.kind == ServerSectionKind.reserve);
+    final main = ordered([
+      for (final s in sections)
+        if (s.kind == ServerSectionKind.main) ...s.servers,
+    ]);
+    List<Widget> sectionGroup(ServerSection section) => [
+      const SizedBox(height: 10),
+      _Group(
+        children: [
+          _SectionHeader(
+            kind: section.kind,
+            awgOnTop: awgOnTop,
+            count: section.servers.length,
+            open: isOpen(section),
+            onTap: () => setState(() {
+              if (!_toggled.remove(section.kind)) {
+                _toggled.add(section.kind);
+              }
+            }),
+          ),
+          if (isOpen(section)) ...ordered(section.servers).map(tile),
+        ],
+      ),
+    ];
+    final shown = [
+      for (final section in sections)
+        if (section.kind != ServerSectionKind.main &&
+            (!searching ||
+                section.servers.any((s) => serverMatches(s, _query))))
+          section,
+    ];
+    final onTop = [
+      for (final section in shown)
+        if (awgOnTop && section.kind == ServerSectionKind.reserve) section,
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Row(
           children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4),
+            if (p.strict) ...[
+              Padding(
+                padding: const EdgeInsets.only(left: 4, right: 10),
                 child: Text(
-                  l.tenvpnServers,
-                  style: TextStyle(
-                    fontFamily: tenvpnDisplayFont,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: p.text,
+                  p.caps(l.tenvpnServers),
+                  style: p.captionStyle(p.muted),
+                ),
+              ),
+              Expanded(child: Divider(height: 1, color: p.border)),
+              const SizedBox(width: 10),
+            ] else
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    l.tenvpnServers,
+                    style: TextStyle(
+                      fontFamily: tenvpnDisplayFont,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      color: p.text,
+                    ),
                   ),
                 ),
               ),
-            ),
             _PingButton(onPressed: _checkSpeed),
           ],
         ),
+        const SizedBox(height: 8),
+        _SearchField(
+          controller: _search,
+          onChanged: (value) => setState(() => _query = value),
+        ),
+        if (awgOnTop && !hasAwg && sections.isNotEmpty && !searching) ...[
+          const SizedBox(height: 8),
+          const _Group(children: [_AwgMissingTile()]),
+        ],
+        for (final section in onTop) ...sectionGroup(section),
         const SizedBox(height: 8),
         _Group(
           children: [
@@ -134,31 +205,25 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
               current: selection.auto ? selection.server : null,
               onTap: () => _select(null),
             ),
+            ...main.map(tile),
           ],
         ),
-        if (awgOnTop && !hasAwg && sections.isNotEmpty) ...[
-          const SizedBox(height: 10),
-          const _Group(children: [_AwgMissingTile()]),
-        ],
-        for (final section in sections) ...[
-          const SizedBox(height: 10),
-          _Group(
-            children: [
-              _SectionHeader(
-                kind: section.kind,
-                awgOnTop: awgOnTop,
-                count: section.servers.length,
-                open: isOpen(section),
-                onTap: () => setState(() {
-                  if (!_toggled.remove(section.kind)) {
-                    _toggled.add(section.kind);
-                  }
-                }),
-              ),
-              if (isOpen(section)) ...ordered(section.servers).map(tile),
-            ],
+        if (searching &&
+            main.isEmpty &&
+            !sections.any(
+              (s) => s.servers.any((x) => serverMatches(x, _query)),
+            ))
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Text(
+              l.tenvpnNothingFound,
+              key: const ValueKey('tenvpn-nothing-found'),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13.5, color: p.muted),
+            ),
           ),
-        ],
+        for (final section in shown)
+          if (!onTop.contains(section)) ...sectionGroup(section),
       ],
     );
   }
@@ -202,6 +267,94 @@ class _AwgMissingTile extends StatelessWidget {
   }
 }
 
+class _SearchField extends StatelessWidget {
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
+
+  const _SearchField({required this.controller, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    return SizedBox(
+      height: 46,
+      child: TextField(
+        key: const ValueKey('tenvpn-server-search'),
+        controller: controller,
+        onChanged: onChanged,
+        textInputAction: TextInputAction.search,
+        style: TextStyle(fontSize: 14.5, color: p.text),
+        decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          hintText: context.appLocalizations.tenvpnSearchServers,
+          hintStyle: TextStyle(fontSize: 14, color: p.mutedDeep),
+          filled: true,
+          fillColor: p.surface,
+          prefixIcon: Icon(Symbols.search, size: 20, color: p.muted),
+          suffixIcon: ValueListenableBuilder(
+            valueListenable: controller,
+            builder: (context, value, _) => value.text.isEmpty
+                ? const SizedBox.shrink()
+                : IconButton(
+                    tooltip: context.appLocalizations.clear,
+                    icon: Icon(Symbols.close, size: 18, color: p.muted),
+                    onPressed: () {
+                      controller.clear();
+                      onChanged('');
+                    },
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BestTag extends StatelessWidget {
+  const _BestTag({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final label = context.appLocalizations.tenvpnBest;
+    return Padding(
+      padding: const EdgeInsets.only(left: 6),
+      child: DecoratedBox(
+        decoration: ShapeDecoration(
+          color: p.strict ? null : p.accentSoft,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(p.strict ? 3 : 20)),
+            side: p.strict ? BorderSide(color: p.accentText) : BorderSide.none,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: p.strict ? 6 : 8,
+            vertical: 2,
+          ),
+          child: Text(
+            p.strict ? label.toUpperCase() : label,
+            style: p.strict
+                ? TextStyle(
+                    fontFamily: tenvpnDisplayFont,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                    color: p.accentText,
+                  )
+                : TextStyle(
+                    fontSize: 11.5,
+                    fontWeight: FontWeight.w600,
+                    color: p.accentText,
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _PingButton extends StatelessWidget {
   final VoidCallback onPressed;
 
@@ -210,12 +363,18 @@ class _PingButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final p = context.palette;
+    final shape = p.strict
+        ? RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            side: BorderSide(color: p.borderStrong),
+          )
+        : AppShape.full;
     return Material(
-      color: p.elevated,
-      shape: AppShape.full,
+      color: p.strict ? Colors.transparent : p.elevated,
+      shape: shape,
       child: InkWell(
         key: const ValueKey('tenvpn-ping'),
-        customBorder: AppShape.full,
+        customBorder: shape,
         onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 7, 12, 7),
@@ -225,12 +384,14 @@ class _PingButton extends StatelessWidget {
               Icon(Symbols.refresh, size: 16, color: p.muted),
               const SizedBox(width: 6),
               Text(
-                context.appLocalizations.tenvpnCheckSpeed,
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: p.muted,
-                ),
+                p.caps(context.appLocalizations.tenvpnCheckSpeed),
+                style: p.strict
+                    ? p.captionStyle(p.text)
+                    : TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                        color: p.muted,
+                      ),
               ),
             ],
           ),
@@ -470,12 +631,14 @@ class _SectionHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '$title · $count',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: p.text,
-            ),
+            p.caps('$title · $count'),
+            style: p.strict
+                ? p.captionStyle(p.text).copyWith(fontSize: 12.5)
+                : TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: p.text,
+                  ),
           ),
           if (description.isNotEmpty)
             Text(
@@ -497,6 +660,7 @@ class _SectionHeader extends StatelessWidget {
 
 class _ServerTile extends StatelessWidget {
   final ServerPresentation server;
+  final bool best;
   final bool selected;
   final bool active;
   final bool detailed;
@@ -504,6 +668,7 @@ class _ServerTile extends StatelessWidget {
 
   const _ServerTile({
     required this.server,
+    this.best = false,
     required this.selected,
     required this.active,
     required this.detailed,
@@ -534,7 +699,13 @@ class _ServerTile extends StatelessWidget {
         title: server.title,
         detail: [server.protocol, ...tags].join(' · '),
       ),
-      trailing: TenvpnPing(proxyName: server.name),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (best) _BestTag(key: ValueKey('tenvpn-best-${server.name}')),
+          TenvpnPing(proxyName: server.name),
+        ],
+      ),
       end: _Check(selected: selected, active: active),
     );
   }

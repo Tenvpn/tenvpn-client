@@ -7,6 +7,7 @@ export 'awg.dart';
 export 'builder.dart';
 export 'constants.dart';
 export 'errors.dart';
+export 'russian_direct.dart';
 export 'subscription.dart';
 
 GeneratedConfig generateFromSubscription(

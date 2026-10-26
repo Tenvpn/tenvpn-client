@@ -170,8 +170,29 @@ class TenvpnStateStore {
     await temp.rename(file.path);
   }
 
+  Future<File> _subscriptionFile(int profileId) async =>
+      File(join(await directory(), '$profileId.subscription.yaml'));
+
+  /// The last download, so a settings change rebuilds without the network.
+  Future<String?> loadSubscription(int profileId) async {
+    final file = await _subscriptionFile(profileId);
+    return await file.exists() ? file.readAsString() : null;
+  }
+
+  Future<void> saveSubscription(int profileId, String subscription) async {
+    final file = await _subscriptionFile(profileId);
+    await file.parent.create(recursive: true);
+    final temp = File('${file.path}.tmp');
+    await temp.writeAsString(subscription, flush: true);
+    await temp.rename(file.path);
+  }
+
   Future<void> delete(int profileId) async {
-    final file = await _file(profileId);
-    if (await file.exists()) await file.delete();
+    for (final file in [
+      await _file(profileId),
+      await _subscriptionFile(profileId),
+    ]) {
+      if (await file.exists()) await file.delete();
+    }
   }
 }

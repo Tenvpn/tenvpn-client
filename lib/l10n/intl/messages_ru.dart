@@ -109,8 +109,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m35(date) => "Истекает: ${date}";
 
-  static String m36(date) =>
-      "Оплачено до ${date}. Продлите сейчас, чтобы VPN не отключился.";
+  static String m36(date) => "Подписка действует до ${date}.";
 
   static String m37(host) => "Ссылка ведёт на ${host}. Добавить её в TENVPN?";
 
@@ -118,7 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m39(server) => "Сейчас: ${server}";
 
-  static String m40(date) => "Оплачено до ${date}";
+  static String m40(date) => "Подписка до ${date}";
 
   static String m41(percent) => "Скачиваем обновление… ${percent}%";
 
@@ -1729,12 +1728,18 @@ class MessageLookup extends MessageLookupByLibrary {
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBest": MessageLookupByLibrary.simpleMessage("лучший"),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Вставить другую ссылку",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Пинг"),
     "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
       "Проверить обновления",
+    ),
+    "tenvpnChipOff": MessageLookupByLibrary.simpleMessage("Выключено"),
+    "tenvpnChipProtected": MessageLookupByLibrary.simpleMessage("Защищено"),
+    "tenvpnChipUnprotected": MessageLookupByLibrary.simpleMessage(
+      "Не защищено",
     ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Подключить"),
     "tenvpnDaysLeft": m33,
@@ -1778,6 +1783,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Добавить подписку?",
     ),
+    "tenvpnKillSwitch": MessageLookupByLibrary.simpleMessage(
+      "Блокировать интернет без VPN",
+    ),
+    "tenvpnKillSwitchDesc": MessageLookupByLibrary.simpleMessage(
+      "Откроются настройки Android: включите «Постоянный VPN» и «Блокировать соединения без VPN» для TENVPN",
+    ),
     "tenvpnLanguage": MessageLookupByLibrary.simpleMessage("Язык"),
     "tenvpnLinkLabel": MessageLookupByLibrary.simpleMessage(
       "Ссылка на подписку",
@@ -1785,14 +1796,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnListCompact": MessageLookupByLibrary.simpleMessage("Компактный"),
     "tenvpnListDetailed": MessageLookupByLibrary.simpleMessage("Подробный"),
     "tenvpnListStyle": MessageLookupByLibrary.simpleMessage("Список серверов"),
+    "tenvpnLook": MessageLookupByLibrary.simpleMessage("Стиль"),
+    "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("С хорьком"),
+    "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Строгий"),
     "tenvpnMs": m38,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "Нет ссылки? Её выдаёт бот TENVPN.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("нет ответа"),
+    "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage(
+      "Ничего не нашлось",
+    ),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Подписка"),
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
+    "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Поддержка"),
+    "tenvpnOtherDevices": MessageLookupByLibrary.simpleMessage(
+      "Подключить другие устройства",
+    ),
+    "tenvpnOtherDevicesDesc": MessageLookupByLibrary.simpleMessage(
+      "Приложения для компьютера, телевизора и других телефонов",
+    ),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Включить"),
@@ -1811,8 +1835,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnProtocolAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Сначала AmneziaWG, остальные — если он недоступен",
     ),
+    "tenvpnProviderHint": MessageLookupByLibrary.simpleMessage(
+      "Ссылку на подписку вы получаете у своего провайдера TENVPN",
+    ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Переподключиться"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "tenvpnReport": MessageLookupByLibrary.simpleMessage(
+      "Отправить отчёт об ошибке",
+    ),
+    "tenvpnReportDesc": MessageLookupByLibrary.simpleMessage(
+      "Журнал и данные устройства — без ссылок и ключей",
+    ),
+    "tenvpnReportNote": MessageLookupByLibrary.simpleMessage(
+      "Мы ничего не отправляем сами. Проверьте текст — ссылки, ключи и IP-адреса уже убраны — и пришлите его в поддержку.",
+    ),
+    "tenvpnReportTitle": MessageLookupByLibrary.simpleMessage(
+      "Отчёт об ошибке",
+    ),
+    "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
+      "Российские сервисы напрямую",
+    ),
+    "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "Банки, Госуслуги и маркетплейсы работают без VPN — не ругаются на зарубежный IP",
+    ),
+    "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
+      "Страна, протокол или название",
+    ),
     "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
     "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Самый быстрый на домашнем интернете",
@@ -1840,6 +1888,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnServer": MessageLookupByLibrary.simpleMessage("Сервер"),
     "tenvpnServers": MessageLookupByLibrary.simpleMessage("Серверы"),
     "tenvpnSettings": MessageLookupByLibrary.simpleMessage("Настройки"),
+    "tenvpnShare": MessageLookupByLibrary.simpleMessage("Поделиться"),
     "tenvpnSort": MessageLookupByLibrary.simpleMessage("Сортировка"),
     "tenvpnSortPing": MessageLookupByLibrary.simpleMessage("По пингу"),
     "tenvpnSortSubscription": MessageLookupByLibrary.simpleMessage(

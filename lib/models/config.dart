@@ -99,6 +99,7 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(true) bool closeConnections,
     @Default(true) bool promptCloseConnections,
     @Default(false) bool awgPriority,
+    @Default(true) bool tenvpnRussianDirect,
     @Default(true) bool tenvpnTelemetry,
     @Default(ServerListStyle.compact)
     @JsonKey(unknownEnumValue: ServerListStyle.compact)
@@ -106,6 +107,9 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(ServerSort.subscription)
     @JsonKey(unknownEnumValue: ServerSort.subscription)
     ServerSort serverSort,
+    @Default(AppLook.burrow)
+    @JsonKey(unknownEnumValue: AppLook.burrow)
+    AppLook look,
     @Default(defaultTestUrl) String testUrl,
     @Default(true) bool isAnimateToPage,
     @Default(true) bool isSwipeToPage,

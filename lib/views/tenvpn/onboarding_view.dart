@@ -7,18 +7,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'main_view.dart';
 import 'mascot.dart';
 import 'theme.dart';
 
+/// `play` for the Google Play build, `site` for the APK from the website.
+const tenvpnStore = String.fromEnvironment(
+  'TENVPN_STORE',
+  defaultValue: 'site',
+);
+
 /// First run without a subscription, and «Вставить другую ссылку» later on
 /// ([replace]): the new subscription then takes the place of the old one.
 class TenvpnOnboardingView extends ConsumerStatefulWidget {
   final bool replace;
+  final bool playBuild;
 
-  const TenvpnOnboardingView({super.key, this.replace = false});
+  const TenvpnOnboardingView({
+    super.key,
+    this.replace = false,
+    this.playBuild = tenvpnStore == 'play',
+  });
 
   @override
   ConsumerState<TenvpnOnboardingView> createState() =>
@@ -135,27 +145,17 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
           loading: _busy,
           onPressed: _submit,
         ),
-        const SizedBox(height: 10),
-        TenvpnBigButton(
-          key: const ValueKey('tenvpn-open-bot'),
-          label: l.tenvpnOpenBot,
-          primary: false,
-          height: 52,
-          onPressed: () => unawaited(
-            launchUrl(
-              Uri.parse(tenvpnBotUrl),
-              mode: LaunchMode.externalApplication,
+        if (widget.playBuild) ...[
+          const SizedBox(height: 14),
+          Center(
+            child: Text(
+              l.tenvpnProviderHint,
+              key: const ValueKey('tenvpn-provider-hint'),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: p.mutedDeep),
             ),
           ),
-        ),
-        const SizedBox(height: 12),
-        Center(
-          child: Text(
-            l.tenvpnNoLinkYet,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 13, color: p.mutedDeep),
-          ),
-        ),
+        ],
         const SizedBox(height: 16),
       ],
     );

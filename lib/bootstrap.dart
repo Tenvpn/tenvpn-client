@@ -15,6 +15,7 @@ import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/local_proxy.dart';
 import 'package:fl_clash/views/navigation.dart';
 import 'package:fl_clash/views/tenvpn/update_dialog.dart';
 import 'package:material_ui/material_ui.dart';
@@ -89,7 +90,11 @@ class Bootstrap {
     DynamicColorSeeds dynamicColor,
   ) async {
     globalState.packageInfo = await PackageInfo.fromPlatform();
-    final config = await migration.run();
+    var config = await migration.run();
+    final secured = withLocalProxyAuth(config, isAndroid: system.isAndroid);
+    if (!identical(secured, config) && await preferences.saveConfig(secured)) {
+      config = secured;
+    }
     foregroundTicker.updateSettings(
       interval: Duration(
         seconds: config.appSettingProps.foregroundTickerInterval,
