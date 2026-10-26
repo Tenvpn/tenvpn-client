@@ -832,9 +832,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1746,7 +1747,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "When mobile internet opens only approved sites",
     ),
     "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
-      "Backup connection",
+      "Amnezia protocol",
     ),
     "tenvpnSectionReserveDesc": MessageLookupByLibrary.simpleMessage(
       "If the others will not connect",
@@ -1777,7 +1778,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Access paused — top up your balance",
     ),
     "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Mobile"),
-    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Backup"),
+    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Amnezia"),
     "tenvpnTelemetry": MessageLookupByLibrary.simpleMessage(
       "Technical statistics",
     ),

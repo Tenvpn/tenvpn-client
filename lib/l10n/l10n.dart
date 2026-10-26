@@ -7393,10 +7393,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Backup connection`
+  /// `Amnezia protocol`
   String get tenvpnSectionReserve {
     return Intl.message(
-      'Backup connection',
+      'Amnezia protocol',
       name: 'tenvpnSectionReserve',
       desc: '',
       args: [],
@@ -7418,9 +7418,14 @@ class AppLocalizations {
     return Intl.message('Mobile', name: 'tenvpnTagMobile', desc: '', args: []);
   }
 
-  /// `Backup`
+  /// `Amnezia`
   String get tenvpnTagReserve {
-    return Intl.message('Backup', name: 'tenvpnTagReserve', desc: '', args: []);
+    return Intl.message(
+      'Amnezia',
+      name: 'tenvpnTagReserve',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Ping`

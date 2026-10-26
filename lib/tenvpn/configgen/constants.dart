@@ -3,8 +3,8 @@ const autoGroupName = 'Авто';
 const manualGroupName = 'Вручную';
 const autoPrimaryGroupName = 'Авто · обычные';
 const autoWhitelistGroupName = 'Авто · белые списки';
-const awgDefaultName = '🛡 Запасное подключение';
-const awgSectionTitle = 'Запасное подключение';
+const awgDefaultName = '🛡 Протокол Амнезия';
+const awgSectionTitle = 'Протокол Амнезия';
 
 /// Hidden tiers inside «Авто»; the UI looks through them to the real server.
 const autoTierGroupNames = {autoPrimaryGroupName, autoWhitelistGroupName};

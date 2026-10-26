@@ -108,7 +108,7 @@ void main() {
     test('puts AmneziaWG into the backup section', () {
       final server = presentServer(name: awgDefaultName, type: 'wireguard');
       expect(server.section, ServerSectionKind.reserve);
-      expect(server.title, 'Запасной');
+      expect(server.title, 'Амнезия');
       expect(server.protocol, 'AmneziaWG');
       expect(server.tags, {ServerTag.reserve});
     });

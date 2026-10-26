@@ -872,9 +872,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1852,7 +1853,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Когда мобильный интернет открывает только разрешённые сайты",
     ),
     "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
-      "Запасное подключение",
+      "Протокол Амнезия",
     ),
     "tenvpnSectionReserveDesc": MessageLookupByLibrary.simpleMessage(
       "Если остальные не подключаются",
@@ -1883,7 +1884,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Доступ приостановлен — пополните баланс",
     ),
     "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Мобильный"),
-    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Запасной"),
+    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Амнезия"),
     "tenvpnTelemetry": MessageLookupByLibrary.simpleMessage(
       "Техническая статистика",
     ),
