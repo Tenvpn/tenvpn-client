@@ -90,6 +90,28 @@ void main() {
     },
   );
 
+  test(
+    'a pasted AWG key wins over the server source and is not fetched',
+    () async {
+      await service.setAwgSource(1, source);
+      await service.setManualAwg(1, fixture('awg_v3.conf'));
+      expect(await service.hasManualAwg(1), isTrue);
+      final yaml = await service.generate(1, fixture('remnawave_mihomo.yaml'));
+      expect(requests, isEmpty);
+      expect(proxyNames(yaml).last, awgDefaultName);
+      expect(await service.regenerate(1), contains(awgDefaultName));
+
+      await expectLater(
+        service.setManualAwg(1, '[Interface]\nPrivateKey = x'),
+        throwsA(isA<ConfigGenException>()),
+      );
+      expect(await service.hasManualAwg(1), isTrue);
+      await service.setManualAwg(1, null);
+      expect(await service.hasManualAwg(1), isFalse);
+      expect(logs.join(), isNot(contains('PrivateKey')));
+    },
+  );
+
   test('without an AWG source the subscription alone is used', () async {
     final yaml = await service.generate(1, fixture('remnawave_mihomo.yaml'));
     expect(proxyNames(yaml), hasLength(8));

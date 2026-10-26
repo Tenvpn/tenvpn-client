@@ -13,6 +13,7 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'advanced_view.dart';
+import 'awg_key_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'onboarding_view.dart';
@@ -58,6 +59,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                           BaseNavigator.push(context, const AccessView()),
                     ),
                   const _RussianDirectRow(),
+                  const _AwgKeyRow(),
                   if (hasAwg && !system.isWindows) const _ProtocolRow(),
                 ],
               ),
@@ -280,6 +282,23 @@ class _TenvpnKillSwitchRowState extends State<TenvpnKillSwitchRow> {
                 color: on ? p.accentText : p.muted,
               ),
             ),
+    );
+  }
+}
+
+class _AwgKeyRow extends ConsumerWidget {
+  const _AwgKeyRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final hasKey = ref.watch(tenvpnManualAwgProvider).value ?? false;
+    return TenvpnSettingsRow(
+      key: const ValueKey('tenvpn-awg-key-row'),
+      icon: Symbols.key,
+      title: l.tenvpnAwgKey,
+      subtitle: hasKey ? l.tenvpnAwgKeySet : l.tenvpnAwgMissing,
+      onTap: () => BaseNavigator.push(context, const TenvpnAwgKeyView()),
     );
   }
 }

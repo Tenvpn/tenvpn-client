@@ -10,6 +10,7 @@ import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/views/tenvpn/advanced_view.dart';
+import 'package:fl_clash/views/tenvpn/awg_key_view.dart';
 import 'package:fl_clash/views/tenvpn/home.dart';
 import 'package:fl_clash/views/tenvpn/main_view.dart';
 import 'package:fl_clash/views/tenvpn/mascot.dart';
@@ -48,10 +49,33 @@ class _FakeProxiesAction extends ProxiesAction {
   Future<void> delayTestGroups(List<Group> groups) async => speedChecks++;
 }
 
+class _KeyConfig extends TenvpnConfigService {
+  String? manual;
+
+  _KeyConfig()
+    : super(
+        store: TenvpnStateStore(() async => ''),
+        transport: (_, _) async => const AwgHttpResponse(500, ''),
+      );
+
+  @override
+  Future<void> setManualAwg(int profileId, String? conf) async {
+    if (conf != null) parseAwgConf(conf);
+    manual = conf;
+  }
+
+  @override
+  Future<bool> hasManualAwg(int profileId) async => manual != null;
+}
+
 class _FakeProfilesAction extends ProfilesAction {
   String? result;
   final imported = <(String, AwgSource?, bool)>[];
   final tokens = <String?>[];
+  int regenerated = 0;
+
+  @override
+  Future<void> regenerateProfile(Profile profile) async => regenerated++;
 
   @override
   Future<String?> importSubscription(
@@ -136,6 +160,7 @@ void main() {
   late _FakeCommonAction common;
   late _FakeProxiesAction proxies;
   late _FakeProfilesAction profiles;
+  late _KeyConfig keys;
 
   setUpAll(() {
     try {
@@ -162,8 +187,10 @@ void main() {
     common = _FakeCommonAction();
     proxies = _FakeProxiesAction();
     profiles = _FakeProfilesAction();
+    keys = _KeyConfig();
     final c = ProviderContainer(
       overrides: [
+        tenvpnConfigProvider.overrideWithValue(keys),
         profilesProvider.overrideWith(() => TestProfiles(items)),
         currentProfileIdProvider.overrideWithBuild(
           (_, _) => items.isEmpty ? null : items.first.id,
@@ -761,6 +788,63 @@ void main() {
       expect(find.text('On'), findsOneWidget);
       expect(find.text('Off'), findsOneWidget);
       expect(find.byIcon(Symbols.open_in_new), findsOneWidget);
+    });
+  });
+
+  group('amnezia key', () {
+    final conf = File('test/fixtures/tenvpn/awg_v3.conf').readAsStringSync();
+
+    _tv('a missing AmneziaWG leads to the key, not to the bot', (tester) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = [
+        for (final g in _groups(manual: false))
+          g.copyWith(
+            all: [
+              for (final proxy in g.all)
+                if (proxy.type != 'wireguard') proxy,
+            ],
+          ),
+      ];
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+      );
+      expect(text('Paste a key from your account'), findsOneWidget);
+    });
+
+    _tv('checks the key, keeps it on the device and rebuilds', (tester) async {
+      container = build(items: [profile]);
+      await pump(tester, const TenvpnAwgKeyView(playBuild: false));
+      final field = find.byKey(const ValueKey('tenvpn-awg-key'));
+      expect(find.byKey(const ValueKey('tenvpn-awg-cabinet')), findsOneWidget);
+
+      await tester.enterText(field, 'https://sub.example.com/x');
+      await tester.tap(find.byKey(const ValueKey('tenvpn-awg-save')));
+      await tester.pump();
+      expect(text('not an Amnezia key'), findsOneWidget);
+      expect(keys.manual, isNull);
+
+      await tester.enterText(field, conf);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-awg-save')));
+      await tester.pump();
+      await tester.pump();
+      expect(keys.manual, conf.trim());
+      expect(profiles.regenerated, 1);
+    });
+
+    _tv('the Play build has no cabinet link; a set key can be removed', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      keys.manual = conf;
+      await pump(tester, const TenvpnAwgKeyView(playBuild: true));
+      await tester.pump();
+      expect(find.byKey(const ValueKey('tenvpn-awg-cabinet')), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-awg-remove')));
+      await tester.pump();
+      await tester.pump();
+      expect(keys.manual, isNull);
+      expect(profiles.regenerated, 1);
     });
   });
 

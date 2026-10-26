@@ -976,7 +976,7 @@
   "tenvpnUpToDate": "You have the latest version",
   "tenvpnSectionAwg": "AmneziaWG",
   "tenvpnSectionAwgDesc": "Fastest on home internet",
-  "tenvpnAwgMissing": "Connect it through the bot: My devices → Open in the app",
+  "tenvpnAwgMissing": "Paste a key from your account",
   "tenvpnProviderHint": "You get the subscription link from your TENVPN provider",
   "tenvpnChipOff": "Off",
   "tenvpnChipProtected": "Protected",
@@ -993,5 +993,15 @@
   "tenvpnKillSwitch": "Block internet without VPN",
   "tenvpnKillSwitchDesc": "Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN",
   "tenvpnSectionOther": "Other protocols",
-  "tenvpnSectionHysteriaDesc": "Fast, over UDP"
+  "tenvpnSectionHysteriaDesc": "Fast, over UDP",
+  "tenvpnAwgKey": "Amnezia key",
+  "tenvpnAwgKeySet": "Pasted, works without a server",
+  "tenvpnAwgKeyHint": "To use Amnezia, issue a key in your account and paste it here — as text (vpn://…) or a .conf file.",
+  "tenvpnOpenCabinet": "Open your account",
+  "tenvpnAwgKeyFile": ".conf file",
+  "tenvpnAwgKeyRemove": "Remove the key",
+  "tenvpnAwgKeyEmpty": "Paste the key.",
+  "tenvpnAwgKeyBroken": "The key is damaged — copy it again in full.",
+  "tenvpnAwgKeyNotAwg": "This is not an Amnezia key. Use vpn://… from your account or a .conf file.",
+  "tenvpnAwgKeyInvalid": "The key is missing settings. Issue a new one in your account."
 }

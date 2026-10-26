@@ -49,6 +49,7 @@ class AccountCache {
 class TenvpnProfileState {
   final AwgSource? awgSource;
   final AwgCache? awgCache;
+  final String? awgManual;
   final String? appToken;
   final AccountCache? account;
   final String? expiryNoticeFor;
@@ -57,6 +58,7 @@ class TenvpnProfileState {
   const TenvpnProfileState({
     this.awgSource,
     this.awgCache,
+    this.awgManual,
     this.appToken,
     this.account,
     this.expiryNoticeFor,
@@ -66,6 +68,7 @@ class TenvpnProfileState {
   TenvpnProfileState copyWith({
     AwgSource? Function()? awgSource,
     AwgCache? Function()? awgCache,
+    String? Function()? awgManual,
     String? Function()? appToken,
     AccountCache? Function()? account,
     String? Function()? expiryNoticeFor,
@@ -73,6 +76,7 @@ class TenvpnProfileState {
   }) => TenvpnProfileState(
     awgSource: awgSource == null ? this.awgSource : awgSource(),
     awgCache: awgCache == null ? this.awgCache : awgCache(),
+    awgManual: awgManual == null ? this.awgManual : awgManual(),
     appToken: appToken == null ? this.appToken : appToken(),
     account: account == null ? this.account : account(),
     expiryNoticeFor: expiryNoticeFor == null
@@ -84,6 +88,7 @@ class TenvpnProfileState {
   factory TenvpnProfileState.fromJson(Map<String, dynamic> json) {
     final source = json['awg_source'];
     final cache = json['awg_cache'];
+    final manual = json['awg_manual'];
     final token = json['app_token'];
     final account = json['account'];
     final notice = json['expiry_notice_for'];
@@ -101,6 +106,7 @@ class TenvpnProfileState {
           ? AwgSource.fromJson(source)
           : null,
       awgCache: cache is Map<String, dynamic> ? AwgCache.fromJson(cache) : null,
+      awgManual: manual is String && manual.isNotEmpty ? manual : null,
       appToken: token is String && token.isNotEmpty ? token : null,
       account: accountCache,
       expiryNoticeFor: notice is String ? notice : null,
@@ -122,6 +128,7 @@ class TenvpnProfileState {
   Map<String, dynamic> toJson() => {
     'awg_source': ?awgSource?.toJson(),
     'awg_cache': ?awgCache?.toJson(),
+    'awg_manual': ?awgManual,
     'app_token': ?appToken,
     'account': ?account?.toJson(),
     'expiry_notice_for': ?expiryNoticeFor,

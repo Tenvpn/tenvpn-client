@@ -976,7 +976,7 @@
   "tenvpnUpToDate": "У вас последняя версия",
   "tenvpnSectionAwg": "AmneziaWG",
   "tenvpnSectionAwgDesc": "Самый быстрый на домашнем интернете",
-  "tenvpnAwgMissing": "Подключите через бота: «Мои устройства» → «Открыть в приложении»",
+  "tenvpnAwgMissing": "Вставьте ключ из личного кабинета",
   "tenvpnProviderHint": "Ссылку на подписку вы получаете у своего провайдера TENVPN",
   "tenvpnChipOff": "Выключено",
   "tenvpnChipProtected": "Защищено",
@@ -993,5 +993,15 @@
   "tenvpnKillSwitch": "Блокировать интернет без VPN",
   "tenvpnKillSwitchDesc": "Откроются настройки Android: включите «Постоянный VPN» и «Блокировать соединения без VPN» для TENVPN",
   "tenvpnSectionOther": "Другие протоколы",
-  "tenvpnSectionHysteriaDesc": "Быстрый, по UDP"
+  "tenvpnSectionHysteriaDesc": "Быстрый, по UDP",
+  "tenvpnAwgKey": "Ключ Амнезии",
+  "tenvpnAwgKeySet": "Вставлен, работает без сервера",
+  "tenvpnAwgKeyHint": "Чтобы подключить Амнезию, выпустите ключ в личном кабинете и вставьте его сюда — текстом (vpn://…) или файлом .conf.",
+  "tenvpnOpenCabinet": "Открыть личный кабинет",
+  "tenvpnAwgKeyFile": "Файл .conf",
+  "tenvpnAwgKeyRemove": "Удалить ключ",
+  "tenvpnAwgKeyEmpty": "Вставьте ключ.",
+  "tenvpnAwgKeyBroken": "Ключ повреждён — скопируйте его заново целиком.",
+  "tenvpnAwgKeyNotAwg": "Это не ключ Амнезии. Нужен vpn://… из кабинета или файл .conf.",
+  "tenvpnAwgKeyInvalid": "В ключе не хватает настроек. Выпустите новый в кабинете."
 }

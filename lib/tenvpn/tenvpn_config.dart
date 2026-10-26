@@ -56,6 +56,16 @@ class TenvpnConfigService {
     return encodeConfig(generated);
   }
 
+  /// A pasted key beats any server source; a bad one throws unsaved.
+  Future<void> setManualAwg(int profileId, String? conf) async {
+    if (conf != null) parseAwgConf(conf);
+    final state = await store.load(profileId);
+    await store.save(profileId, state.copyWith(awgManual: () => conf));
+  }
+
+  Future<bool> hasManualAwg(int profileId) async =>
+      (await store.load(profileId)).awgManual != null;
+
   Future<void> setAwgSource(int profileId, AwgSource? source) async {
     final state = await store.load(profileId);
     await store.save(
@@ -144,6 +154,7 @@ class TenvpnConfigService {
   }
 
   Future<TenvpnProfileState> _refreshAwg(TenvpnProfileState state) async {
+    if (state.awgManual != null) return state;
     final source = _awgSourceOf(state);
     if (source == null) return state.copyWith(awgCache: () => null);
     final result = await fetchAwg(source, transport);
@@ -168,6 +179,14 @@ class TenvpnConfigService {
   }
 
   Map<String, dynamic>? _awgProxy(TenvpnProfileState state) {
+    final manual = state.awgManual;
+    if (manual != null) {
+      try {
+        return parseAwgConf(manual);
+      } on ConfigGenException {
+        log('tenvpn awg: pasted key unreadable');
+      }
+    }
     final cache = state.awgCache;
     if (cache == null) return null;
     try {

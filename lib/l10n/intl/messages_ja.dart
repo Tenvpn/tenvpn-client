@@ -1365,8 +1365,29 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Launch TENVPN when the computer starts",
     ),
+    "tenvpnAwgKey": MessageLookupByLibrary.simpleMessage("Amnezia key"),
+    "tenvpnAwgKeyBroken": MessageLookupByLibrary.simpleMessage(
+      "The key is damaged — copy it again in full.",
+    ),
+    "tenvpnAwgKeyEmpty": MessageLookupByLibrary.simpleMessage("Paste the key."),
+    "tenvpnAwgKeyFile": MessageLookupByLibrary.simpleMessage(".conf file"),
+    "tenvpnAwgKeyHint": MessageLookupByLibrary.simpleMessage(
+      "To use Amnezia, issue a key in your account and paste it here — as text (vpn://…) or a .conf file.",
+    ),
+    "tenvpnAwgKeyInvalid": MessageLookupByLibrary.simpleMessage(
+      "The key is missing settings. Issue a new one in your account.",
+    ),
+    "tenvpnAwgKeyNotAwg": MessageLookupByLibrary.simpleMessage(
+      "This is not an Amnezia key. Use vpn://… from your account or a .conf file.",
+    ),
+    "tenvpnAwgKeyRemove": MessageLookupByLibrary.simpleMessage(
+      "Remove the key",
+    ),
+    "tenvpnAwgKeySet": MessageLookupByLibrary.simpleMessage(
+      "Pasted, works without a server",
+    ),
     "tenvpnAwgMissing": MessageLookupByLibrary.simpleMessage(
-      "Connect it through the bot: My devices → Open in the app",
+      "Paste a key from your account",
     ),
     "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
       "This does not look like a subscription link. Copy it from the bot in full.",
@@ -1446,6 +1467,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Subscription"),
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
+    "tenvpnOpenCabinet": MessageLookupByLibrary.simpleMessage(
+      "Open your account",
+    ),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Support"),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),

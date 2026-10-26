@@ -1721,8 +1721,27 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Запускать TENVPN вместе с компьютером",
     ),
+    "tenvpnAwgKey": MessageLookupByLibrary.simpleMessage("Ключ Амнезии"),
+    "tenvpnAwgKeyBroken": MessageLookupByLibrary.simpleMessage(
+      "Ключ повреждён — скопируйте его заново целиком.",
+    ),
+    "tenvpnAwgKeyEmpty": MessageLookupByLibrary.simpleMessage("Вставьте ключ."),
+    "tenvpnAwgKeyFile": MessageLookupByLibrary.simpleMessage("Файл .conf"),
+    "tenvpnAwgKeyHint": MessageLookupByLibrary.simpleMessage(
+      "Чтобы подключить Амнезию, выпустите ключ в личном кабинете и вставьте его сюда — текстом (vpn://…) или файлом .conf.",
+    ),
+    "tenvpnAwgKeyInvalid": MessageLookupByLibrary.simpleMessage(
+      "В ключе не хватает настроек. Выпустите новый в кабинете.",
+    ),
+    "tenvpnAwgKeyNotAwg": MessageLookupByLibrary.simpleMessage(
+      "Это не ключ Амнезии. Нужен vpn://… из кабинета или файл .conf.",
+    ),
+    "tenvpnAwgKeyRemove": MessageLookupByLibrary.simpleMessage("Удалить ключ"),
+    "tenvpnAwgKeySet": MessageLookupByLibrary.simpleMessage(
+      "Вставлен, работает без сервера",
+    ),
     "tenvpnAwgMissing": MessageLookupByLibrary.simpleMessage(
-      "Подключите через бота: «Мои устройства» → «Открыть в приложении»",
+      "Вставьте ключ из личного кабинета",
     ),
     "tenvpnBadLink": MessageLookupByLibrary.simpleMessage(
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
@@ -1810,6 +1829,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Подписка"),
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
+    "tenvpnOpenCabinet": MessageLookupByLibrary.simpleMessage(
+      "Открыть личный кабинет",
+    ),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Поддержка"),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),

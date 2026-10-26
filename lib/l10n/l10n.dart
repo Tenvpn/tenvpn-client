@@ -8210,10 +8210,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Connect it through the bot: My devices → Open in the app`
+  /// `Paste a key from your account`
   String get tenvpnAwgMissing {
     return Intl.message(
-      'Connect it through the bot: My devices → Open in the app',
+      'Paste a key from your account',
       name: 'tenvpnAwgMissing',
       desc: '',
       args: [],
@@ -8370,6 +8370,106 @@ class AppLocalizations {
     return Intl.message(
       'Fast, over UDP',
       name: 'tenvpnSectionHysteriaDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Amnezia key`
+  String get tenvpnAwgKey {
+    return Intl.message(
+      'Amnezia key',
+      name: 'tenvpnAwgKey',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Pasted, works without a server`
+  String get tenvpnAwgKeySet {
+    return Intl.message(
+      'Pasted, works without a server',
+      name: 'tenvpnAwgKeySet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To use Amnezia, issue a key in your account and paste it here — as text (vpn://…) or a .conf file.`
+  String get tenvpnAwgKeyHint {
+    return Intl.message(
+      'To use Amnezia, issue a key in your account and paste it here — as text (vpn://…) or a .conf file.',
+      name: 'tenvpnAwgKeyHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open your account`
+  String get tenvpnOpenCabinet {
+    return Intl.message(
+      'Open your account',
+      name: 'tenvpnOpenCabinet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `.conf file`
+  String get tenvpnAwgKeyFile {
+    return Intl.message(
+      '.conf file',
+      name: 'tenvpnAwgKeyFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remove the key`
+  String get tenvpnAwgKeyRemove {
+    return Intl.message(
+      'Remove the key',
+      name: 'tenvpnAwgKeyRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste the key.`
+  String get tenvpnAwgKeyEmpty {
+    return Intl.message(
+      'Paste the key.',
+      name: 'tenvpnAwgKeyEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The key is damaged — copy it again in full.`
+  String get tenvpnAwgKeyBroken {
+    return Intl.message(
+      'The key is damaged — copy it again in full.',
+      name: 'tenvpnAwgKeyBroken',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is not an Amnezia key. Use vpn://… from your account or a .conf file.`
+  String get tenvpnAwgKeyNotAwg {
+    return Intl.message(
+      'This is not an Amnezia key. Use vpn://… from your account or a .conf file.',
+      name: 'tenvpnAwgKeyNotAwg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The key is missing settings. Issue a new one in your account.`
+  String get tenvpnAwgKeyInvalid {
+    return Intl.message(
+      'The key is missing settings. Issue a new one in your account.',
+      name: 'tenvpnAwgKeyInvalid',
       desc: '',
       args: [],
     );

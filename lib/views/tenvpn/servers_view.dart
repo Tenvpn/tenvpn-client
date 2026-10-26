@@ -10,8 +10,8 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import 'awg_key_view.dart';
 import 'main_view.dart' show TenvpnPing;
 import 'state.dart';
 import 'theme.dart';
@@ -284,8 +284,7 @@ class TenvpnRefreshButton extends ConsumerWidget {
   }
 }
 
-/// On a PC without AmneziaWG in the profile: the subscription was pasted by
-/// hand, so there is no device token. The bot's button brings both.
+/// No AmneziaWG in the profile yet: the key comes from the cabinet.
 class _AwgMissingTile extends StatelessWidget {
   const _AwgMissingTile();
 
@@ -295,16 +294,13 @@ class _AwgMissingTile extends StatelessWidget {
     final p = context.palette;
     return _Row(
       key: const ValueKey('tenvpn-awg-missing'),
-      onTap: () => launchUrl(
-        Uri.parse(tenvpnBotUrl),
-        mode: LaunchMode.externalApplication,
-      ),
+      onTap: () => BaseNavigator.push(context, const TenvpnAwgKeyView()),
       leading: Icon(Symbols.shield, color: p.muted, size: 22),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l.tenvpnSectionAwg,
+            l.tenvpnSectionReserve,
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w500,
@@ -317,7 +313,7 @@ class _AwgMissingTile extends StatelessWidget {
           ),
         ],
       ),
-      end: Icon(Symbols.open_in_new, color: p.muted, size: 20),
+      end: Icon(Symbols.chevron_right, color: p.muted, size: 22),
     );
   }
 }

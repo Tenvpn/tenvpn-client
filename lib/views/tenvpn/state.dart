@@ -129,6 +129,17 @@ class TenvpnAccountRefresh extends Notifier<int> {
   void bump() => state++;
 }
 
+final tenvpnAwgKeyRefreshProvider = NotifierProvider<TenvpnAccountRefresh, int>(
+  TenvpnAccountRefresh.new,
+);
+
+final tenvpnManualAwgProvider = FutureProvider<bool>((ref) async {
+  final id = ref.watch(currentProfileIdProvider);
+  ref.watch(tenvpnAwgKeyRefreshProvider);
+  if (id == null) return false;
+  return ref.read(tenvpnConfigProvider).hasManualAwg(id);
+});
+
 final tenvpnAccountRefreshProvider =
     NotifierProvider<TenvpnAccountRefresh, int>(TenvpnAccountRefresh.new);
 

@@ -14,6 +14,7 @@ import 'tenvpn_state.dart';
 import 'update.dart';
 
 export 'account.dart';
+export 'awg_key.dart';
 export 'awg_source.dart';
 export 'expiry.dart';
 export 'telemetry.dart';
