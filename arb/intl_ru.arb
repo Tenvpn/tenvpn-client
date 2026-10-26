@@ -1034,5 +1034,8 @@
   "tenvpnStep4Text": "кнопкой «Вставить»",
   "tenvpnOpen": "Открыть",
   "tenvpnOrManual": "Или вставьте ссылку вручную",
-  "tenvpnBotFallback": "Нет доступа к сайту? Получите через Telegram-бота"
+  "tenvpnBotFallback": "Нет доступа к сайту? Получите через Telegram-бота",
+  "tenvpnCabinet": "Личный кабинет",
+  "tenvpnCabinetHint": "Кабинет можно поставить на экран телефона — всегда под рукой",
+  "tenvpnCabinetHintDesktop": "Кабинет можно поставить как приложение — всегда под рукой"
 }

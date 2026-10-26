@@ -44,6 +44,8 @@ void main() {
     );
     expect(find.byKey(const ValueKey('tenvpn-open-bot')), findsNothing);
     expect(find.textContaining('t.me'), findsNothing);
+    expect(find.byKey(const ValueKey('tenvpn-cabinet-hint')), findsNothing);
+    expect(find.byKey(const ValueKey('tenvpn-open-cabinet')), findsNothing);
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();

@@ -1752,6 +1752,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
       "Нет доступа к сайту? Получите через Telegram-бота",
     ),
+    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Личный кабинет"),
+    "tenvpnCabinetHint": MessageLookupByLibrary.simpleMessage(
+      "Кабинет можно поставить на экран телефона — всегда под рукой",
+    ),
+    "tenvpnCabinetHintDesktop": MessageLookupByLibrary.simpleMessage(
+      "Кабинет можно поставить как приложение — всегда под рукой",
+    ),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Взять другую подписку",
     ),

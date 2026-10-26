@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:flutter/services.dart';
@@ -101,12 +102,27 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
         text: widget.playBuild ? l.tenvpnStep1PlayText : l.tenvpnStep1Text,
         action: widget.playBuild
             ? null
-            : TenvpnBigButton(
-                key: const ValueKey('tenvpn-open-cabinet'),
-                label: l.tenvpnOpen,
-                primary: false,
-                height: 36,
-                onPressed: () => open(tenvpnCabinetUrl),
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TenvpnBigButton(
+                    key: const ValueKey('tenvpn-open-cabinet'),
+                    label: l.tenvpnOpen,
+                    primary: false,
+                    height: 36,
+                    onPressed: () => open(tenvpnCabinetSiteUrl),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    cabinetInstallHint(l),
+                    key: const ValueKey('tenvpn-cabinet-hint'),
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      height: 1.3,
+                      color: p.mutedDeep,
+                    ),
+                  ),
+                ],
               ),
       ),
       _Step(
@@ -247,6 +263,9 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
     );
   }
 }
+
+String cabinetInstallHint(AppLocalizations l) =>
+    system.isDesktop ? l.tenvpnCabinetHintDesktop : l.tenvpnCabinetHint;
 
 /// One square of the comic: Fer (or a big number in «Строгий»), a short
 /// caption and, for the first and the last step, the action itself.

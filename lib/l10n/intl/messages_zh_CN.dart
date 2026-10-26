@@ -1227,6 +1227,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
       "No access to the site? Get it via the Telegram bot",
     ),
+    "tenvpnCabinet": MessageLookupByLibrary.simpleMessage("Your account"),
+    "tenvpnCabinetHint": MessageLookupByLibrary.simpleMessage(
+      "Put the account on your phone screen — always at hand",
+    ),
+    "tenvpnCabinetHintDesktop": MessageLookupByLibrary.simpleMessage(
+      "Install the account as an app — always at hand",
+    ),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
       "Use another subscription",
     ),

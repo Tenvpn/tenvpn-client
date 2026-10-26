@@ -4,9 +4,11 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'onboarding_view.dart';
 import 'theme.dart';
@@ -119,12 +121,28 @@ Future<void> showSubscriptionMenu(BuildContext context, WidgetRef ref) {
             'tenvpn-menu-delete',
             () => unawaited(deleteSubscription(context, ref)),
           ),
+          if (tenvpnStore != 'play')
+            item(
+              Symbols.account_circle,
+              l.tenvpnCabinet,
+              'tenvpn-menu-cabinet',
+              openCabinet,
+            ),
           const SizedBox(height: 8),
         ],
       ),
     ),
   );
 }
+
+/// The cabinet on the site, where it offers itself as an app; not in the
+/// Play build, which links nowhere.
+void openCabinet() => unawaited(
+  launchUrl(
+    Uri.parse(tenvpnCabinetSiteUrl),
+    mode: LaunchMode.externalApplication,
+  ),
+);
 
 bool subscriptionUpdating(WidgetRef ref, Profile? profile) =>
     profile != null && ref.watch(isUpdatingProvider(profile.updatingKey));

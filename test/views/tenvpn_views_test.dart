@@ -864,6 +864,8 @@ void main() {
         expect(find.byKey(ValueKey('tenvpn-step-$step')), findsOneWidget);
       }
       expect(find.byKey(const ValueKey('tenvpn-open-cabinet')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-cabinet-hint')), findsOneWidget);
+      expect(text('always at hand'), findsOneWidget);
       expect(find.byKey(const ValueKey('tenvpn-paste')), findsOneWidget);
       await tester.ensureVisible(find.byKey(const ValueKey('tenvpn-add')));
       await tester.pump();
@@ -988,6 +990,7 @@ void main() {
       expect(find.byKey(const ValueKey('tenvpn-menu-refresh')), findsOneWidget);
       expect(find.byKey(const ValueKey('tenvpn-menu-replace')), findsOneWidget);
       expect(find.byKey(const ValueKey('tenvpn-menu-delete')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-menu-cabinet')), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('tenvpn-menu-delete')));
       await tester.pumpAndSettle();
       expect(text('Delete the subscription?'), findsOneWidget);
@@ -1008,6 +1011,11 @@ void main() {
       await tester.scrollUntilVisible(report, 300);
       expect(text('Connect other devices'), findsNothing);
       expect(text('Send a bug report'), findsOneWidget);
+      await tester.scrollUntilVisible(
+        find.byKey(const ValueKey('tenvpn-cabinet')),
+        -300,
+      );
+      expect(text('Your account'), findsOneWidget);
     });
 
     _tv('toggles and theme; no protocol switch to puzzle over', (tester) async {

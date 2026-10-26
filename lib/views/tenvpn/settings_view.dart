@@ -19,6 +19,7 @@ import 'mascot.dart';
 import 'privacy_view.dart';
 import 'report_view.dart';
 import 'state.dart';
+import 'onboarding_view.dart' show cabinetInstallHint, tenvpnStore;
 import 'subscription_actions.dart';
 import 'theme.dart';
 
@@ -80,6 +81,15 @@ class TenvpnSettingsView extends ConsumerWidget {
                     title: l.tenvpnDeleteSubscription,
                     onTap: () => deleteSubscription(context, ref),
                   ),
+                  if (tenvpnStore != 'play')
+                    TenvpnSettingsRow(
+                      key: const ValueKey('tenvpn-cabinet'),
+                      icon: Symbols.account_circle,
+                      title: l.tenvpnCabinet,
+                      subtitle: cabinetInstallHint(l),
+                      onTap: openCabinet,
+                      trailing: const Icon(Symbols.open_in_new, size: 20),
+                    ),
                 ],
               ),
               TenvpnSettingsGroup(

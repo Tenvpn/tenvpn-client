@@ -8764,6 +8764,36 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Your account`
+  String get tenvpnCabinet {
+    return Intl.message(
+      'Your account',
+      name: 'tenvpnCabinet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Put the account on your phone screen — always at hand`
+  String get tenvpnCabinetHint {
+    return Intl.message(
+      'Put the account on your phone screen — always at hand',
+      name: 'tenvpnCabinetHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Install the account as an app — always at hand`
+  String get tenvpnCabinetHintDesktop {
+    return Intl.message(
+      'Install the account as an app — always at hand',
+      name: 'tenvpnCabinetHintDesktop',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1034,5 +1034,8 @@
   "tenvpnStep4Text": "with «Paste»",
   "tenvpnOpen": "Open",
   "tenvpnOrManual": "Or paste the link by hand",
-  "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot"
+  "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot",
+  "tenvpnCabinet": "Your account",
+  "tenvpnCabinetHint": "Put the account on your phone screen — always at hand",
+  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand"
 }
