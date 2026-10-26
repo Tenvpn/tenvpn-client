@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import 'package:fl_clash/common/common.dart';
@@ -73,9 +75,13 @@ class _FakeProfilesAction extends ProfilesAction {
   final imported = <(String, AwgSource?, bool)>[];
   final tokens = <String?>[];
   int regenerated = 0;
+  final deleted = <int>[];
 
   @override
   Future<void> regenerateProfile(Profile profile) async => regenerated++;
+
+  @override
+  Future<void> deleteProfile(int id) async => deleted.add(id);
 
   @override
   Future<String?> importSubscription(
@@ -853,11 +859,21 @@ void main() {
       container = build();
       await pump(tester, const TenvpnOnboardingView());
 
-      expect(text('Let\'s connect in a minute'), findsOneWidget);
+      expect(text('You have no subscription yet'), findsOneWidget);
+      for (var step = 1; step <= 4; step++) {
+        expect(find.byKey(ValueKey('tenvpn-step-$step')), findsOneWidget);
+      }
+      expect(find.byKey(const ValueKey('tenvpn-open-cabinet')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-paste')), findsOneWidget);
+      await tester.ensureVisible(find.byKey(const ValueKey('tenvpn-add')));
+      await tester.pump();
+      expect(find.byKey(const ValueKey('tenvpn-bot-fallback')), findsOneWidget);
       await tester.enterText(
         find.byKey(const ValueKey('tenvpn-link-field')),
         'hello',
       );
+      await tester.ensureVisible(find.text('Add'));
+      await tester.pump();
       await tester.tap(find.text('Add'));
       await tester.pump();
       expect(find.byKey(const ValueKey('tenvpn-import-error')), findsOneWidget);
@@ -873,6 +889,8 @@ void main() {
         find.byKey(const ValueKey('tenvpn-link-field')),
         ' https://sub.example.com/abc ',
       );
+      await tester.ensureVisible(find.text('Add'));
+      await tester.pump();
       await tester.tap(find.text('Add'));
       await tester.pump();
       await tester.pump();
@@ -902,10 +920,80 @@ void main() {
         find.byKey(const ValueKey('tenvpn-link-field')),
         'https://sub.example.com/new',
       );
+      await tester.ensureVisible(find.text('Add'));
+      await tester.pump();
       await tester.tap(find.text('Add'));
       await tester.pumpAndSettle();
       expect(profiles.imported.single.$3, isTrue);
       expect(find.byType(TenvpnOnboardingView), findsNothing);
+    });
+  });
+
+  group('subscription', () {
+    Future<void> showMain(WidgetTester tester, Object? error) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      if (error != null) {
+        container.read(tenvpnUpdateErrorsProvider.notifier).record(1, error);
+      }
+      await pump(tester, const TenvpnMainView());
+    }
+
+    DioException status(int code) => DioException(
+      requestOptions: RequestOptions(path: '/sub'),
+      type: DioExceptionType.badResponse,
+      response: Response(
+        requestOptions: RequestOptions(path: '/sub'),
+        statusCode: code,
+      ),
+    );
+
+    _tv('a removed device hides the dead servers and says why', (tester) async {
+      await showMain(tester, status(404));
+      expect(
+        find.byKey(const ValueKey('tenvpn-issue-removed')),
+        findsOneWidget,
+      );
+      expect(text('The device was removed'), findsOneWidget);
+      expect(text('Error code: 404'), findsOneWidget);
+      expect(find.byType(TenvpnServerList), findsNothing);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-issue-replace')));
+      await tester.pumpAndSettle();
+      expect(text('Replace the subscription?'), findsOneWidget);
+      await tester.tap(find.text('Cancel'));
+      await tester.pumpAndSettle();
+    });
+
+    _tv('a download that fails keeps the servers and offers a retry', (
+      tester,
+    ) async {
+      await showMain(tester, status(502));
+      expect(
+        find.byKey(const ValueKey('tenvpn-issue-unreachable')),
+        findsOneWidget,
+      );
+      expect(find.byType(TenvpnServerList), findsOneWidget);
+      container.read(tenvpnUpdateErrorsProvider.notifier).clear(1);
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-issue-unreachable')),
+        findsNothing,
+      );
+    });
+
+    _tv('the expiry line opens the subscription menu', (tester) async {
+      await showMain(tester, null);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-expiry')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const ValueKey('tenvpn-menu-refresh')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-menu-replace')), findsOneWidget);
+      expect(find.byKey(const ValueKey('tenvpn-menu-delete')), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-menu-delete')));
+      await tester.pumpAndSettle();
+      expect(text('Delete the subscription?'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-confirm')));
+      await tester.pumpAndSettle();
+      expect(profiles.deleted, [1]);
     });
   });
 

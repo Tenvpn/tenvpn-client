@@ -113,33 +113,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m37(host) => "Ссылка ведёт на ${host}. Добавить её в TENVPN?";
 
-  static String m38(value) => "${value} мс";
+  static String m38(code) => "Код ошибки: ${code}";
 
-  static String m39(server) => "Сейчас: ${server}";
+  static String m39(value) => "${value} мс";
 
-  static String m40(date) => "Подписка до ${date}";
+  static String m40(server) => "Сейчас: ${server}";
 
-  static String m41(percent) => "Скачиваем обновление… ${percent}%";
+  static String m41(date) => "Подписка до ${date}";
 
-  static String m42(reason) =>
+  static String m42(percent) => "Скачиваем обновление… ${percent}%";
+
+  static String m43(reason) =>
       "Не получилось обновить: ${reason}. Новую версию можно скачать вручную.";
 
-  static String m43(version) => "Новая версия ${version}";
+  static String m44(version) => "Новая версия ${version}";
 
-  static String m44(time) => "Обновлена ${time}";
+  static String m45(time) => "Обновлена ${time}";
 
-  static String m45(version) => "Версия ${version}";
+  static String m46(version) => "Версия ${version}";
 
-  static String m46(country) => "Ваш IP: ${country}";
+  static String m47(country) => "Ваш IP: ${country}";
 
-  static String m47(interval, idleInterval) =>
+  static String m48(interval, idleInterval) =>
       "${interval} · бездействие ${idleInterval}";
 
-  static String m48(interval) => "${interval} · бездействие отключено";
+  static String m49(interval) => "${interval} · бездействие отключено";
 
-  static String m49(label) => "Значение «${label}» должно быть URL";
+  static String m50(label) => "Значение «${label}» должно быть URL";
 
-  static String m50(count) =>
+  static String m51(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -879,10 +881,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage":
-        MessageLookupByLibrary.simpleMessage(
-          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-        ),
+    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
+      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+    ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1748,8 +1749,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnBalance": m32,
     "tenvpnBest": MessageLookupByLibrary.simpleMessage("лучший"),
+    "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
+      "Нет доступа к сайту? Получите через Telegram-бота",
+    ),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
-      "Вставить другую ссылку",
+      "Взять другую подписку",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Пинг"),
     "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
@@ -1762,6 +1766,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Подключить"),
     "tenvpnDaysLeft": m33,
+    "tenvpnDeleteSubscription": MessageLookupByLibrary.simpleMessage(
+      "Удалить подписку",
+    ),
+    "tenvpnDeleteText": MessageLookupByLibrary.simpleMessage(
+      "Серверы пропадут, VPN выключится. Подписку можно будет вставить снова.",
+    ),
+    "tenvpnDeleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Удалить подписку?",
+    ),
     "tenvpnDevices": m34,
     "tenvpnDisconnect": MessageLookupByLibrary.simpleMessage("Отключить"),
     "tenvpnExpired": MessageLookupByLibrary.simpleMessage(
@@ -1802,6 +1815,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Добавить подписку?",
     ),
+    "tenvpnIssueCode": m38,
+    "tenvpnIssueExpired": MessageLookupByLibrary.simpleMessage(
+      "Подписка истекла",
+    ),
+    "tenvpnIssueExpiredText": MessageLookupByLibrary.simpleMessage(
+      "Срок подписки закончился. Возьмите новую или обновите эту, когда её продлят.",
+    ),
+    "tenvpnIssueInvalid": MessageLookupByLibrary.simpleMessage(
+      "Это не та ссылка",
+    ),
+    "tenvpnIssueInvalidText": MessageLookupByLibrary.simpleMessage(
+      "По ссылке пришла не подписка TENVPN. Скопируйте ссылку из кабинета заново.",
+    ),
+    "tenvpnIssueRemoved": MessageLookupByLibrary.simpleMessage(
+      "Устройство удалено",
+    ),
+    "tenvpnIssueRemovedText": MessageLookupByLibrary.simpleMessage(
+      "Эта подписка больше не работает. Выпустите новую в кабинете и вставьте её сюда.",
+    ),
+    "tenvpnIssueUnreachable": MessageLookupByLibrary.simpleMessage(
+      "Подписка не обновляется",
+    ),
+    "tenvpnIssueUnreachableText": MessageLookupByLibrary.simpleMessage(
+      "Не удаётся скачать подписку. Проверьте интернет или выпустите новую ссылку в кабинете.",
+    ),
     "tenvpnKillSwitch": MessageLookupByLibrary.simpleMessage(
       "Блокировать интернет без VPN",
     ),
@@ -1818,22 +1856,32 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnLook": MessageLookupByLibrary.simpleMessage("Стиль"),
     "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("С хорьком"),
     "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Строгий"),
-    "tenvpnMs": m38,
+    "tenvpnMs": m39,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "Нет ссылки? Её выдаёт бот TENVPN.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("нет ответа"),
+    "tenvpnNoSubscription": MessageLookupByLibrary.simpleMessage(
+      "У вас пока нет подписки",
+    ),
+    "tenvpnNoSubscriptionText": MessageLookupByLibrary.simpleMessage(
+      "Четыре шага — и интернет работает.",
+    ),
     "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage(
       "Ничего не нашлось",
     ),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Подписка"),
-    "tenvpnNow": m39,
+    "tenvpnNow": m40,
+    "tenvpnOpen": MessageLookupByLibrary.simpleMessage("Открыть"),
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
     "tenvpnOpenCabinet": MessageLookupByLibrary.simpleMessage(
       "Открыть личный кабинет",
     ),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Поддержка"),
-    "tenvpnPaidUntil": m40,
+    "tenvpnOrManual": MessageLookupByLibrary.simpleMessage(
+      "Или вставьте ссылку вручную",
+    ),
+    "tenvpnPaidUntil": m41,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Включить"),
     "tenvpnPowerOnState": MessageLookupByLibrary.simpleMessage("Включено"),
@@ -1856,6 +1904,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Переподключиться"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Продлить"),
+    "tenvpnReplace": MessageLookupByLibrary.simpleMessage("Заменить"),
+    "tenvpnReplaceText": MessageLookupByLibrary.simpleMessage(
+      "Старая подписка будет заменена новой.",
+    ),
+    "tenvpnReplaceTitle": MessageLookupByLibrary.simpleMessage(
+      "Заменить подписку?",
+    ),
     "tenvpnReport": MessageLookupByLibrary.simpleMessage(
       "Отправить отчёт об ошибке",
     ),
@@ -1868,6 +1923,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnReportTitle": MessageLookupByLibrary.simpleMessage(
       "Отчёт об ошибке",
     ),
+    "tenvpnRetry": MessageLookupByLibrary.simpleMessage("Повторить"),
     "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
       "Российские сервисы напрямую",
     ),
@@ -1926,6 +1982,30 @@ class MessageLookup extends MessageLookupByLibrary {
       "Подключаемся",
     ),
     "tenvpnStatusError": MessageLookupByLibrary.simpleMessage("Нет связи"),
+    "tenvpnStep1": MessageLookupByLibrary.simpleMessage(
+      "Зайдите в личный кабинет",
+    ),
+    "tenvpnStep1Play": MessageLookupByLibrary.simpleMessage(
+      "Получите подписку",
+    ),
+    "tenvpnStep1PlayText": MessageLookupByLibrary.simpleMessage(
+      "у своего провайдера TENVPN",
+    ),
+    "tenvpnStep1Text": MessageLookupByLibrary.simpleMessage(
+      "cabinet.tenproxy.site — вход по почте",
+    ),
+    "tenvpnStep2": MessageLookupByLibrary.simpleMessage("Выпустите ключ"),
+    "tenvpnStep2Text": MessageLookupByLibrary.simpleMessage(
+      "для этого устройства",
+    ),
+    "tenvpnStep3": MessageLookupByLibrary.simpleMessage("Скопируйте ключ"),
+    "tenvpnStep3Text": MessageLookupByLibrary.simpleMessage(
+      "ссылку на подписку целиком",
+    ),
+    "tenvpnStep4": MessageLookupByLibrary.simpleMessage("Вернитесь и вставьте"),
+    "tenvpnStep4Text": MessageLookupByLibrary.simpleMessage(
+      "одной кнопкой ниже",
+    ),
     "tenvpnSuspended": MessageLookupByLibrary.simpleMessage(
       "Доступ приостановлен — пополните баланс",
     ),
@@ -1954,8 +2034,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
       "установка отменена",
     ),
-    "tenvpnUpdateDownloading": m41,
-    "tenvpnUpdateFailed": m42,
+    "tenvpnUpdateDownloading": m42,
+    "tenvpnUpdateFailed": m43,
     "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Позже"),
     "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
       "в выпуске нет установщика для Windows",
@@ -1967,19 +2047,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
       "TENVPN скачает обновление и установит его сам. Windows попросит разрешение на установку — нажмите «Да».",
     ),
-    "tenvpnUpdateTitle": m43,
-    "tenvpnUpdatedAt": m44,
+    "tenvpnUpdateTitle": m44,
+    "tenvpnUpdatedAt": m45,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage(
       "Открытая основа приложения",
     ),
-    "tenvpnVersion": m45,
+    "tenvpnVersion": m46,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку из бота TENVPN или нажмите в боте «Открыть в приложении».",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Подключим за минуту",
     ),
-    "tenvpnYourIp": m46,
+    "tenvpnYourIp": m47,
     "testInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал тестирования",
     ),
@@ -2032,8 +2112,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал обновления информации UI",
     ),
-    "uiUpdateIntervalDesc": m47,
-    "uiUpdateIntervalIdleDisabledDesc": m48,
+    "uiUpdateIntervalDesc": m48,
+    "uiUpdateIntervalIdleDisabledDesc": m49,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Не разрешено"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Единая задержка"),
@@ -2059,7 +2139,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("Исходящий трафик"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m49,
+    "urlTip": m50,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Проверяет записи hosts из конфигурации перед запросом к вышестоящим DNS-серверам",
@@ -2099,7 +2179,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Также устанавливать системные часы",
     ),
-    "yearsAgo": m50,
+    "yearsAgo": m51,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

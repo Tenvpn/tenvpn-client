@@ -22,6 +22,7 @@ export 'headers.dart';
 export 'network_mode.dart';
 export 'configgen/configgen.dart';
 export 'presentation.dart';
+export 'subscription_issue.dart';
 export 'support.dart';
 export 'tenvpn_config.dart';
 export 'tenvpn_state.dart';

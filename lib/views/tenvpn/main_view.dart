@@ -15,6 +15,7 @@ import 'mascot.dart';
 import 'servers_view.dart';
 import 'settings_view.dart';
 import 'state.dart';
+import 'subscription_actions.dart';
 import 'theme.dart';
 
 const tenvpnContentWidth = 460.0;
@@ -25,6 +26,7 @@ class TenvpnMainView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final phase = ref.watch(tenvpnPhaseProvider);
+    final issue = ref.watch(tenvpnSubscriptionIssueProvider);
     // The url-test group can move to another exit on its own; the base only
     // re-checks the IP on manual switches, so «Ваш IP» would stay stale.
     ref.listen(tenvpnSelectionProvider.select((s) => s.server), (prev, next) {
@@ -64,8 +66,13 @@ class TenvpnMainView extends ConsumerWidget {
                     _StatusHint(phase: phase),
                     const SizedBox(height: 6),
                     const TenvpnExpiryLine(),
+                    if (issue != null) ...[
+                      const SizedBox(height: 14),
+                      TenvpnSubscriptionIssueCard(issue: issue),
+                    ],
                     const SizedBox(height: 18),
-                    const TenvpnServerList(),
+                    if (issue == null || !issue.hidesServers)
+                      const TenvpnServerList(),
                   ],
                 );
               },
@@ -484,11 +491,133 @@ class TenvpnExpiryLine extends ConsumerWidget {
         if (left <= 3) color = p.warn;
       }
     }
-    return Text(
-      text,
-      key: const ValueKey('tenvpn-expiry'),
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 13, color: color),
+    return Center(
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          key: const ValueKey('tenvpn-expiry'),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          onTap: () => showSubscriptionMenu(context, ref),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: text),
+                  WidgetSpan(
+                    alignment: PlaceholderAlignment.middle,
+                    child: Icon(Symbols.expand_more, size: 16, color: color),
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 13, color: color),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Says what is wrong with the subscription, so a dead link does not look
+/// like dead servers, and offers the way out.
+class TenvpnSubscriptionIssueCard extends ConsumerWidget {
+  final SubscriptionIssue issue;
+
+  const TenvpnSubscriptionIssueCard({super.key, required this.issue});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final p = context.palette;
+    final (title, text) = switch (issue.kind) {
+      SubscriptionIssueKind.unreachable => (
+        l.tenvpnIssueUnreachable,
+        l.tenvpnIssueUnreachableText,
+      ),
+      SubscriptionIssueKind.removed => (
+        l.tenvpnIssueRemoved,
+        l.tenvpnIssueRemovedText,
+      ),
+      SubscriptionIssueKind.expired => (
+        l.tenvpnIssueExpired,
+        l.tenvpnIssueExpiredText,
+      ),
+      SubscriptionIssueKind.invalid => (
+        l.tenvpnIssueInvalid,
+        l.tenvpnIssueInvalidText,
+      ),
+    };
+    final code = issue.code;
+    final updating = subscriptionUpdating(
+      ref,
+      ref.watch(currentProfileProvider),
+    );
+    return TenvpnCard(
+      key: ValueKey('tenvpn-issue-${issue.kind.name}'),
+      color: p.dangerSoft,
+      borderColor: p.danger.withValues(alpha: 0.45),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Symbols.error, color: p.danger, size: 20),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  p.caps(title),
+                  style: p.strict
+                      ? p.captionStyle(p.danger).copyWith(fontSize: 12.5)
+                      : TextStyle(
+                          fontSize: 15.5,
+                          fontWeight: FontWeight.w600,
+                          color: p.text,
+                        ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(
+            text,
+            style: TextStyle(fontSize: 13.5, height: 1.4, color: p.muted),
+          ),
+          if (code != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: Text(
+                l.tenvpnIssueCode('$code'),
+                style: TextStyle(fontSize: 12, color: p.mutedDeep),
+              ),
+            ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: TenvpnBigButton(
+                  key: const ValueKey('tenvpn-issue-replace'),
+                  label: l.tenvpnChangeLink,
+                  height: 44,
+                  onPressed: () => takeAnotherSubscription(context),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: TenvpnBigButton(
+                  key: const ValueKey('tenvpn-issue-refresh'),
+                  label: l.tenvpnRetry,
+                  primary: false,
+                  loading: updating,
+                  height: 44,
+                  onPressed: () => refreshSubscription(ref),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

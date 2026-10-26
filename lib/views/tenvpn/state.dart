@@ -167,6 +167,18 @@ final tenvpnExpiryProvider = Provider<TenvpnExpiry>((ref) {
   );
 });
 
+final tenvpnSubscriptionIssueProvider = Provider<SubscriptionIssue?>((ref) {
+  final id = ref.watch(currentProfileIdProvider);
+  final lastError = id == null
+      ? null
+      : ref.watch(tenvpnUpdateErrorsProvider.select((errors) => errors[id]));
+  return subscriptionIssue(
+    lastError: lastError,
+    expiry: ref.watch(tenvpnExpiryProvider),
+    now: DateTime.now(),
+  );
+});
+
 final tenvpnRenewUrlProvider = Provider<String>((ref) {
   final expiry = ref.watch(tenvpnExpiryProvider);
   return expiry.account?.renewUrl ?? tenvpnBotUrl;

@@ -100,33 +100,35 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m37(host) => "The link points to ${host}. Add it to TENVPN?";
 
-  static String m38(value) => "${value} ms";
+  static String m38(code) => "Error code: ${code}";
 
-  static String m39(server) => "Now: ${server}";
+  static String m39(value) => "${value} ms";
 
-  static String m40(date) => "Subscription until ${date}";
+  static String m40(server) => "Now: ${server}";
 
-  static String m41(percent) => "Downloading the update… ${percent}%";
+  static String m41(date) => "Subscription until ${date}";
 
-  static String m42(reason) =>
+  static String m42(percent) => "Downloading the update… ${percent}%";
+
+  static String m43(reason) =>
       "Could not update: ${reason}. You can download the new version manually.";
 
-  static String m43(version) => "New version ${version}";
+  static String m44(version) => "New version ${version}";
 
-  static String m44(time) => "Updated ${time}";
+  static String m45(time) => "Updated ${time}";
 
-  static String m45(version) => "Version ${version}";
+  static String m46(version) => "Version ${version}";
 
-  static String m46(country) => "Your IP: ${country}";
+  static String m47(country) => "Your IP: ${country}";
 
-  static String m47(interval, idleInterval) =>
+  static String m48(interval, idleInterval) =>
       "${interval} · 怠速 ${idleInterval}";
 
-  static String m48(interval) => "${interval} · 怠速已禁用";
+  static String m49(interval) => "${interval} · 怠速已禁用";
 
-  static String m49(label) => "${label} 必须为 URL";
+  static String m50(label) => "${label} 必须为 URL";
 
-  static String m50(count) => "${count} 年前";
+  static String m51(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1222,8 +1224,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnBalance": m32,
     "tenvpnBest": MessageLookupByLibrary.simpleMessage("best"),
+    "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
+      "No access to the site? Get it via the Telegram bot",
+    ),
     "tenvpnChangeLink": MessageLookupByLibrary.simpleMessage(
-      "Use another link",
+      "Use another subscription",
     ),
     "tenvpnCheckSpeed": MessageLookupByLibrary.simpleMessage("Ping"),
     "tenvpnCheckUpdate": MessageLookupByLibrary.simpleMessage(
@@ -1236,6 +1241,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnConnect": MessageLookupByLibrary.simpleMessage("Connect"),
     "tenvpnDaysLeft": m33,
+    "tenvpnDeleteSubscription": MessageLookupByLibrary.simpleMessage(
+      "Delete the subscription",
+    ),
+    "tenvpnDeleteText": MessageLookupByLibrary.simpleMessage(
+      "The servers will go and the VPN will turn off. You can paste the subscription again later.",
+    ),
+    "tenvpnDeleteTitle": MessageLookupByLibrary.simpleMessage(
+      "Delete the subscription?",
+    ),
     "tenvpnDevices": m34,
     "tenvpnDisconnect": MessageLookupByLibrary.simpleMessage("Disconnect"),
     "tenvpnExpired": MessageLookupByLibrary.simpleMessage(
@@ -1270,6 +1284,31 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnImportTitle": MessageLookupByLibrary.simpleMessage(
       "Add subscription?",
     ),
+    "tenvpnIssueCode": m38,
+    "tenvpnIssueExpired": MessageLookupByLibrary.simpleMessage(
+      "The subscription has ended",
+    ),
+    "tenvpnIssueExpiredText": MessageLookupByLibrary.simpleMessage(
+      "The subscription period is over. Take a new one or refresh this one once it is renewed.",
+    ),
+    "tenvpnIssueInvalid": MessageLookupByLibrary.simpleMessage(
+      "This is not the right link",
+    ),
+    "tenvpnIssueInvalidText": MessageLookupByLibrary.simpleMessage(
+      "The link does not give a TENVPN subscription. Copy it from your account again.",
+    ),
+    "tenvpnIssueRemoved": MessageLookupByLibrary.simpleMessage(
+      "The device was removed",
+    ),
+    "tenvpnIssueRemovedText": MessageLookupByLibrary.simpleMessage(
+      "This subscription no longer works. Issue a new one in your account and paste it here.",
+    ),
+    "tenvpnIssueUnreachable": MessageLookupByLibrary.simpleMessage(
+      "The subscription does not update",
+    ),
+    "tenvpnIssueUnreachableText": MessageLookupByLibrary.simpleMessage(
+      "The subscription cannot be downloaded. Check the internet or issue a new link in your account.",
+    ),
     "tenvpnKillSwitch": MessageLookupByLibrary.simpleMessage(
       "Block internet without VPN",
     ),
@@ -1286,20 +1325,30 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnLook": MessageLookupByLibrary.simpleMessage("Style"),
     "tenvpnLookBurrow": MessageLookupByLibrary.simpleMessage("With Fer"),
     "tenvpnLookStrict": MessageLookupByLibrary.simpleMessage("Strict"),
-    "tenvpnMs": m38,
+    "tenvpnMs": m39,
     "tenvpnNoLinkYet": MessageLookupByLibrary.simpleMessage(
       "No link yet? The TENVPN bot gives you one.",
     ),
     "tenvpnNoReply": MessageLookupByLibrary.simpleMessage("no reply"),
+    "tenvpnNoSubscription": MessageLookupByLibrary.simpleMessage(
+      "You have no subscription yet",
+    ),
+    "tenvpnNoSubscriptionText": MessageLookupByLibrary.simpleMessage(
+      "Four steps and the internet works.",
+    ),
     "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage("Nothing found"),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Subscription"),
-    "tenvpnNow": m39,
+    "tenvpnNow": m40,
+    "tenvpnOpen": MessageLookupByLibrary.simpleMessage("Open"),
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
     "tenvpnOpenCabinet": MessageLookupByLibrary.simpleMessage(
       "Open your account",
     ),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Support"),
-    "tenvpnPaidUntil": m40,
+    "tenvpnOrManual": MessageLookupByLibrary.simpleMessage(
+      "Or paste the link by hand",
+    ),
+    "tenvpnPaidUntil": m41,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Turn on"),
     "tenvpnPowerOnState": MessageLookupByLibrary.simpleMessage("On"),
@@ -1320,6 +1369,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnReconnect": MessageLookupByLibrary.simpleMessage("Reconnect"),
     "tenvpnRenew": MessageLookupByLibrary.simpleMessage("Renew"),
+    "tenvpnReplace": MessageLookupByLibrary.simpleMessage("Replace"),
+    "tenvpnReplaceText": MessageLookupByLibrary.simpleMessage(
+      "The old subscription will be replaced by the new one.",
+    ),
+    "tenvpnReplaceTitle": MessageLookupByLibrary.simpleMessage(
+      "Replace the subscription?",
+    ),
     "tenvpnReport": MessageLookupByLibrary.simpleMessage("Send a bug report"),
     "tenvpnReportDesc": MessageLookupByLibrary.simpleMessage(
       "Log and device details — no links or keys",
@@ -1328,6 +1384,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Nothing is sent by itself. Check the text — links, keys and IP addresses are already removed — and send it to support.",
     ),
     "tenvpnReportTitle": MessageLookupByLibrary.simpleMessage("Bug report"),
+    "tenvpnRetry": MessageLookupByLibrary.simpleMessage("Retry"),
     "tenvpnRussianDirect": MessageLookupByLibrary.simpleMessage(
       "Russian services directly",
     ),
@@ -1386,6 +1443,26 @@ class MessageLookup extends MessageLookupByLibrary {
       "Connecting",
     ),
     "tenvpnStatusError": MessageLookupByLibrary.simpleMessage("No connection"),
+    "tenvpnStep1": MessageLookupByLibrary.simpleMessage("Open your account"),
+    "tenvpnStep1Play": MessageLookupByLibrary.simpleMessage(
+      "Get a subscription",
+    ),
+    "tenvpnStep1PlayText": MessageLookupByLibrary.simpleMessage(
+      "from your TENVPN provider",
+    ),
+    "tenvpnStep1Text": MessageLookupByLibrary.simpleMessage(
+      "cabinet.tenproxy.site, sign in by e-mail",
+    ),
+    "tenvpnStep2": MessageLookupByLibrary.simpleMessage("Issue a key"),
+    "tenvpnStep2Text": MessageLookupByLibrary.simpleMessage("for this device"),
+    "tenvpnStep3": MessageLookupByLibrary.simpleMessage("Copy the key"),
+    "tenvpnStep3Text": MessageLookupByLibrary.simpleMessage(
+      "the whole subscription link",
+    ),
+    "tenvpnStep4": MessageLookupByLibrary.simpleMessage("Come back and paste"),
+    "tenvpnStep4Text": MessageLookupByLibrary.simpleMessage(
+      "with the button below",
+    ),
     "tenvpnSuspended": MessageLookupByLibrary.simpleMessage(
       "Access paused — top up your balance",
     ),
@@ -1414,8 +1491,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
       "installation was cancelled",
     ),
-    "tenvpnUpdateDownloading": m41,
-    "tenvpnUpdateFailed": m42,
+    "tenvpnUpdateDownloading": m42,
+    "tenvpnUpdateFailed": m43,
     "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
     "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
       "this release has no Windows installer",
@@ -1427,17 +1504,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
       "TENVPN will download the update and install it. Windows will ask for permission — click Yes.",
     ),
-    "tenvpnUpdateTitle": m43,
-    "tenvpnUpdatedAt": m44,
+    "tenvpnUpdateTitle": m44,
+    "tenvpnUpdatedAt": m45,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
-    "tenvpnVersion": m45,
+    "tenvpnVersion": m46,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Let\'s connect in a minute",
     ),
-    "tenvpnYourIp": m46,
+    "tenvpnYourIp": m47,
     "testInterval": MessageLookupByLibrary.simpleMessage("测试间隔"),
     "testUrl": MessageLookupByLibrary.simpleMessage("测速链接"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("使用时测试"),
@@ -1472,8 +1549,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "应用窗口失去焦点时使用怠速更新周期",
     ),
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage("UI 信息更新周期"),
-    "uiUpdateIntervalDesc": m47,
-    "uiUpdateIntervalIdleDisabledDesc": m48,
+    "uiUpdateIntervalDesc": m48,
+    "uiUpdateIntervalIdleDisabledDesc": m49,
     "unauthorized": MessageLookupByLibrary.simpleMessage("未授权"),
     "undo": MessageLookupByLibrary.simpleMessage("撤销"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("统一延迟"),
@@ -1493,7 +1570,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("上传流量"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("通过 URL 获取配置文件"),
-    "urlTip": m49,
+    "urlTip": m50,
     "useHosts": MessageLookupByLibrary.simpleMessage("使用 Hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "查询上游 DNS 前先匹配配置中的 hosts",
@@ -1519,7 +1596,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("白名单模式"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("写入系统"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("同时设置系统时钟"),
-    "yearsAgo": m50,
+    "yearsAgo": m51,
     "yes": MessageLookupByLibrary.simpleMessage("是"),
     "zhCN": MessageLookupByLibrary.simpleMessage("中文简体"),
   };

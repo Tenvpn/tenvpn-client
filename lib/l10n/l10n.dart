@@ -7623,10 +7623,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Use another link`
+  /// `Use another subscription`
   String get tenvpnChangeLink {
     return Intl.message(
-      'Use another link',
+      'Use another subscription',
       name: 'tenvpnChangeLink',
       desc: '',
       args: [],
@@ -8470,6 +8470,296 @@ class AppLocalizations {
     return Intl.message(
       'The key is missing settings. Issue a new one in your account.',
       name: 'tenvpnAwgKeyInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace the subscription?`
+  String get tenvpnReplaceTitle {
+    return Intl.message(
+      'Replace the subscription?',
+      name: 'tenvpnReplaceTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The old subscription will be replaced by the new one.`
+  String get tenvpnReplaceText {
+    return Intl.message(
+      'The old subscription will be replaced by the new one.',
+      name: 'tenvpnReplaceText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Replace`
+  String get tenvpnReplace {
+    return Intl.message('Replace', name: 'tenvpnReplace', desc: '', args: []);
+  }
+
+  /// `Delete the subscription`
+  String get tenvpnDeleteSubscription {
+    return Intl.message(
+      'Delete the subscription',
+      name: 'tenvpnDeleteSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Delete the subscription?`
+  String get tenvpnDeleteTitle {
+    return Intl.message(
+      'Delete the subscription?',
+      name: 'tenvpnDeleteTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The servers will go and the VPN will turn off. You can paste the subscription again later.`
+  String get tenvpnDeleteText {
+    return Intl.message(
+      'The servers will go and the VPN will turn off. You can paste the subscription again later.',
+      name: 'tenvpnDeleteText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get tenvpnRetry {
+    return Intl.message('Retry', name: 'tenvpnRetry', desc: '', args: []);
+  }
+
+  /// `The subscription does not update`
+  String get tenvpnIssueUnreachable {
+    return Intl.message(
+      'The subscription does not update',
+      name: 'tenvpnIssueUnreachable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The subscription cannot be downloaded. Check the internet or issue a new link in your account.`
+  String get tenvpnIssueUnreachableText {
+    return Intl.message(
+      'The subscription cannot be downloaded. Check the internet or issue a new link in your account.',
+      name: 'tenvpnIssueUnreachableText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The device was removed`
+  String get tenvpnIssueRemoved {
+    return Intl.message(
+      'The device was removed',
+      name: 'tenvpnIssueRemoved',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This subscription no longer works. Issue a new one in your account and paste it here.`
+  String get tenvpnIssueRemovedText {
+    return Intl.message(
+      'This subscription no longer works. Issue a new one in your account and paste it here.',
+      name: 'tenvpnIssueRemovedText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The subscription has ended`
+  String get tenvpnIssueExpired {
+    return Intl.message(
+      'The subscription has ended',
+      name: 'tenvpnIssueExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The subscription period is over. Take a new one or refresh this one once it is renewed.`
+  String get tenvpnIssueExpiredText {
+    return Intl.message(
+      'The subscription period is over. Take a new one or refresh this one once it is renewed.',
+      name: 'tenvpnIssueExpiredText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `This is not the right link`
+  String get tenvpnIssueInvalid {
+    return Intl.message(
+      'This is not the right link',
+      name: 'tenvpnIssueInvalid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The link does not give a TENVPN subscription. Copy it from your account again.`
+  String get tenvpnIssueInvalidText {
+    return Intl.message(
+      'The link does not give a TENVPN subscription. Copy it from your account again.',
+      name: 'tenvpnIssueInvalidText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Error code: {code}`
+  String tenvpnIssueCode(Object code) {
+    return Intl.message(
+      'Error code: $code',
+      name: 'tenvpnIssueCode',
+      desc: '',
+      args: [code],
+    );
+  }
+
+  /// `You have no subscription yet`
+  String get tenvpnNoSubscription {
+    return Intl.message(
+      'You have no subscription yet',
+      name: 'tenvpnNoSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Four steps and the internet works.`
+  String get tenvpnNoSubscriptionText {
+    return Intl.message(
+      'Four steps and the internet works.',
+      name: 'tenvpnNoSubscriptionText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open your account`
+  String get tenvpnStep1 {
+    return Intl.message(
+      'Open your account',
+      name: 'tenvpnStep1',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `cabinet.tenproxy.site, sign in by e-mail`
+  String get tenvpnStep1Text {
+    return Intl.message(
+      'cabinet.tenproxy.site, sign in by e-mail',
+      name: 'tenvpnStep1Text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Get a subscription`
+  String get tenvpnStep1Play {
+    return Intl.message(
+      'Get a subscription',
+      name: 'tenvpnStep1Play',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `from your TENVPN provider`
+  String get tenvpnStep1PlayText {
+    return Intl.message(
+      'from your TENVPN provider',
+      name: 'tenvpnStep1PlayText',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Issue a key`
+  String get tenvpnStep2 {
+    return Intl.message('Issue a key', name: 'tenvpnStep2', desc: '', args: []);
+  }
+
+  /// `for this device`
+  String get tenvpnStep2Text {
+    return Intl.message(
+      'for this device',
+      name: 'tenvpnStep2Text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Copy the key`
+  String get tenvpnStep3 {
+    return Intl.message(
+      'Copy the key',
+      name: 'tenvpnStep3',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `the whole subscription link`
+  String get tenvpnStep3Text {
+    return Intl.message(
+      'the whole subscription link',
+      name: 'tenvpnStep3Text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Come back and paste`
+  String get tenvpnStep4 {
+    return Intl.message(
+      'Come back and paste',
+      name: 'tenvpnStep4',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `with the button below`
+  String get tenvpnStep4Text {
+    return Intl.message(
+      'with the button below',
+      name: 'tenvpnStep4Text',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Open`
+  String get tenvpnOpen {
+    return Intl.message('Open', name: 'tenvpnOpen', desc: '', args: []);
+  }
+
+  /// `Or paste the link by hand`
+  String get tenvpnOrManual {
+    return Intl.message(
+      'Or paste the link by hand',
+      name: 'tenvpnOrManual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No access to the site? Get it via the Telegram bot`
+  String get tenvpnBotFallback {
+    return Intl.message(
+      'No access to the site? Get it via the Telegram bot',
+      name: 'tenvpnBotFallback',
       desc: '',
       args: [],
     );

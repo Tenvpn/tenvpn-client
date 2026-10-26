@@ -101,9 +101,17 @@ class ProfilesAction extends _$ProfilesAction {
     final operation = showLoading
         ? ref.read(updatingKeysProvider.notifier).start(profile.updatingKey)
         : null;
+    final errors = ref.read(tenvpnUpdateErrorsProvider.notifier);
     try {
       ref.read(profilesProvider.notifier).put(profile);
-      final newProfile = await run();
+      final Profile newProfile;
+      try {
+        newProfile = await run();
+      } catch (error) {
+        errors.record(profile.id, error);
+        rethrow;
+      }
+      errors.clear(profile.id);
       ref.read(profilesProvider.notifier).put(newProfile);
       if (profile.id == ref.read(currentProfileIdProvider)) {
         ref

@@ -16,10 +16,10 @@ import 'advanced_view.dart';
 import 'awg_key_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
-import 'onboarding_view.dart';
 import 'privacy_view.dart';
 import 'report_view.dart';
 import 'state.dart';
+import 'subscription_actions.dart';
 import 'theme.dart';
 
 class TenvpnSettingsView extends ConsumerWidget {
@@ -68,12 +68,17 @@ class TenvpnSettingsView extends ConsumerWidget {
                 children: [
                   const _RefreshRow(),
                   TenvpnSettingsRow(
-                    icon: Symbols.link,
+                    key: const ValueKey('tenvpn-change-link'),
+                    icon: Symbols.swap_horiz,
                     title: l.tenvpnChangeLink,
-                    onTap: () => BaseNavigator.push(
-                      context,
-                      const TenvpnOnboardingView(replace: true),
-                    ),
+                    subtitle: l.tenvpnReplaceText,
+                    onTap: () => takeAnotherSubscription(context),
+                  ),
+                  TenvpnSettingsRow(
+                    key: const ValueKey('tenvpn-delete-subscription'),
+                    icon: Symbols.delete,
+                    title: l.tenvpnDeleteSubscription,
+                    onTap: () => deleteSubscription(context, ref),
                   ),
                 ],
               ),

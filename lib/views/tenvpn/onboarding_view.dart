@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'main_view.dart';
 import 'mascot.dart';
@@ -18,8 +19,8 @@ const tenvpnStore = String.fromEnvironment(
   defaultValue: 'site',
 );
 
-/// First run without a subscription, and «Вставить другую ссылку» later on
-/// ([replace]): the new subscription then takes the place of the old one.
+/// No subscription yet: four comic-strip steps that lead to the cabinet on
+/// the site, then one «Вставить». With [replace] it takes the old one's place.
 class TenvpnOnboardingView extends ConsumerStatefulWidget {
   final bool replace;
   final bool playBuild;
@@ -89,23 +90,90 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
   Widget build(BuildContext context) {
     final l = context.appLocalizations;
     final p = context.palette;
+    void open(String url) => unawaited(
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+    );
+    final steps = [
+      _Step(
+        number: 1,
+        pose: (FerPose.welcome, 1),
+        title: widget.playBuild ? l.tenvpnStep1Play : l.tenvpnStep1,
+        text: widget.playBuild ? l.tenvpnStep1PlayText : l.tenvpnStep1Text,
+        action: widget.playBuild
+            ? null
+            : TenvpnBigButton(
+                key: const ValueKey('tenvpn-open-cabinet'),
+                label: l.tenvpnOpen,
+                primary: false,
+                height: 36,
+                onPressed: () => open(tenvpnCabinetUrl),
+              ),
+      ),
+      _Step(
+        number: 2,
+        pose: (FerPose.connecting, 2),
+        title: l.tenvpnStep2,
+        text: l.tenvpnStep2Text,
+      ),
+      _Step(
+        number: 3,
+        pose: (FerPose.on, 3),
+        title: l.tenvpnStep3,
+        text: l.tenvpnStep3Text,
+      ),
+      _Step(
+        number: 4,
+        pose: (FerPose.welcome, 2),
+        title: l.tenvpnStep4,
+        text: l.tenvpnStep4Text,
+        action: TenvpnBigButton(
+          key: const ValueKey('tenvpn-paste'),
+          label: l.tenvpnPaste,
+          loading: _busy,
+          height: 40,
+          onPressed: _paste,
+        ),
+      ),
+    ];
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!widget.replace)
           const SizedBox(height: 56, child: Center(child: TenvpnLogo())),
-        const Center(child: FerMascot(pose: FerPose.welcome, size: 230)),
-        const SizedBox(height: 12),
-        Text(
-          l.tenvpnWelcomeTitle,
-          style: context.textTheme.headlineMedium?.copyWith(fontSize: 28),
-        ),
+        if (!widget.replace) ...[
+          Text(
+            l.tenvpnNoSubscription,
+            key: const ValueKey('tenvpn-no-subscription'),
+            style: context.textTheme.headlineMedium?.copyWith(fontSize: 26),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l.tenvpnNoSubscriptionText,
+            style: TextStyle(fontSize: 15, height: 1.45, color: p.muted),
+          ),
+          const SizedBox(height: 16),
+        ],
+        for (final row in [steps.sublist(0, 2), steps.sublist(2)]) ...[
+          IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(child: row[0]),
+                const SizedBox(width: 10),
+                Expanded(child: row[1]),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+        ],
+        if (_error != null) ...[
+          const SizedBox(height: 2),
+          _ErrorNote(text: _error!),
+          const SizedBox(height: 10),
+        ],
         const SizedBox(height: 8),
-        Text(
-          l.tenvpnWelcomeText,
-          style: TextStyle(fontSize: 15, height: 1.45, color: p.muted),
-        ),
-        const SizedBox(height: 20),
+        Text(p.caps(l.tenvpnOrManual), style: p.captionStyle(p.muted)),
+        const SizedBox(height: 8),
         TextField(
           key: const ValueKey('tenvpn-link-field'),
           controller: _controller,
@@ -127,22 +195,15 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
             hintText: 'https://…',
             filled: true,
             fillColor: p.surface,
-            suffixIcon: IconButton(
-              tooltip: l.tenvpnPaste,
-              icon: const Icon(Symbols.content_paste),
-              onPressed: _busy ? null : _paste,
-            ),
           ),
         ),
-        if (_error != null) ...[
-          const SizedBox(height: 12),
-          _ErrorNote(text: _error!),
-        ],
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         TenvpnBigButton(
           key: const ValueKey('tenvpn-add'),
           label: l.tenvpnAdd,
+          primary: false,
           loading: _busy,
+          height: 50,
           onPressed: _submit,
         ),
         if (widget.playBuild) ...[
@@ -155,7 +216,18 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
               style: TextStyle(fontSize: 13, color: p.mutedDeep),
             ),
           ),
-        ],
+        ] else
+          Center(
+            child: TextButton(
+              key: const ValueKey('tenvpn-bot-fallback'),
+              onPressed: () => open(tenvpnBotUrl),
+              child: Text(
+                l.tenvpnBotFallback,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 13, color: p.muted),
+              ),
+            ),
+          ),
         const SizedBox(height: 16),
       ],
     );
@@ -171,6 +243,99 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// One square of the comic: Fer (or a big number in «Строгий»), a short
+/// caption and, for the first and the last step, the action itself.
+class _Step extends StatelessWidget {
+  final int number;
+  final (FerPose, int) pose;
+  final String title;
+  final String text;
+  final Widget? action;
+
+  const _Step({
+    required this.number,
+    required this.pose,
+    required this.title,
+    required this.text,
+    this.action,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.palette;
+    final picture = p.showMascot
+        ? Image.asset(
+            ferAsset(pose.$1, pose.$2),
+            height: 86,
+            fit: BoxFit.contain,
+            errorBuilder: (_, _, _) => const SizedBox(height: 86),
+          )
+        : SizedBox(
+            height: 52,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                '$number',
+                style: TextStyle(
+                  fontFamily: tenvpnDisplayFont,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 40,
+                  height: 1,
+                  color: number == 4 ? p.accentText : p.text,
+                ),
+              ),
+            ),
+          );
+    return TenvpnCard(
+      key: ValueKey('tenvpn-step-$number'),
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Center(child: picture),
+              if (p.showMascot)
+                Text(
+                  '$number',
+                  style: TextStyle(
+                    fontFamily: tenvpnDisplayFont,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                    color: p.accentText,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            p.caps(title),
+            style: p.strict
+                ? p.captionStyle(p.text).copyWith(fontSize: 12)
+                : TextStyle(
+                    fontFamily: tenvpnDisplayFont,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    height: 1.2,
+                    color: p.text,
+                  ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            text,
+            style: TextStyle(fontSize: 12.5, height: 1.35, color: p.muted),
+          ),
+          if (action != null) ...[
+            const Spacer(),
+            const SizedBox(height: 10),
+            action!,
+          ],
+        ],
       ),
     );
   }
