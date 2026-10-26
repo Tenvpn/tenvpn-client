@@ -7,12 +7,10 @@ import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/views/about.dart';
-import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'advanced_view.dart';
 import 'main_view.dart';
@@ -96,19 +94,6 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnAdvancedDesc,
                     onTap: () =>
                         BaseNavigator.push(context, const TenvpnAdvancedView()),
-                  ),
-                  TenvpnSettingsRow(
-                    key: const ValueKey('tenvpn-other-devices'),
-                    icon: Symbols.devices,
-                    title: l.tenvpnOtherDevices,
-                    subtitle: l.tenvpnOtherDevicesDesc,
-                    onTap: () => unawaited(
-                      launchUrl(
-                        Uri.parse(tenvpnDevicesUrl),
-                        mode: LaunchMode.externalApplication,
-                      ),
-                    ),
-                    trailing: const Icon(Symbols.open_in_new, size: 20),
                   ),
                   TenvpnSettingsRow(
                     key: const ValueKey('tenvpn-report'),

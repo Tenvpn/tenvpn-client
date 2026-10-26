@@ -1275,12 +1275,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Open the bot"),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Support"),
-    "tenvpnOtherDevices": MessageLookupByLibrary.simpleMessage(
-      "Connect other devices",
-    ),
-    "tenvpnOtherDevicesDesc": MessageLookupByLibrary.simpleMessage(
-      "Apps for computers, TVs and other phones",
-    ),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Paste"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Turn on"),
@@ -1326,6 +1320,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Connection",
     ),
+    "tenvpnSectionHysteriaDesc": MessageLookupByLibrary.simpleMessage(
+      "Fast, over UDP",
+    ),
     "tenvpnSectionLook": MessageLookupByLibrary.simpleMessage("Appearance"),
     "tenvpnSectionMain": MessageLookupByLibrary.simpleMessage("All servers"),
     "tenvpnSectionMobile": MessageLookupByLibrary.simpleMessage(
@@ -1333,6 +1330,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnSectionMobileDesc": MessageLookupByLibrary.simpleMessage(
       "When mobile internet opens only approved sites",
+    ),
+    "tenvpnSectionOther": MessageLookupByLibrary.simpleMessage(
+      "Other protocols",
     ),
     "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
       "Amnezia protocol",

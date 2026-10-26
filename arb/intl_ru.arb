@@ -992,6 +992,6 @@
   "tenvpnOpenSupport": "Поддержка",
   "tenvpnKillSwitch": "Блокировать интернет без VPN",
   "tenvpnKillSwitchDesc": "Откроются настройки Android: включите «Постоянный VPN» и «Блокировать соединения без VPN» для TENVPN",
-  "tenvpnOtherDevices": "Подключить другие устройства",
-  "tenvpnOtherDevicesDesc": "Приложения для компьютера, телевизора и других телефонов"
+  "tenvpnSectionOther": "Другие протоколы",
+  "tenvpnSectionHysteriaDesc": "Быстрый, по UDP"
 }

@@ -1,7 +1,6 @@
 import 'presentation.dart';
 
 const tenvpnSupportUrl = 'https://t.me/TenvpnSupp';
-const tenvpnDevicesUrl = 'https://tenproxy.site';
 const supportLogLines = 200;
 
 /// The server «Авто» would take in its ordinary tier: the lowest measured

@@ -4,6 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,7 +29,7 @@ class TenvpnServerList extends ConsumerStatefulWidget {
 
 class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   bool _measured = false;
-  final _toggled = <ServerSectionKind>{};
+  final _toggled = <String>{};
   final _search = TextEditingController();
   String _query = '';
 
@@ -107,50 +108,43 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
       onTap: () => _select(server.name),
     );
     final awgOnTop = ref.watch(tenvpnDesktopAwgProvider);
-    bool openByDefault(ServerSectionKind kind) => switch (kind) {
-      ServerSectionKind.main => true,
-      ServerSectionKind.reserve => awgOnTop,
-      ServerSectionKind.mobile => false,
-    };
     bool isOpen(ServerSection section) =>
         detailed ||
         searching ||
         section.servers.any(isSelected) ||
-        openByDefault(section.kind) != _toggled.contains(section.kind);
+        (section.kind == ServerSectionKind.reserve && awgOnTop) !=
+            _toggled.contains(section.id);
     final hasAwg = sections.any((s) => s.kind == ServerSectionKind.reserve);
-    final main = ordered([
-      for (final s in sections)
-        if (s.kind == ServerSectionKind.main) ...s.servers,
-    ]);
-    List<Widget> sectionGroup(ServerSection section) => [
-      const SizedBox(height: 10),
-      _Group(
-        children: [
-          _SectionHeader(
-            kind: section.kind,
-            awgOnTop: awgOnTop,
-            count: section.servers.length,
-            open: isOpen(section),
-            onTap: () => setState(() {
-              if (!_toggled.remove(section.kind)) {
-                _toggled.add(section.kind);
-              }
-            }),
-          ),
-          if (isOpen(section)) ...ordered(section.servers).map(tile),
-        ],
-      ),
-    ];
     final shown = [
       for (final section in sections)
-        if (section.kind != ServerSectionKind.main &&
-            (!searching ||
-                section.servers.any((s) => serverMatches(s, _query))))
+        if (!searching || section.servers.any((s) => serverMatches(s, _query)))
           section,
     ];
-    final onTop = [
+    List<Widget> rows(ServerSection section) => [
+      _SectionHeader(
+        section: section,
+        awgOnTop: awgOnTop,
+        open: isOpen(section),
+        onTap: () => setState(() {
+          if (!_toggled.remove(section.id)) _toggled.add(section.id);
+        }),
+      ),
+      if (isOpen(section)) ...ordered(section.servers).map(tile),
+    ];
+    final awgMissing = !hasAwg && sections.isNotEmpty && !searching
+        ? const _AwgMissingTile()
+        : null;
+    final reserve = [
       for (final section in shown)
-        if (awgOnTop && section.kind == ServerSectionKind.reserve) section,
+        if (section.kind == ServerSectionKind.reserve) section,
+    ];
+    final ordinary = [
+      for (final section in shown)
+        if (section.kind == ServerSectionKind.main) section,
+    ];
+    final mobile = [
+      for (final section in shown)
+        if (section.kind == ServerSectionKind.mobile) section,
     ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -182,6 +176,8 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
                   ),
                 ),
               ),
+            const TenvpnRefreshButton(),
+            const SizedBox(width: 8),
             _PingButton(onPressed: _checkSpeed),
           ],
         ),
@@ -190,11 +186,15 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
           controller: _search,
           onChanged: (value) => setState(() => _query = value),
         ),
-        if (awgOnTop && !hasAwg && sections.isNotEmpty && !searching) ...[
+        if (awgOnTop && (reserve.isNotEmpty || awgMissing != null)) ...[
           const SizedBox(height: 8),
-          const _Group(children: [_AwgMissingTile()]),
+          _Group(
+            children: [
+              ?awgMissing,
+              for (final section in reserve) ...rows(section),
+            ],
+          ),
         ],
-        for (final section in onTop) ...sectionGroup(section),
         const SizedBox(height: 8),
         _Group(
           children: [
@@ -205,14 +205,15 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
               current: selection.auto ? selection.server : null,
               onTap: () => _select(null),
             ),
-            ...main.map(tile),
+            for (final section in ordinary) ...rows(section),
+            if (!awgOnTop) ...[
+              ?awgMissing,
+              for (final section in reserve) ...rows(section),
+            ],
+            for (final section in mobile) ...rows(section),
           ],
         ),
-        if (searching &&
-            main.isEmpty &&
-            !sections.any(
-              (s) => s.servers.any((x) => serverMatches(x, _query)),
-            ))
+        if (searching && shown.isEmpty)
           Padding(
             padding: const EdgeInsets.all(14),
             child: Text(
@@ -222,9 +223,63 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
               style: TextStyle(fontSize: 13.5, color: p.muted),
             ),
           ),
-        for (final section in shown)
-          if (!onTop.contains(section)) ...sectionGroup(section),
       ],
+    );
+  }
+}
+
+/// «Обновить подписку» next to «Пинг»: the arrows spin while it downloads.
+class TenvpnRefreshButton extends ConsumerWidget {
+  const TenvpnRefreshButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final p = context.palette;
+    final profile = ref.watch(currentProfileProvider);
+    final updating = profile == null
+        ? false
+        : ref.watch(isUpdatingProvider(profile.updatingKey));
+    final shape = p.strict
+        ? RoundedRectangleBorder(
+            borderRadius: const BorderRadius.all(Radius.circular(6)),
+            side: BorderSide(color: p.borderStrong),
+          )
+        : const CircleBorder();
+    return Tooltip(
+      message: context.appLocalizations.tenvpnUpdateSubscription,
+      child: Material(
+        color: p.strict ? Colors.transparent : p.elevated,
+        shape: shape,
+        child: InkWell(
+          key: const ValueKey('tenvpn-refresh'),
+          customBorder: shape,
+          onTap: profile == null || updating
+              ? null
+              : () => globalState.safeRun(
+                  () => ref
+                      .read(profilesActionProvider.notifier)
+                      .updateProfile(profile, showLoading: true),
+                ),
+          child: SizedBox.square(
+            dimension: 32,
+            child: Center(
+              child: updating
+                  ? SizedBox.square(
+                      dimension: 14,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.8,
+                        color: p.muted,
+                      ),
+                    )
+                  : Icon(
+                      Symbols.sync,
+                      size: 17,
+                      color: p.strict ? p.text : p.muted,
+                    ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -587,16 +642,14 @@ class _Line extends StatelessWidget {
 }
 
 class _SectionHeader extends StatelessWidget {
-  final ServerSectionKind kind;
+  final ServerSection section;
   final bool awgOnTop;
-  final int count;
   final bool open;
   final VoidCallback onTap;
 
   const _SectionHeader({
-    required this.kind,
+    required this.section,
     required this.awgOnTop,
-    required this.count,
     required this.open,
     required this.onTap,
   });
@@ -605,33 +658,45 @@ class _SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.appLocalizations;
     final p = context.palette;
-    final (icon, title, description) = switch (kind) {
-      ServerSectionKind.main => (Symbols.public, l.tenvpnSectionMain, ''),
-      ServerSectionKind.mobile => (
+    final transports = {
+      for (final s in section.servers) s.protocol,
+    }.join(' · ');
+    final (icon, title, description) = switch ((section.kind, section.family)) {
+      (ServerSectionKind.main, ServerFamily.vless) => (
+        Symbols.public,
+        'VLESS',
+        transports,
+      ),
+      (ServerSectionKind.main, ServerFamily.hysteria2) => (
+        Symbols.speed,
+        'Hysteria2',
+        l.tenvpnSectionHysteriaDesc,
+      ),
+      (ServerSectionKind.main, _) => (
+        Symbols.public,
+        l.tenvpnSectionOther,
+        transports,
+      ),
+      (ServerSectionKind.mobile, _) => (
         Symbols.signal_cellular_alt,
         l.tenvpnSectionMobile,
         l.tenvpnSectionMobileDesc,
       ),
-      ServerSectionKind.reserve when awgOnTop => (
-        Symbols.shield,
-        l.tenvpnSectionAwg,
-        l.tenvpnSectionAwgDesc,
-      ),
-      ServerSectionKind.reserve => (
+      (ServerSectionKind.reserve, _) => (
         Symbols.shield,
         l.tenvpnSectionReserve,
-        l.tenvpnSectionReserveDesc,
+        awgOnTop ? l.tenvpnSectionAwgDesc : l.tenvpnSectionReserveDesc,
       ),
     };
     return _Row(
-      key: ValueKey('tenvpn-section-${kind.name}'),
+      key: ValueKey('tenvpn-section-${section.id}'),
       onTap: onTap,
       leading: Icon(icon, color: p.muted, size: 22),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            p.caps('$title · $count'),
+            p.caps('$title · ${section.servers.length}'),
             style: p.strict
                 ? p.captionStyle(p.text).copyWith(fontSize: 12.5)
                 : TextStyle(

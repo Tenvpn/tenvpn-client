@@ -8355,21 +8355,21 @@ class AppLocalizations {
     );
   }
 
-  /// `Connect other devices`
-  String get tenvpnOtherDevices {
+  /// `Other protocols`
+  String get tenvpnSectionOther {
     return Intl.message(
-      'Connect other devices',
-      name: 'tenvpnOtherDevices',
+      'Other protocols',
+      name: 'tenvpnSectionOther',
       desc: '',
       args: [],
     );
   }
 
-  /// `Apps for computers, TVs and other phones`
-  String get tenvpnOtherDevicesDesc {
+  /// `Fast, over UDP`
+  String get tenvpnSectionHysteriaDesc {
     return Intl.message(
-      'Apps for computers, TVs and other phones',
-      name: 'tenvpnOtherDevicesDesc',
+      'Fast, over UDP',
+      name: 'tenvpnSectionHysteriaDesc',
       desc: '',
       args: [],
     );

@@ -25,6 +25,15 @@ enum ServerTag { mobile, youtube, gemini, reserve }
 
 enum ServerSectionKind { main, mobile, reserve }
 
+/// The ordinary servers split by protocol, each a folded group of its own.
+enum ServerFamily { vless, hysteria2, other }
+
+ServerFamily serverFamily(String type) => switch (type.toLowerCase()) {
+  'vless' => ServerFamily.vless,
+  'hysteria2' || 'hysteria' => ServerFamily.hysteria2,
+  _ => ServerFamily.other,
+};
+
 class ServerPresentation {
   final String name;
   final String flag;
@@ -32,6 +41,7 @@ class ServerPresentation {
   final String protocol;
   final Set<ServerTag> tags;
   final ServerSectionKind section;
+  final ServerFamily family;
 
   const ServerPresentation({
     required this.name,
@@ -40,14 +50,18 @@ class ServerPresentation {
     required this.protocol,
     required this.tags,
     required this.section,
+    this.family = ServerFamily.other,
   });
 }
 
 class ServerSection {
   final ServerSectionKind kind;
   final List<ServerPresentation> servers;
+  final ServerFamily? family;
 
-  const ServerSection(this.kind, this.servers);
+  const ServerSection(this.kind, this.servers, {this.family});
+
+  String get id => family?.name ?? kind.name;
 }
 
 final _flagPattern = RegExp(
@@ -141,6 +155,7 @@ ServerPresentation presentServer({
     title: title,
     protocol: protocolLabel(type, network),
     tags: tags,
+    family: serverFamily(type),
     section: isReserve
         ? ServerSectionKind.reserve
         : isMobile
@@ -180,7 +195,17 @@ List<ServerSection> groupServers(
       : ServerSectionKind.values;
   return [
     for (final kind in order)
-      if (buckets[kind]!.isNotEmpty) ServerSection(kind, buckets[kind]!),
+      if (kind == ServerSectionKind.main)
+        for (final family in ServerFamily.values)
+          if (buckets[kind]!.any((s) => s.family == family))
+            ServerSection(kind, [
+              for (final s in buckets[kind]!)
+                if (s.family == family) s,
+            ], family: family)
+          else
+            ...[]
+      else if (buckets[kind]!.isNotEmpty)
+        ServerSection(kind, buckets[kind]!),
   ];
 }
 

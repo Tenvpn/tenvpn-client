@@ -512,9 +512,48 @@ void main() {
         find.byKey(const ValueKey('tenvpn-server-auto')),
       );
       expect(awg.dy, lessThan(auto.dy));
-      expect(text('AmneziaWG · 1'), findsOneWidget);
+      expect(text('Amnezia protocol · 1'), findsOneWidget);
       expect(text('Backup connection'), findsNothing);
       expect(find.byKey(const ValueKey('tenvpn-awg-missing')), findsNothing);
+    });
+
+    _tv('ordinary servers fold into protocol groups under «Авто»', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = _groups(manual: false);
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+      );
+      final auto = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-server-auto')),
+      );
+      final vless = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-section-vless')),
+      );
+      final reserve = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-section-reserve')),
+      );
+      final mobile = tester.getTopLeft(
+        find.byKey(const ValueKey('tenvpn-section-mobile')),
+      );
+      expect(auto.dy, lessThan(vless.dy));
+      expect(vless.dy, lessThan(reserve.dy));
+      expect(reserve.dy, lessThan(mobile.dy));
+      expect(text('VLESS · 1'), findsOneWidget);
+      expect(text('WebSocket'), findsOneWidget);
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsNothing,
+      );
+      await tester.tap(find.byKey(const ValueKey('tenvpn-section-vless')));
+      await tester.pump();
+      expect(
+        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        findsOneWidget,
+      );
+      expect(find.byKey(const ValueKey('tenvpn-refresh')), findsOneWidget);
     });
 
     _tv('detailed look opens every section and keeps ping order', (
@@ -603,6 +642,8 @@ void main() {
         tester,
       ) async {
         await showList(tester, look: look);
+        await tester.tap(find.byKey(const ValueKey('tenvpn-section-vless')));
+        await tester.pump();
         expect(
           find.byKey(ValueKey('tenvpn-best-${_servers[0].name}')),
           findsOneWidget,
@@ -785,13 +826,15 @@ void main() {
   });
 
   group('settings', () {
-    _tv('other devices and the bug report sit under «Другое»', (tester) async {
+    _tv('the bug report sits under «Другое», other devices are gone', (
+      tester,
+    ) async {
       container = build(items: [profile]);
       container.read(groupsProvider.notifier).value = _groups(manual: false);
       await pump(tester, const TenvpnSettingsView());
       final report = find.byKey(const ValueKey('tenvpn-report'));
       await tester.scrollUntilVisible(report, 300);
-      expect(text('Connect other devices'), findsOneWidget);
+      expect(text('Connect other devices'), findsNothing);
       expect(text('Send a bug report'), findsOneWidget);
     });
 

@@ -160,6 +160,26 @@ void main() {
     expect(sections.last.servers.single.protocol, 'AmneziaWG');
   });
 
+  test('ordinary servers split into protocol families', () {
+    final sections = groupServers([
+      (name: '🇸🇪 Швеция', type: 'vless'),
+      (name: '🇳🇱 Нидерланды', type: 'hysteria2'),
+      (name: '🇩🇪 Германия', type: 'trojan'),
+      (name: '🇫🇮 Финляндия', type: 'vless'),
+    ], const []);
+    expect(sections.map((section) => section.id), [
+      'vless',
+      'hysteria2',
+      'other',
+    ]);
+    expect(sections.first.servers.map((server) => server.title), [
+      'Швеция',
+      'Финляндия',
+    ]);
+    expect(serverFamily('Hysteria'), ServerFamily.hysteria2);
+    expect(const ServerSection(ServerSectionKind.mobile, []).id, 'mobile');
+  });
+
   test('flagEmoji and countryName', () {
     expect(flagEmoji('nl'), '🇳🇱');
     expect(flagEmoji('NLD'), '');

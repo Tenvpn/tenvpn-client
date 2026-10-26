@@ -1811,12 +1811,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNow": m39,
     "tenvpnOpenBot": MessageLookupByLibrary.simpleMessage("Открыть бота"),
     "tenvpnOpenSupport": MessageLookupByLibrary.simpleMessage("Поддержка"),
-    "tenvpnOtherDevices": MessageLookupByLibrary.simpleMessage(
-      "Подключить другие устройства",
-    ),
-    "tenvpnOtherDevicesDesc": MessageLookupByLibrary.simpleMessage(
-      "Приложения для компьютера, телевизора и других телефонов",
-    ),
     "tenvpnPaidUntil": m40,
     "tenvpnPaste": MessageLookupByLibrary.simpleMessage("Вставить"),
     "tenvpnPowerOn": MessageLookupByLibrary.simpleMessage("Включить"),
@@ -1868,6 +1862,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnSectionConnection": MessageLookupByLibrary.simpleMessage(
       "Подключение",
     ),
+    "tenvpnSectionHysteriaDesc": MessageLookupByLibrary.simpleMessage(
+      "Быстрый, по UDP",
+    ),
     "tenvpnSectionLook": MessageLookupByLibrary.simpleMessage("Оформление"),
     "tenvpnSectionMain": MessageLookupByLibrary.simpleMessage("Все серверы"),
     "tenvpnSectionMobile": MessageLookupByLibrary.simpleMessage(
@@ -1875,6 +1872,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "tenvpnSectionMobileDesc": MessageLookupByLibrary.simpleMessage(
       "Когда мобильный интернет открывает только разрешённые сайты",
+    ),
+    "tenvpnSectionOther": MessageLookupByLibrary.simpleMessage(
+      "Другие протоколы",
     ),
     "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
       "Протокол Амнезия",

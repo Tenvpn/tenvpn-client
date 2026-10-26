@@ -992,6 +992,6 @@
   "tenvpnOpenSupport": "Support",
   "tenvpnKillSwitch": "Block internet without VPN",
   "tenvpnKillSwitchDesc": "Opens Android settings: turn on «Always-on VPN» and «Block connections without VPN» for TENVPN",
-  "tenvpnOtherDevices": "Connect other devices",
-  "tenvpnOtherDevicesDesc": "Apps for computers, TVs and other phones"
+  "tenvpnSectionOther": "Other protocols",
+  "tenvpnSectionHysteriaDesc": "Fast, over UDP"
 }
