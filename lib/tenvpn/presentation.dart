@@ -134,7 +134,7 @@ ServerPresentation presentServer({
       .replaceAll(_spaces, ' ')
       .trim();
   if (title.isEmpty) title = name.trim();
-  if (isReserve && title == awgSectionTitle) title = 'Запасной';
+  if (isReserve) title = 'Амнезия';
   return ServerPresentation(
     name: name,
     flag: flag,

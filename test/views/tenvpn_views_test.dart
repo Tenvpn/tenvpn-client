@@ -467,7 +467,7 @@ void main() {
 
       expect(proxies.speedChecks, 1);
       expect(text('For allowlisted networks · 1'), findsOneWidget);
-      expect(text('Backup connection · 1'), findsOneWidget);
+      expect(text('Amnezia protocol · 1'), findsOneWidget);
       expect(find.byKey(const ValueKey('tenvpn-row-selected')), findsOneWidget);
       expect(text('Белые списки 1'), findsNothing);
       expect(container.read(tenvpnHasAwgProvider), isTrue);

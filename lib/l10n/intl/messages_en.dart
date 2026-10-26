@@ -1771,7 +1771,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "When mobile internet opens only approved sites",
     ),
     "tenvpnSectionReserve": MessageLookupByLibrary.simpleMessage(
-      "Backup connection",
+      "Amnezia protocol",
     ),
     "tenvpnSectionReserveDesc": MessageLookupByLibrary.simpleMessage(
       "If the others will not connect",
@@ -1802,7 +1802,7 @@ class MessageLookup extends MessageLookupByLibrary {
       "Access paused — top up your balance",
     ),
     "tenvpnTagMobile": MessageLookupByLibrary.simpleMessage("Mobile"),
-    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Backup"),
+    "tenvpnTagReserve": MessageLookupByLibrary.simpleMessage("Amnezia"),
     "tenvpnTelemetry": MessageLookupByLibrary.simpleMessage(
       "Technical statistics",
     ),

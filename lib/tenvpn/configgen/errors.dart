@@ -29,7 +29,7 @@ final class ConfigGenException implements Exception {
       'По ссылке лежат не настройки подключения.',
     ConfigGenErrorCode.noProxies => 'В подписке нет ни одного сервера.',
     ConfigGenErrorCode.awgInvalid =>
-      'Не удалось прочитать запасное подключение (AmneziaWG).',
+      'Не удалось прочитать протокол Амнезия (AmneziaWG).',
   };
 
   @override
