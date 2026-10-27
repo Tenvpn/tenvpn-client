@@ -343,6 +343,22 @@ proxies:
       expect(generated.config['mode'], 'rule');
     });
 
+    test('battery saver checks rarely but still leaves failing servers', () {
+      final groups =
+          (buildConfig(
+                    subscription,
+                    options: const ConfigGenOptions.saver(),
+                  ).config['proxy-groups']
+                  as List)
+              .cast<Map<String, dynamic>>();
+      expect(
+        [for (final g in groups.sublist(1, 4)) g['interval']],
+        [300, 900, 1800],
+      );
+      expect(groups[1]['max-failed-times'], 3);
+      expect(groups[2]['max-failed-times'], 3);
+    });
+
     test('one tier and no AWG: «Авто» is that url-test itself', () {
       for (final (text, wl) in [
         (

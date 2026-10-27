@@ -30,6 +30,7 @@ import androidx.core.net.toUri
 import cc.chenx.flclash.LOCAL_NETWORK_PERMISSION
 import cc.chenx.flclash.LOCAL_NETWORK_SDK
 import cc.chenx.flclash.R
+import cc.chenx.flclash.VpnSchedule
 import cc.chenx.flclash.common.Components
 import cc.chenx.flclash.common.GlobalState
 import cc.chenx.flclash.common.PendingCallback
@@ -187,6 +188,11 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
 
             "openBatteryOptimizationSettings" -> {
                 result.success(openBatteryOptimizationSettings())
+            }
+
+            "setVpnSchedule" -> {
+                VpnSchedule.update(GlobalState.application, call.argument<String>("slots"))
+                result.success(true)
             }
 
             "openAppSettings" -> {

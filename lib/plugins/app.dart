@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
@@ -152,6 +153,15 @@ class App {
   Future<bool?> openBatteryOptimizationSettings() async {
     if (!Platform.isAndroid) return false;
     return methodChannel.invokeMethod<bool>('openBatteryOptimizationSettings');
+  }
+
+  /// Hands the windows to the Android alarm that runs the VPN by schedule;
+  /// null cancels it.
+  Future<void> setVpnSchedule(List<TenvpnScheduleSlot>? slots) async {
+    if (!Platform.isAndroid) return;
+    await methodChannel.invokeMethod<bool>('setVpnSchedule', {
+      'slots': slots == null ? null : jsonEncode(slots),
+    });
   }
 
   Future<bool?> openAppSettings() async {

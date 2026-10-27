@@ -101,6 +101,10 @@ abstract class AppSettingProps with _$AppSettingProps {
     @Default(false) bool awgPriority,
     @Default(true) bool tenvpnRussianDirect,
     @Default(true) bool tenvpnTelemetry,
+    @Default(TenvpnBatteryMode.always)
+    @JsonKey(unknownEnumValue: TenvpnBatteryMode.always)
+    TenvpnBatteryMode tenvpnBatteryMode,
+    @Default([]) List<TenvpnScheduleSlot> tenvpnSchedule,
     @Default(ServerListStyle.compact)
     @JsonKey(unknownEnumValue: ServerListStyle.compact)
     ServerListStyle serverListStyle,
@@ -153,6 +157,21 @@ abstract class AppSettingProps with _$AppSettingProps {
       () => defaultAppSettingProps,
     );
   }
+}
+
+/// A window when the scheduled VPN is on: minutes from midnight, an [end]
+/// before [start] runs past midnight; [days] are ISO weekdays (1 = Monday)
+/// on which the window starts.
+@freezed
+abstract class TenvpnScheduleSlot with _$TenvpnScheduleSlot {
+  const factory TenvpnScheduleSlot({
+    required int start,
+    required int end,
+    @Default([1, 2, 3, 4, 5, 6, 7]) List<int> days,
+  }) = _TenvpnScheduleSlot;
+
+  factory TenvpnScheduleSlot.fromJson(Map<String, Object?> json) =>
+      _$TenvpnScheduleSlotFromJson(json);
 }
 
 @freezed

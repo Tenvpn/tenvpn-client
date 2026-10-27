@@ -49,6 +49,19 @@ class ConfigGenOptions {
     this.russianDirect = true,
     this.realityMlkem = false,
   });
+
+  /// Battery saver: timed checks wake the radio, so they run rarely; a dead
+  /// server is still left after [maxFailedTimes] failed dials.
+  const ConfigGenOptions.saver({
+    AutoStrategy autoStrategy = AutoStrategy.fastest,
+    bool russianDirect = true,
+  }) : this(
+         autoIntervalSeconds: 300,
+         testIntervalSeconds: 900,
+         whitelistIntervalSeconds: 1800,
+         autoStrategy: autoStrategy,
+         russianDirect: russianDirect,
+       );
 }
 
 const xrayPaddingDefaults = {

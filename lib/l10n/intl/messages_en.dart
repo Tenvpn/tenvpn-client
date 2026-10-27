@@ -121,27 +121,31 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m41(date) => "Subscription until ${date}";
 
-  static String m42(percent) => "Downloading the update… ${percent}%";
+  static String m42(time) => "Turns off at ${time}";
 
-  static String m43(reason) =>
+  static String m43(time) => "Turns on at ${time}";
+
+  static String m44(percent) => "Downloading the update… ${percent}%";
+
+  static String m45(reason) =>
       "Could not update: ${reason}. You can download the new version manually.";
 
-  static String m44(version) => "New version ${version}";
+  static String m46(version) => "New version ${version}";
 
-  static String m45(time) => "Updated ${time}";
+  static String m47(time) => "Updated ${time}";
 
-  static String m46(version) => "Version ${version}";
+  static String m48(version) => "Version ${version}";
 
-  static String m47(country) => "Your IP: ${country}";
+  static String m49(country) => "Your IP: ${country}";
 
-  static String m48(interval, idleInterval) =>
+  static String m50(interval, idleInterval) =>
       "${interval} · Idle ${idleInterval}";
 
-  static String m49(interval) => "${interval} · Idle disabled";
+  static String m51(interval) => "${interval} · Idle disabled";
 
-  static String m50(label) => "${label} must be a URL";
+  static String m52(label) => "${label} must be a URL";
 
-  static String m51(count) =>
+  static String m53(count) =>
       "${Intl.plural(count, one: '1 year ago', other: '${count} years ago')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -841,9 +845,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1658,6 +1663,33 @@ class MessageLookup extends MessageLookupByLibrary {
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBattery": MessageLookupByLibrary.simpleMessage("Battery"),
+    "tenvpnBatteryAlways": MessageLookupByLibrary.simpleMessage("Always on"),
+    "tenvpnBatteryAlwaysDesc": MessageLookupByLibrary.simpleMessage(
+      "Servers are checked as usual: notifications and YouTube with the screen off keep going.",
+    ),
+    "tenvpnBatteryBackground": MessageLookupByLibrary.simpleMessage(
+      "Run in background",
+    ),
+    "tenvpnBatteryBackgroundAllow": MessageLookupByLibrary.simpleMessage(
+      "Allow",
+    ),
+    "tenvpnBatteryBackgroundAllowed": MessageLookupByLibrary.simpleMessage(
+      "Allowed",
+    ),
+    "tenvpnBatteryBackgroundDesc": MessageLookupByLibrary.simpleMessage(
+      "So the phone does not turn the VPN off while the screen is off",
+    ),
+    "tenvpnBatterySaver": MessageLookupByLibrary.simpleMessage("Saver"),
+    "tenvpnBatterySaverDesc": MessageLookupByLibrary.simpleMessage(
+      "Servers are checked far less often, which saves battery. If a server stops answering, switching takes a bit longer.",
+    ),
+    "tenvpnBatterySchedule": MessageLookupByLibrary.simpleMessage(
+      "On a schedule",
+    ),
+    "tenvpnBatteryScheduleDesc": MessageLookupByLibrary.simpleMessage(
+      "The VPN runs only in the hours you pick and turns itself on and off. Android may shift the time by a few minutes to save battery.",
+    ),
     "tenvpnBest": MessageLookupByLibrary.simpleMessage("best"),
     "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
       "No access to the site? Get it via the Telegram bot",
@@ -1833,6 +1865,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
     ),
+    "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("Add hours"),
+    "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage(
+      "Add the hours when you need the VPN",
+    ),
+    "tenvpnScheduleLockdown": MessageLookupByLibrary.simpleMessage(
+      "With «Block internet without VPN» on, there is no internet outside the schedule.",
+    ),
+    "tenvpnScheduleNextOff": m42,
+    "tenvpnScheduleNextOn": m43,
+    "tenvpnScheduleRemove": MessageLookupByLibrary.simpleMessage("Remove"),
     "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
       "Country, protocol or name",
     ),
@@ -1931,8 +1973,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
       "installation was cancelled",
     ),
-    "tenvpnUpdateDownloading": m42,
-    "tenvpnUpdateFailed": m43,
+    "tenvpnUpdateDownloading": m44,
+    "tenvpnUpdateFailed": m45,
     "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
     "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
       "this release has no Windows installer",
@@ -1944,17 +1986,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
       "TENVPN will download the update and install it. Windows will ask for permission — click Yes.",
     ),
-    "tenvpnUpdateTitle": m44,
-    "tenvpnUpdatedAt": m45,
+    "tenvpnUpdateTitle": m46,
+    "tenvpnUpdatedAt": m47,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
-    "tenvpnVersion": m46,
+    "tenvpnVersion": m48,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Let\'s connect in a minute",
     ),
-    "tenvpnYourIp": m47,
+    "tenvpnYourIp": m49,
     "testInterval": MessageLookupByLibrary.simpleMessage("Test interval"),
     "testUrl": MessageLookupByLibrary.simpleMessage("Test URL"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("Test when used"),
@@ -2003,8 +2045,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "UI info update interval",
     ),
-    "uiUpdateIntervalDesc": m48,
-    "uiUpdateIntervalIdleDisabledDesc": m49,
+    "uiUpdateIntervalDesc": m50,
+    "uiUpdateIntervalIdleDisabledDesc": m51,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Unauthorized"),
     "undo": MessageLookupByLibrary.simpleMessage("Undo"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Unified delay"),
@@ -2030,7 +2072,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "urlDesc": MessageLookupByLibrary.simpleMessage(
       "Obtain a profile from a URL",
     ),
-    "urlTip": m50,
+    "urlTip": m52,
     "useHosts": MessageLookupByLibrary.simpleMessage("Use hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Checks the hosts entries in the configuration before querying upstream DNS servers",
@@ -2062,7 +2104,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Also set the system clock",
     ),
-    "yearsAgo": m51,
+    "yearsAgo": m53,
     "yes": MessageLookupByLibrary.simpleMessage("Yes"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Simplified Chinese"),
   };

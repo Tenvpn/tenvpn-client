@@ -1037,5 +1037,22 @@
   "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot",
   "tenvpnCabinet": "Your account",
   "tenvpnCabinetHint": "Put the account on your phone screen — always at hand",
-  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand"
+  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand",
+  "tenvpnBattery": "电池",
+  "tenvpnBatteryAlways": "始终在线",
+  "tenvpnBatteryAlwaysDesc": "照常检查服务器：熄屏时通知和 YouTube 不中断。",
+  "tenvpnBatterySaver": "省电",
+  "tenvpnBatterySaverDesc": "大幅减少服务器检查以节省电量。服务器无响应时，切换会稍慢。",
+  "tenvpnBatterySchedule": "按计划",
+  "tenvpnBatteryScheduleDesc": "VPN 只在所选时间运行并自动开关。为省电，Android 可能会推迟几分钟。",
+  "tenvpnBatteryBackground": "后台运行",
+  "tenvpnBatteryBackgroundDesc": "防止熄屏时手机关闭 VPN",
+  "tenvpnBatteryBackgroundAllowed": "已允许",
+  "tenvpnBatteryBackgroundAllow": "允许",
+  "tenvpnScheduleAdd": "添加时段",
+  "tenvpnScheduleEmpty": "添加需要 VPN 的时段",
+  "tenvpnScheduleNextOn": "{time} 开启",
+  "tenvpnScheduleNextOff": "{time} 关闭",
+  "tenvpnScheduleRemove": "删除",
+  "tenvpnScheduleLockdown": "若开启“无 VPN 时阻止联网”，计划外将无法上网。"
 }

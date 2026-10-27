@@ -336,6 +336,10 @@ enum AppLook { burrow, strict }
 
 enum ServerSort { subscription, ping }
 
+/// How hard TENVPN works in the background: [always] keeps the usual server
+/// checks, [saver] checks rarely, [schedule] runs the VPN only in set hours.
+enum TenvpnBatteryMode { always, saver, schedule }
+
 enum EditorFontSize {
   small(14),
   standard(16),

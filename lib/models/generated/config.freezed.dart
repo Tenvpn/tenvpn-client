@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AppSettingProps {
 
- String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get onlyStatisticsProxy; bool get showNotificationStopAction; bool get showTrayProxySelection; bool get autoLaunch; bool get highPriorityAutoLaunch; bool get silentLaunch; bool get autoRun; bool get openLogs; bool get closeConnections; bool get promptCloseConnections; bool get awgPriority; bool get tenvpnRussianDirect; bool get tenvpnTelemetry;@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle get serverListStyle;@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort get serverSort;@JsonKey(unknownEnumValue: AppLook.burrow) AppLook get look; String get testUrl; bool get isAnimateToPage; bool get isSwipeToPage; bool get autoCheckUpdate; bool get showLabel; bool get disclaimerAccepted; bool get minimizeOnExit; bool get backToDashboard; bool get tvMode; bool get hidden; bool get collapseQuickSettingsPanel; bool get developerMode;@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy get restoreStrategy; bool get checkCertificate; String get customUserAgent; int get foregroundTickerInterval; bool get foregroundTickerIdleWhenUnfocused; bool get editorLineWrap;@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize get editorFontSize;@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight get editorLineHeight; int get foregroundTickerIdleInterval;
+ String? get locale;@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> get dashboardWidgets; bool get onlyStatisticsProxy; bool get showNotificationStopAction; bool get showTrayProxySelection; bool get autoLaunch; bool get highPriorityAutoLaunch; bool get silentLaunch; bool get autoRun; bool get openLogs; bool get closeConnections; bool get promptCloseConnections; bool get awgPriority; bool get tenvpnRussianDirect; bool get tenvpnTelemetry;@JsonKey(unknownEnumValue: TenvpnBatteryMode.always) TenvpnBatteryMode get tenvpnBatteryMode; List<TenvpnScheduleSlot> get tenvpnSchedule;@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle get serverListStyle;@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort get serverSort;@JsonKey(unknownEnumValue: AppLook.burrow) AppLook get look; String get testUrl; bool get isAnimateToPage; bool get isSwipeToPage; bool get autoCheckUpdate; bool get showLabel; bool get disclaimerAccepted; bool get minimizeOnExit; bool get backToDashboard; bool get tvMode; bool get hidden; bool get collapseQuickSettingsPanel; bool get developerMode;@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy get restoreStrategy; bool get checkCertificate; String get customUserAgent; int get foregroundTickerInterval; bool get foregroundTickerIdleWhenUnfocused; bool get editorLineWrap;@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize get editorFontSize;@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight get editorLineHeight; int get foregroundTickerIdleInterval;
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $AppSettingPropsCopyWith<AppSettingProps> get copyWith => _$AppSettingPropsCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as AppSettingProps;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, _this.locale) || other.locale == _this.locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, _this.dashboardWidgets)&&(identical(other.onlyStatisticsProxy, _this.onlyStatisticsProxy) || other.onlyStatisticsProxy == _this.onlyStatisticsProxy)&&(identical(other.showNotificationStopAction, _this.showNotificationStopAction) || other.showNotificationStopAction == _this.showNotificationStopAction)&&(identical(other.showTrayProxySelection, _this.showTrayProxySelection) || other.showTrayProxySelection == _this.showTrayProxySelection)&&(identical(other.autoLaunch, _this.autoLaunch) || other.autoLaunch == _this.autoLaunch)&&(identical(other.highPriorityAutoLaunch, _this.highPriorityAutoLaunch) || other.highPriorityAutoLaunch == _this.highPriorityAutoLaunch)&&(identical(other.silentLaunch, _this.silentLaunch) || other.silentLaunch == _this.silentLaunch)&&(identical(other.autoRun, _this.autoRun) || other.autoRun == _this.autoRun)&&(identical(other.openLogs, _this.openLogs) || other.openLogs == _this.openLogs)&&(identical(other.closeConnections, _this.closeConnections) || other.closeConnections == _this.closeConnections)&&(identical(other.promptCloseConnections, _this.promptCloseConnections) || other.promptCloseConnections == _this.promptCloseConnections)&&(identical(other.awgPriority, _this.awgPriority) || other.awgPriority == _this.awgPriority)&&(identical(other.tenvpnRussianDirect, _this.tenvpnRussianDirect) || other.tenvpnRussianDirect == _this.tenvpnRussianDirect)&&(identical(other.tenvpnTelemetry, _this.tenvpnTelemetry) || other.tenvpnTelemetry == _this.tenvpnTelemetry)&&(identical(other.serverListStyle, _this.serverListStyle) || other.serverListStyle == _this.serverListStyle)&&(identical(other.serverSort, _this.serverSort) || other.serverSort == _this.serverSort)&&(identical(other.look, _this.look) || other.look == _this.look)&&(identical(other.testUrl, _this.testUrl) || other.testUrl == _this.testUrl)&&(identical(other.isAnimateToPage, _this.isAnimateToPage) || other.isAnimateToPage == _this.isAnimateToPage)&&(identical(other.isSwipeToPage, _this.isSwipeToPage) || other.isSwipeToPage == _this.isSwipeToPage)&&(identical(other.autoCheckUpdate, _this.autoCheckUpdate) || other.autoCheckUpdate == _this.autoCheckUpdate)&&(identical(other.showLabel, _this.showLabel) || other.showLabel == _this.showLabel)&&(identical(other.disclaimerAccepted, _this.disclaimerAccepted) || other.disclaimerAccepted == _this.disclaimerAccepted)&&(identical(other.minimizeOnExit, _this.minimizeOnExit) || other.minimizeOnExit == _this.minimizeOnExit)&&(identical(other.backToDashboard, _this.backToDashboard) || other.backToDashboard == _this.backToDashboard)&&(identical(other.tvMode, _this.tvMode) || other.tvMode == _this.tvMode)&&(identical(other.hidden, _this.hidden) || other.hidden == _this.hidden)&&(identical(other.collapseQuickSettingsPanel, _this.collapseQuickSettingsPanel) || other.collapseQuickSettingsPanel == _this.collapseQuickSettingsPanel)&&(identical(other.developerMode, _this.developerMode) || other.developerMode == _this.developerMode)&&(identical(other.restoreStrategy, _this.restoreStrategy) || other.restoreStrategy == _this.restoreStrategy)&&(identical(other.checkCertificate, _this.checkCertificate) || other.checkCertificate == _this.checkCertificate)&&(identical(other.customUserAgent, _this.customUserAgent) || other.customUserAgent == _this.customUserAgent)&&(identical(other.foregroundTickerInterval, _this.foregroundTickerInterval) || other.foregroundTickerInterval == _this.foregroundTickerInterval)&&(identical(other.foregroundTickerIdleWhenUnfocused, _this.foregroundTickerIdleWhenUnfocused) || other.foregroundTickerIdleWhenUnfocused == _this.foregroundTickerIdleWhenUnfocused)&&(identical(other.editorLineWrap, _this.editorLineWrap) || other.editorLineWrap == _this.editorLineWrap)&&(identical(other.editorFontSize, _this.editorFontSize) || other.editorFontSize == _this.editorFontSize)&&(identical(other.editorLineHeight, _this.editorLineHeight) || other.editorLineHeight == _this.editorLineHeight)&&(identical(other.foregroundTickerIdleInterval, _this.foregroundTickerIdleInterval) || other.foregroundTickerIdleInterval == _this.foregroundTickerIdleInterval));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppSettingProps&&(identical(other.locale, _this.locale) || other.locale == _this.locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, _this.dashboardWidgets)&&(identical(other.onlyStatisticsProxy, _this.onlyStatisticsProxy) || other.onlyStatisticsProxy == _this.onlyStatisticsProxy)&&(identical(other.showNotificationStopAction, _this.showNotificationStopAction) || other.showNotificationStopAction == _this.showNotificationStopAction)&&(identical(other.showTrayProxySelection, _this.showTrayProxySelection) || other.showTrayProxySelection == _this.showTrayProxySelection)&&(identical(other.autoLaunch, _this.autoLaunch) || other.autoLaunch == _this.autoLaunch)&&(identical(other.highPriorityAutoLaunch, _this.highPriorityAutoLaunch) || other.highPriorityAutoLaunch == _this.highPriorityAutoLaunch)&&(identical(other.silentLaunch, _this.silentLaunch) || other.silentLaunch == _this.silentLaunch)&&(identical(other.autoRun, _this.autoRun) || other.autoRun == _this.autoRun)&&(identical(other.openLogs, _this.openLogs) || other.openLogs == _this.openLogs)&&(identical(other.closeConnections, _this.closeConnections) || other.closeConnections == _this.closeConnections)&&(identical(other.promptCloseConnections, _this.promptCloseConnections) || other.promptCloseConnections == _this.promptCloseConnections)&&(identical(other.awgPriority, _this.awgPriority) || other.awgPriority == _this.awgPriority)&&(identical(other.tenvpnRussianDirect, _this.tenvpnRussianDirect) || other.tenvpnRussianDirect == _this.tenvpnRussianDirect)&&(identical(other.tenvpnTelemetry, _this.tenvpnTelemetry) || other.tenvpnTelemetry == _this.tenvpnTelemetry)&&(identical(other.tenvpnBatteryMode, _this.tenvpnBatteryMode) || other.tenvpnBatteryMode == _this.tenvpnBatteryMode)&&const DeepCollectionEquality().equals(other.tenvpnSchedule, _this.tenvpnSchedule)&&(identical(other.serverListStyle, _this.serverListStyle) || other.serverListStyle == _this.serverListStyle)&&(identical(other.serverSort, _this.serverSort) || other.serverSort == _this.serverSort)&&(identical(other.look, _this.look) || other.look == _this.look)&&(identical(other.testUrl, _this.testUrl) || other.testUrl == _this.testUrl)&&(identical(other.isAnimateToPage, _this.isAnimateToPage) || other.isAnimateToPage == _this.isAnimateToPage)&&(identical(other.isSwipeToPage, _this.isSwipeToPage) || other.isSwipeToPage == _this.isSwipeToPage)&&(identical(other.autoCheckUpdate, _this.autoCheckUpdate) || other.autoCheckUpdate == _this.autoCheckUpdate)&&(identical(other.showLabel, _this.showLabel) || other.showLabel == _this.showLabel)&&(identical(other.disclaimerAccepted, _this.disclaimerAccepted) || other.disclaimerAccepted == _this.disclaimerAccepted)&&(identical(other.minimizeOnExit, _this.minimizeOnExit) || other.minimizeOnExit == _this.minimizeOnExit)&&(identical(other.backToDashboard, _this.backToDashboard) || other.backToDashboard == _this.backToDashboard)&&(identical(other.tvMode, _this.tvMode) || other.tvMode == _this.tvMode)&&(identical(other.hidden, _this.hidden) || other.hidden == _this.hidden)&&(identical(other.collapseQuickSettingsPanel, _this.collapseQuickSettingsPanel) || other.collapseQuickSettingsPanel == _this.collapseQuickSettingsPanel)&&(identical(other.developerMode, _this.developerMode) || other.developerMode == _this.developerMode)&&(identical(other.restoreStrategy, _this.restoreStrategy) || other.restoreStrategy == _this.restoreStrategy)&&(identical(other.checkCertificate, _this.checkCertificate) || other.checkCertificate == _this.checkCertificate)&&(identical(other.customUserAgent, _this.customUserAgent) || other.customUserAgent == _this.customUserAgent)&&(identical(other.foregroundTickerInterval, _this.foregroundTickerInterval) || other.foregroundTickerInterval == _this.foregroundTickerInterval)&&(identical(other.foregroundTickerIdleWhenUnfocused, _this.foregroundTickerIdleWhenUnfocused) || other.foregroundTickerIdleWhenUnfocused == _this.foregroundTickerIdleWhenUnfocused)&&(identical(other.editorLineWrap, _this.editorLineWrap) || other.editorLineWrap == _this.editorLineWrap)&&(identical(other.editorFontSize, _this.editorFontSize) || other.editorFontSize == _this.editorFontSize)&&(identical(other.editorLineHeight, _this.editorLineHeight) || other.editorLineHeight == _this.editorLineHeight)&&(identical(other.foregroundTickerIdleInterval, _this.foregroundTickerIdleInterval) || other.foregroundTickerIdleInterval == _this.foregroundTickerIdleInterval));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as AppSettingProps;
-  return Object.hashAll([runtimeType,_this.locale,const DeepCollectionEquality().hash(_this.dashboardWidgets),_this.onlyStatisticsProxy,_this.showNotificationStopAction,_this.showTrayProxySelection,_this.autoLaunch,_this.highPriorityAutoLaunch,_this.silentLaunch,_this.autoRun,_this.openLogs,_this.closeConnections,_this.promptCloseConnections,_this.awgPriority,_this.tenvpnRussianDirect,_this.tenvpnTelemetry,_this.serverListStyle,_this.serverSort,_this.look,_this.testUrl,_this.isAnimateToPage,_this.isSwipeToPage,_this.autoCheckUpdate,_this.showLabel,_this.disclaimerAccepted,_this.minimizeOnExit,_this.backToDashboard,_this.tvMode,_this.hidden,_this.collapseQuickSettingsPanel,_this.developerMode,_this.restoreStrategy,_this.checkCertificate,_this.customUserAgent,_this.foregroundTickerInterval,_this.foregroundTickerIdleWhenUnfocused,_this.editorLineWrap,_this.editorFontSize,_this.editorLineHeight,_this.foregroundTickerIdleInterval]);
+  return Object.hashAll([runtimeType,_this.locale,const DeepCollectionEquality().hash(_this.dashboardWidgets),_this.onlyStatisticsProxy,_this.showNotificationStopAction,_this.showTrayProxySelection,_this.autoLaunch,_this.highPriorityAutoLaunch,_this.silentLaunch,_this.autoRun,_this.openLogs,_this.closeConnections,_this.promptCloseConnections,_this.awgPriority,_this.tenvpnRussianDirect,_this.tenvpnTelemetry,_this.tenvpnBatteryMode,const DeepCollectionEquality().hash(_this.tenvpnSchedule),_this.serverListStyle,_this.serverSort,_this.look,_this.testUrl,_this.isAnimateToPage,_this.isSwipeToPage,_this.autoCheckUpdate,_this.showLabel,_this.disclaimerAccepted,_this.minimizeOnExit,_this.backToDashboard,_this.tvMode,_this.hidden,_this.collapseQuickSettingsPanel,_this.developerMode,_this.restoreStrategy,_this.checkCertificate,_this.customUserAgent,_this.foregroundTickerInterval,_this.foregroundTickerIdleWhenUnfocused,_this.editorLineWrap,_this.editorFontSize,_this.editorLineHeight,_this.foregroundTickerIdleInterval]);
 }
 
 @override
 String toString() {
   final _this = this as AppSettingProps;
-  return 'AppSettingProps(locale: ${_this.locale}, dashboardWidgets: ${_this.dashboardWidgets}, onlyStatisticsProxy: ${_this.onlyStatisticsProxy}, showNotificationStopAction: ${_this.showNotificationStopAction}, showTrayProxySelection: ${_this.showTrayProxySelection}, autoLaunch: ${_this.autoLaunch}, highPriorityAutoLaunch: ${_this.highPriorityAutoLaunch}, silentLaunch: ${_this.silentLaunch}, autoRun: ${_this.autoRun}, openLogs: ${_this.openLogs}, closeConnections: ${_this.closeConnections}, promptCloseConnections: ${_this.promptCloseConnections}, awgPriority: ${_this.awgPriority}, tenvpnRussianDirect: ${_this.tenvpnRussianDirect}, tenvpnTelemetry: ${_this.tenvpnTelemetry}, serverListStyle: ${_this.serverListStyle}, serverSort: ${_this.serverSort}, look: ${_this.look}, testUrl: ${_this.testUrl}, isAnimateToPage: ${_this.isAnimateToPage}, isSwipeToPage: ${_this.isSwipeToPage}, autoCheckUpdate: ${_this.autoCheckUpdate}, showLabel: ${_this.showLabel}, disclaimerAccepted: ${_this.disclaimerAccepted}, minimizeOnExit: ${_this.minimizeOnExit}, backToDashboard: ${_this.backToDashboard}, tvMode: ${_this.tvMode}, hidden: ${_this.hidden}, collapseQuickSettingsPanel: ${_this.collapseQuickSettingsPanel}, developerMode: ${_this.developerMode}, restoreStrategy: ${_this.restoreStrategy}, checkCertificate: ${_this.checkCertificate}, customUserAgent: ${_this.customUserAgent}, foregroundTickerInterval: ${_this.foregroundTickerInterval}, foregroundTickerIdleWhenUnfocused: ${_this.foregroundTickerIdleWhenUnfocused}, editorLineWrap: ${_this.editorLineWrap}, editorFontSize: ${_this.editorFontSize}, editorLineHeight: ${_this.editorLineHeight}, foregroundTickerIdleInterval: ${_this.foregroundTickerIdleInterval})';
+  return 'AppSettingProps(locale: ${_this.locale}, dashboardWidgets: ${_this.dashboardWidgets}, onlyStatisticsProxy: ${_this.onlyStatisticsProxy}, showNotificationStopAction: ${_this.showNotificationStopAction}, showTrayProxySelection: ${_this.showTrayProxySelection}, autoLaunch: ${_this.autoLaunch}, highPriorityAutoLaunch: ${_this.highPriorityAutoLaunch}, silentLaunch: ${_this.silentLaunch}, autoRun: ${_this.autoRun}, openLogs: ${_this.openLogs}, closeConnections: ${_this.closeConnections}, promptCloseConnections: ${_this.promptCloseConnections}, awgPriority: ${_this.awgPriority}, tenvpnRussianDirect: ${_this.tenvpnRussianDirect}, tenvpnTelemetry: ${_this.tenvpnTelemetry}, tenvpnBatteryMode: ${_this.tenvpnBatteryMode}, tenvpnSchedule: ${_this.tenvpnSchedule}, serverListStyle: ${_this.serverListStyle}, serverSort: ${_this.serverSort}, look: ${_this.look}, testUrl: ${_this.testUrl}, isAnimateToPage: ${_this.isAnimateToPage}, isSwipeToPage: ${_this.isSwipeToPage}, autoCheckUpdate: ${_this.autoCheckUpdate}, showLabel: ${_this.showLabel}, disclaimerAccepted: ${_this.disclaimerAccepted}, minimizeOnExit: ${_this.minimizeOnExit}, backToDashboard: ${_this.backToDashboard}, tvMode: ${_this.tvMode}, hidden: ${_this.hidden}, collapseQuickSettingsPanel: ${_this.collapseQuickSettingsPanel}, developerMode: ${_this.developerMode}, restoreStrategy: ${_this.restoreStrategy}, checkCertificate: ${_this.checkCertificate}, customUserAgent: ${_this.customUserAgent}, foregroundTickerInterval: ${_this.foregroundTickerInterval}, foregroundTickerIdleWhenUnfocused: ${_this.foregroundTickerIdleWhenUnfocused}, editorLineWrap: ${_this.editorLineWrap}, editorFontSize: ${_this.editorFontSize}, editorLineHeight: ${_this.editorLineHeight}, foregroundTickerIdleInterval: ${_this.foregroundTickerIdleInterval})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $AppSettingPropsCopyWith<$Res>  {
   factory $AppSettingPropsCopyWith(AppSettingProps value, $Res Function(AppSettingProps) _then) = _$AppSettingPropsCopyWithImpl;
 @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool onlyStatisticsProxy, bool showNotificationStopAction, bool showTrayProxySelection, bool autoLaunch, bool highPriorityAutoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, bool promptCloseConnections, bool awgPriority, bool tenvpnRussianDirect, bool tenvpnTelemetry,@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle serverListStyle,@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort serverSort,@JsonKey(unknownEnumValue: AppLook.burrow) AppLook look, String testUrl, bool isAnimateToPage, bool isSwipeToPage, bool autoCheckUpdate, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool backToDashboard, bool tvMode, bool hidden, bool collapseQuickSettingsPanel, bool developerMode,@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy restoreStrategy, bool checkCertificate, String customUserAgent, int foregroundTickerInterval, bool foregroundTickerIdleWhenUnfocused, bool editorLineWrap,@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize editorFontSize,@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight editorLineHeight, int foregroundTickerIdleInterval
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool onlyStatisticsProxy, bool showNotificationStopAction, bool showTrayProxySelection, bool autoLaunch, bool highPriorityAutoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, bool promptCloseConnections, bool awgPriority, bool tenvpnRussianDirect, bool tenvpnTelemetry,@JsonKey(unknownEnumValue: TenvpnBatteryMode.always) TenvpnBatteryMode tenvpnBatteryMode, List<TenvpnScheduleSlot> tenvpnSchedule,@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle serverListStyle,@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort serverSort,@JsonKey(unknownEnumValue: AppLook.burrow) AppLook look, String testUrl, bool isAnimateToPage, bool isSwipeToPage, bool autoCheckUpdate, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool backToDashboard, bool tvMode, bool hidden, bool collapseQuickSettingsPanel, bool developerMode,@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy restoreStrategy, bool checkCertificate, String customUserAgent, int foregroundTickerInterval, bool foregroundTickerIdleWhenUnfocused, bool editorLineWrap,@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize editorFontSize,@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight editorLineHeight, int foregroundTickerIdleInterval
 });
 
 
@@ -71,7 +71,7 @@ class _$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? onlyStatisticsProxy = null,Object? showNotificationStopAction = null,Object? showTrayProxySelection = null,Object? autoLaunch = null,Object? highPriorityAutoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? promptCloseConnections = null,Object? awgPriority = null,Object? tenvpnRussianDirect = null,Object? tenvpnTelemetry = null,Object? serverListStyle = null,Object? serverSort = null,Object? look = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? isSwipeToPage = null,Object? autoCheckUpdate = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? backToDashboard = null,Object? tvMode = null,Object? hidden = null,Object? collapseQuickSettingsPanel = null,Object? developerMode = null,Object? restoreStrategy = null,Object? checkCertificate = null,Object? customUserAgent = null,Object? foregroundTickerInterval = null,Object? foregroundTickerIdleWhenUnfocused = null,Object? editorLineWrap = null,Object? editorFontSize = null,Object? editorLineHeight = null,Object? foregroundTickerIdleInterval = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? onlyStatisticsProxy = null,Object? showNotificationStopAction = null,Object? showTrayProxySelection = null,Object? autoLaunch = null,Object? highPriorityAutoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? promptCloseConnections = null,Object? awgPriority = null,Object? tenvpnRussianDirect = null,Object? tenvpnTelemetry = null,Object? tenvpnBatteryMode = null,Object? tenvpnSchedule = null,Object? serverListStyle = null,Object? serverSort = null,Object? look = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? isSwipeToPage = null,Object? autoCheckUpdate = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? backToDashboard = null,Object? tvMode = null,Object? hidden = null,Object? collapseQuickSettingsPanel = null,Object? developerMode = null,Object? restoreStrategy = null,Object? checkCertificate = null,Object? customUserAgent = null,Object? foregroundTickerInterval = null,Object? foregroundTickerIdleWhenUnfocused = null,Object? editorLineWrap = null,Object? editorFontSize = null,Object? editorLineHeight = null,Object? foregroundTickerIdleInterval = null,}) {
   return _then(AppSettingProps(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self.dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
@@ -88,7 +88,9 @@ as bool,promptCloseConnections: null == promptCloseConnections ? _self.promptClo
 as bool,awgPriority: null == awgPriority ? _self.awgPriority : awgPriority // ignore: cast_nullable_to_non_nullable
 as bool,tenvpnRussianDirect: null == tenvpnRussianDirect ? _self.tenvpnRussianDirect : tenvpnRussianDirect // ignore: cast_nullable_to_non_nullable
 as bool,tenvpnTelemetry: null == tenvpnTelemetry ? _self.tenvpnTelemetry : tenvpnTelemetry // ignore: cast_nullable_to_non_nullable
-as bool,serverListStyle: null == serverListStyle ? _self.serverListStyle : serverListStyle // ignore: cast_nullable_to_non_nullable
+as bool,tenvpnBatteryMode: null == tenvpnBatteryMode ? _self.tenvpnBatteryMode : tenvpnBatteryMode // ignore: cast_nullable_to_non_nullable
+as TenvpnBatteryMode,tenvpnSchedule: null == tenvpnSchedule ? _self.tenvpnSchedule : tenvpnSchedule // ignore: cast_nullable_to_non_nullable
+as List<TenvpnScheduleSlot>,serverListStyle: null == serverListStyle ? _self.serverListStyle : serverListStyle // ignore: cast_nullable_to_non_nullable
 as ServerListStyle,serverSort: null == serverSort ? _self.serverSort : serverSort // ignore: cast_nullable_to_non_nullable
 as ServerSort,look: null == look ? _self.look : look // ignore: cast_nullable_to_non_nullable
 as AppLook,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
@@ -197,10 +199,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: TenvpnBatteryMode.always)  TenvpnBatteryMode tenvpnBatteryMode,  List<TenvpnScheduleSlot> tenvpnSchedule, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.tenvpnBatteryMode,_that.tenvpnSchedule,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
   return orElse();
 
 }
@@ -218,10 +220,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: TenvpnBatteryMode.always)  TenvpnBatteryMode tenvpnBatteryMode,  List<TenvpnScheduleSlot> tenvpnSchedule, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps():
-return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.tenvpnBatteryMode,_that.tenvpnSchedule,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -238,10 +240,10 @@ return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets,  bool onlyStatisticsProxy,  bool showNotificationStopAction,  bool showTrayProxySelection,  bool autoLaunch,  bool highPriorityAutoLaunch,  bool silentLaunch,  bool autoRun,  bool openLogs,  bool closeConnections,  bool promptCloseConnections,  bool awgPriority,  bool tenvpnRussianDirect,  bool tenvpnTelemetry, @JsonKey(unknownEnumValue: TenvpnBatteryMode.always)  TenvpnBatteryMode tenvpnBatteryMode,  List<TenvpnScheduleSlot> tenvpnSchedule, @JsonKey(unknownEnumValue: ServerListStyle.compact)  ServerListStyle serverListStyle, @JsonKey(unknownEnumValue: ServerSort.subscription)  ServerSort serverSort, @JsonKey(unknownEnumValue: AppLook.burrow)  AppLook look,  String testUrl,  bool isAnimateToPage,  bool isSwipeToPage,  bool autoCheckUpdate,  bool showLabel,  bool disclaimerAccepted,  bool minimizeOnExit,  bool backToDashboard,  bool tvMode,  bool hidden,  bool collapseQuickSettingsPanel,  bool developerMode, @JsonKey(unknownEnumValue: RestoreStrategy.compatible)  RestoreStrategy restoreStrategy,  bool checkCertificate,  String customUserAgent,  int foregroundTickerInterval,  bool foregroundTickerIdleWhenUnfocused,  bool editorLineWrap, @JsonKey(unknownEnumValue: EditorFontSize.standard)  EditorFontSize editorFontSize, @JsonKey(unknownEnumValue: EditorLineHeight.standard)  EditorLineHeight editorLineHeight,  int foregroundTickerIdleInterval)?  $default,) {final _that = this;
 switch (_that) {
 case _AppSettingProps() when $default != null:
-return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
+return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_that.showNotificationStopAction,_that.showTrayProxySelection,_that.autoLaunch,_that.highPriorityAutoLaunch,_that.silentLaunch,_that.autoRun,_that.openLogs,_that.closeConnections,_that.promptCloseConnections,_that.awgPriority,_that.tenvpnRussianDirect,_that.tenvpnTelemetry,_that.tenvpnBatteryMode,_that.tenvpnSchedule,_that.serverListStyle,_that.serverSort,_that.look,_that.testUrl,_that.isAnimateToPage,_that.isSwipeToPage,_that.autoCheckUpdate,_that.showLabel,_that.disclaimerAccepted,_that.minimizeOnExit,_that.backToDashboard,_that.tvMode,_that.hidden,_that.collapseQuickSettingsPanel,_that.developerMode,_that.restoreStrategy,_that.checkCertificate,_that.customUserAgent,_that.foregroundTickerInterval,_that.foregroundTickerIdleWhenUnfocused,_that.editorLineWrap,_that.editorFontSize,_that.editorLineHeight,_that.foregroundTickerIdleInterval);case _:
   return null;
 
 }
@@ -253,7 +255,7 @@ return $default(_that.locale,_that.dashboardWidgets,_that.onlyStatisticsProxy,_t
 @JsonSerializable()
 
 class _AppSettingProps implements AppSettingProps {
-  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.onlyStatisticsProxy = false, this.showNotificationStopAction = true, this.showTrayProxySelection = true, this.autoLaunch = false, this.highPriorityAutoLaunch = false, this.silentLaunch = false, this.autoRun = false, this.openLogs = false, this.closeConnections = true, this.promptCloseConnections = true, this.awgPriority = false, this.tenvpnRussianDirect = true, this.tenvpnTelemetry = true, @JsonKey(unknownEnumValue: ServerListStyle.compact) this.serverListStyle = ServerListStyle.compact, @JsonKey(unknownEnumValue: ServerSort.subscription) this.serverSort = ServerSort.subscription, @JsonKey(unknownEnumValue: AppLook.burrow) this.look = AppLook.burrow, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.isSwipeToPage = true, this.autoCheckUpdate = true, this.showLabel = false, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.backToDashboard = true, this.tvMode = false, this.hidden = false, this.collapseQuickSettingsPanel = true, this.developerMode = false, @JsonKey(unknownEnumValue: RestoreStrategy.compatible) this.restoreStrategy = RestoreStrategy.compatible, this.checkCertificate = true, this.customUserAgent = '', this.foregroundTickerInterval = defaultForegroundTickerInterval, this.foregroundTickerIdleWhenUnfocused = true, this.editorLineWrap = false, @JsonKey(unknownEnumValue: EditorFontSize.standard) this.editorFontSize = EditorFontSize.standard, @JsonKey(unknownEnumValue: EditorLineHeight.standard) this.editorLineHeight = EditorLineHeight.standard, this.foregroundTickerIdleInterval = defaultForegroundTickerIdleInterval}): _dashboardWidgets = dashboardWidgets;
+  const _AppSettingProps({this.locale, @JsonKey(fromJson: dashboardWidgetsSafeFormJson)  List<DashboardWidget> dashboardWidgets = defaultDashboardWidgets, this.onlyStatisticsProxy = false, this.showNotificationStopAction = true, this.showTrayProxySelection = true, this.autoLaunch = false, this.highPriorityAutoLaunch = false, this.silentLaunch = false, this.autoRun = false, this.openLogs = false, this.closeConnections = true, this.promptCloseConnections = true, this.awgPriority = false, this.tenvpnRussianDirect = true, this.tenvpnTelemetry = true, @JsonKey(unknownEnumValue: TenvpnBatteryMode.always) this.tenvpnBatteryMode = TenvpnBatteryMode.always,  List<TenvpnScheduleSlot> tenvpnSchedule = const [], @JsonKey(unknownEnumValue: ServerListStyle.compact) this.serverListStyle = ServerListStyle.compact, @JsonKey(unknownEnumValue: ServerSort.subscription) this.serverSort = ServerSort.subscription, @JsonKey(unknownEnumValue: AppLook.burrow) this.look = AppLook.burrow, this.testUrl = defaultTestUrl, this.isAnimateToPage = true, this.isSwipeToPage = true, this.autoCheckUpdate = true, this.showLabel = false, this.disclaimerAccepted = false, this.minimizeOnExit = true, this.backToDashboard = true, this.tvMode = false, this.hidden = false, this.collapseQuickSettingsPanel = true, this.developerMode = false, @JsonKey(unknownEnumValue: RestoreStrategy.compatible) this.restoreStrategy = RestoreStrategy.compatible, this.checkCertificate = true, this.customUserAgent = '', this.foregroundTickerInterval = defaultForegroundTickerInterval, this.foregroundTickerIdleWhenUnfocused = true, this.editorLineWrap = false, @JsonKey(unknownEnumValue: EditorFontSize.standard) this.editorFontSize = EditorFontSize.standard, @JsonKey(unknownEnumValue: EditorLineHeight.standard) this.editorLineHeight = EditorLineHeight.standard, this.foregroundTickerIdleInterval = defaultForegroundTickerIdleInterval}): _dashboardWidgets = dashboardWidgets,_tenvpnSchedule = tenvpnSchedule;
   factory _AppSettingProps.fromJson(Map<String, dynamic> json) => _$AppSettingPropsFromJson(json);
 
 @override final  String? locale;
@@ -277,6 +279,14 @@ class _AppSettingProps implements AppSettingProps {
 @override@JsonKey() final  bool awgPriority;
 @override@JsonKey() final  bool tenvpnRussianDirect;
 @override@JsonKey() final  bool tenvpnTelemetry;
+@override@JsonKey(unknownEnumValue: TenvpnBatteryMode.always) final  TenvpnBatteryMode tenvpnBatteryMode;
+ final  List<TenvpnScheduleSlot> _tenvpnSchedule;
+@override@JsonKey() List<TenvpnScheduleSlot> get tenvpnSchedule {
+  if (_tenvpnSchedule is EqualUnmodifiableListView) return _tenvpnSchedule;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_tenvpnSchedule);
+}
+
 @override@JsonKey(unknownEnumValue: ServerListStyle.compact) final  ServerListStyle serverListStyle;
 @override@JsonKey(unknownEnumValue: ServerSort.subscription) final  ServerSort serverSort;
 @override@JsonKey(unknownEnumValue: AppLook.burrow) final  AppLook look;
@@ -315,18 +325,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, _dashboardWidgets)&&(identical(other.onlyStatisticsProxy, onlyStatisticsProxy) || other.onlyStatisticsProxy == onlyStatisticsProxy)&&(identical(other.showNotificationStopAction, showNotificationStopAction) || other.showNotificationStopAction == showNotificationStopAction)&&(identical(other.showTrayProxySelection, showTrayProxySelection) || other.showTrayProxySelection == showTrayProxySelection)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.highPriorityAutoLaunch, highPriorityAutoLaunch) || other.highPriorityAutoLaunch == highPriorityAutoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.openLogs, openLogs) || other.openLogs == openLogs)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.promptCloseConnections, promptCloseConnections) || other.promptCloseConnections == promptCloseConnections)&&(identical(other.awgPriority, awgPriority) || other.awgPriority == awgPriority)&&(identical(other.tenvpnRussianDirect, tenvpnRussianDirect) || other.tenvpnRussianDirect == tenvpnRussianDirect)&&(identical(other.tenvpnTelemetry, tenvpnTelemetry) || other.tenvpnTelemetry == tenvpnTelemetry)&&(identical(other.serverListStyle, serverListStyle) || other.serverListStyle == serverListStyle)&&(identical(other.serverSort, serverSort) || other.serverSort == serverSort)&&(identical(other.look, look) || other.look == look)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.isSwipeToPage, isSwipeToPage) || other.isSwipeToPage == isSwipeToPage)&&(identical(other.autoCheckUpdate, autoCheckUpdate) || other.autoCheckUpdate == autoCheckUpdate)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.backToDashboard, backToDashboard) || other.backToDashboard == backToDashboard)&&(identical(other.tvMode, tvMode) || other.tvMode == tvMode)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.collapseQuickSettingsPanel, collapseQuickSettingsPanel) || other.collapseQuickSettingsPanel == collapseQuickSettingsPanel)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.checkCertificate, checkCertificate) || other.checkCertificate == checkCertificate)&&(identical(other.customUserAgent, customUserAgent) || other.customUserAgent == customUserAgent)&&(identical(other.foregroundTickerInterval, foregroundTickerInterval) || other.foregroundTickerInterval == foregroundTickerInterval)&&(identical(other.foregroundTickerIdleWhenUnfocused, foregroundTickerIdleWhenUnfocused) || other.foregroundTickerIdleWhenUnfocused == foregroundTickerIdleWhenUnfocused)&&(identical(other.editorLineWrap, editorLineWrap) || other.editorLineWrap == editorLineWrap)&&(identical(other.editorFontSize, editorFontSize) || other.editorFontSize == editorFontSize)&&(identical(other.editorLineHeight, editorLineHeight) || other.editorLineHeight == editorLineHeight)&&(identical(other.foregroundTickerIdleInterval, foregroundTickerIdleInterval) || other.foregroundTickerIdleInterval == foregroundTickerIdleInterval));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppSettingProps&&(identical(other.locale, locale) || other.locale == locale)&&const DeepCollectionEquality().equals(other.dashboardWidgets, _dashboardWidgets)&&(identical(other.onlyStatisticsProxy, onlyStatisticsProxy) || other.onlyStatisticsProxy == onlyStatisticsProxy)&&(identical(other.showNotificationStopAction, showNotificationStopAction) || other.showNotificationStopAction == showNotificationStopAction)&&(identical(other.showTrayProxySelection, showTrayProxySelection) || other.showTrayProxySelection == showTrayProxySelection)&&(identical(other.autoLaunch, autoLaunch) || other.autoLaunch == autoLaunch)&&(identical(other.highPriorityAutoLaunch, highPriorityAutoLaunch) || other.highPriorityAutoLaunch == highPriorityAutoLaunch)&&(identical(other.silentLaunch, silentLaunch) || other.silentLaunch == silentLaunch)&&(identical(other.autoRun, autoRun) || other.autoRun == autoRun)&&(identical(other.openLogs, openLogs) || other.openLogs == openLogs)&&(identical(other.closeConnections, closeConnections) || other.closeConnections == closeConnections)&&(identical(other.promptCloseConnections, promptCloseConnections) || other.promptCloseConnections == promptCloseConnections)&&(identical(other.awgPriority, awgPriority) || other.awgPriority == awgPriority)&&(identical(other.tenvpnRussianDirect, tenvpnRussianDirect) || other.tenvpnRussianDirect == tenvpnRussianDirect)&&(identical(other.tenvpnTelemetry, tenvpnTelemetry) || other.tenvpnTelemetry == tenvpnTelemetry)&&(identical(other.tenvpnBatteryMode, tenvpnBatteryMode) || other.tenvpnBatteryMode == tenvpnBatteryMode)&&const DeepCollectionEquality().equals(other.tenvpnSchedule, _tenvpnSchedule)&&(identical(other.serverListStyle, serverListStyle) || other.serverListStyle == serverListStyle)&&(identical(other.serverSort, serverSort) || other.serverSort == serverSort)&&(identical(other.look, look) || other.look == look)&&(identical(other.testUrl, testUrl) || other.testUrl == testUrl)&&(identical(other.isAnimateToPage, isAnimateToPage) || other.isAnimateToPage == isAnimateToPage)&&(identical(other.isSwipeToPage, isSwipeToPage) || other.isSwipeToPage == isSwipeToPage)&&(identical(other.autoCheckUpdate, autoCheckUpdate) || other.autoCheckUpdate == autoCheckUpdate)&&(identical(other.showLabel, showLabel) || other.showLabel == showLabel)&&(identical(other.disclaimerAccepted, disclaimerAccepted) || other.disclaimerAccepted == disclaimerAccepted)&&(identical(other.minimizeOnExit, minimizeOnExit) || other.minimizeOnExit == minimizeOnExit)&&(identical(other.backToDashboard, backToDashboard) || other.backToDashboard == backToDashboard)&&(identical(other.tvMode, tvMode) || other.tvMode == tvMode)&&(identical(other.hidden, hidden) || other.hidden == hidden)&&(identical(other.collapseQuickSettingsPanel, collapseQuickSettingsPanel) || other.collapseQuickSettingsPanel == collapseQuickSettingsPanel)&&(identical(other.developerMode, developerMode) || other.developerMode == developerMode)&&(identical(other.restoreStrategy, restoreStrategy) || other.restoreStrategy == restoreStrategy)&&(identical(other.checkCertificate, checkCertificate) || other.checkCertificate == checkCertificate)&&(identical(other.customUserAgent, customUserAgent) || other.customUserAgent == customUserAgent)&&(identical(other.foregroundTickerInterval, foregroundTickerInterval) || other.foregroundTickerInterval == foregroundTickerInterval)&&(identical(other.foregroundTickerIdleWhenUnfocused, foregroundTickerIdleWhenUnfocused) || other.foregroundTickerIdleWhenUnfocused == foregroundTickerIdleWhenUnfocused)&&(identical(other.editorLineWrap, editorLineWrap) || other.editorLineWrap == editorLineWrap)&&(identical(other.editorFontSize, editorFontSize) || other.editorFontSize == editorFontSize)&&(identical(other.editorLineHeight, editorLineHeight) || other.editorLineHeight == editorLineHeight)&&(identical(other.foregroundTickerIdleInterval, foregroundTickerIdleInterval) || other.foregroundTickerIdleInterval == foregroundTickerIdleInterval));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),onlyStatisticsProxy,showNotificationStopAction,showTrayProxySelection,autoLaunch,highPriorityAutoLaunch,silentLaunch,autoRun,openLogs,closeConnections,promptCloseConnections,awgPriority,tenvpnRussianDirect,tenvpnTelemetry,serverListStyle,serverSort,look,testUrl,isAnimateToPage,isSwipeToPage,autoCheckUpdate,showLabel,disclaimerAccepted,minimizeOnExit,backToDashboard,tvMode,hidden,collapseQuickSettingsPanel,developerMode,restoreStrategy,checkCertificate,customUserAgent,foregroundTickerInterval,foregroundTickerIdleWhenUnfocused,editorLineWrap,editorFontSize,editorLineHeight,foregroundTickerIdleInterval]);
+    return Object.hashAll([runtimeType,locale,const DeepCollectionEquality().hash(_dashboardWidgets),onlyStatisticsProxy,showNotificationStopAction,showTrayProxySelection,autoLaunch,highPriorityAutoLaunch,silentLaunch,autoRun,openLogs,closeConnections,promptCloseConnections,awgPriority,tenvpnRussianDirect,tenvpnTelemetry,tenvpnBatteryMode,const DeepCollectionEquality().hash(_tenvpnSchedule),serverListStyle,serverSort,look,testUrl,isAnimateToPage,isSwipeToPage,autoCheckUpdate,showLabel,disclaimerAccepted,minimizeOnExit,backToDashboard,tvMode,hidden,collapseQuickSettingsPanel,developerMode,restoreStrategy,checkCertificate,customUserAgent,foregroundTickerInterval,foregroundTickerIdleWhenUnfocused,editorLineWrap,editorFontSize,editorLineHeight,foregroundTickerIdleInterval]);
 }
 
 @override
 String toString() {
-    return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, onlyStatisticsProxy: $onlyStatisticsProxy, showNotificationStopAction: $showNotificationStopAction, showTrayProxySelection: $showTrayProxySelection, autoLaunch: $autoLaunch, highPriorityAutoLaunch: $highPriorityAutoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, promptCloseConnections: $promptCloseConnections, awgPriority: $awgPriority, tenvpnRussianDirect: $tenvpnRussianDirect, tenvpnTelemetry: $tenvpnTelemetry, serverListStyle: $serverListStyle, serverSort: $serverSort, look: $look, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, isSwipeToPage: $isSwipeToPage, autoCheckUpdate: $autoCheckUpdate, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, backToDashboard: $backToDashboard, tvMode: $tvMode, hidden: $hidden, collapseQuickSettingsPanel: $collapseQuickSettingsPanel, developerMode: $developerMode, restoreStrategy: $restoreStrategy, checkCertificate: $checkCertificate, customUserAgent: $customUserAgent, foregroundTickerInterval: $foregroundTickerInterval, foregroundTickerIdleWhenUnfocused: $foregroundTickerIdleWhenUnfocused, editorLineWrap: $editorLineWrap, editorFontSize: $editorFontSize, editorLineHeight: $editorLineHeight, foregroundTickerIdleInterval: $foregroundTickerIdleInterval)';
+    return 'AppSettingProps(locale: $locale, dashboardWidgets: $dashboardWidgets, onlyStatisticsProxy: $onlyStatisticsProxy, showNotificationStopAction: $showNotificationStopAction, showTrayProxySelection: $showTrayProxySelection, autoLaunch: $autoLaunch, highPriorityAutoLaunch: $highPriorityAutoLaunch, silentLaunch: $silentLaunch, autoRun: $autoRun, openLogs: $openLogs, closeConnections: $closeConnections, promptCloseConnections: $promptCloseConnections, awgPriority: $awgPriority, tenvpnRussianDirect: $tenvpnRussianDirect, tenvpnTelemetry: $tenvpnTelemetry, tenvpnBatteryMode: $tenvpnBatteryMode, tenvpnSchedule: $tenvpnSchedule, serverListStyle: $serverListStyle, serverSort: $serverSort, look: $look, testUrl: $testUrl, isAnimateToPage: $isAnimateToPage, isSwipeToPage: $isSwipeToPage, autoCheckUpdate: $autoCheckUpdate, showLabel: $showLabel, disclaimerAccepted: $disclaimerAccepted, minimizeOnExit: $minimizeOnExit, backToDashboard: $backToDashboard, tvMode: $tvMode, hidden: $hidden, collapseQuickSettingsPanel: $collapseQuickSettingsPanel, developerMode: $developerMode, restoreStrategy: $restoreStrategy, checkCertificate: $checkCertificate, customUserAgent: $customUserAgent, foregroundTickerInterval: $foregroundTickerInterval, foregroundTickerIdleWhenUnfocused: $foregroundTickerIdleWhenUnfocused, editorLineWrap: $editorLineWrap, editorFontSize: $editorFontSize, editorLineHeight: $editorLineHeight, foregroundTickerIdleInterval: $foregroundTickerIdleInterval)';
 }
 
 
@@ -337,7 +347,7 @@ abstract mixin class _$AppSettingPropsCopyWith<$Res> implements $AppSettingProps
   factory _$AppSettingPropsCopyWith(_AppSettingProps value, $Res Function(_AppSettingProps) _then) = __$AppSettingPropsCopyWithImpl;
 @override @useResult
 $Res call({
- String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool onlyStatisticsProxy, bool showNotificationStopAction, bool showTrayProxySelection, bool autoLaunch, bool highPriorityAutoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, bool promptCloseConnections, bool awgPriority, bool tenvpnRussianDirect, bool tenvpnTelemetry,@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle serverListStyle,@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort serverSort,@JsonKey(unknownEnumValue: AppLook.burrow) AppLook look, String testUrl, bool isAnimateToPage, bool isSwipeToPage, bool autoCheckUpdate, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool backToDashboard, bool tvMode, bool hidden, bool collapseQuickSettingsPanel, bool developerMode,@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy restoreStrategy, bool checkCertificate, String customUserAgent, int foregroundTickerInterval, bool foregroundTickerIdleWhenUnfocused, bool editorLineWrap,@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize editorFontSize,@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight editorLineHeight, int foregroundTickerIdleInterval
+ String? locale,@JsonKey(fromJson: dashboardWidgetsSafeFormJson) List<DashboardWidget> dashboardWidgets, bool onlyStatisticsProxy, bool showNotificationStopAction, bool showTrayProxySelection, bool autoLaunch, bool highPriorityAutoLaunch, bool silentLaunch, bool autoRun, bool openLogs, bool closeConnections, bool promptCloseConnections, bool awgPriority, bool tenvpnRussianDirect, bool tenvpnTelemetry,@JsonKey(unknownEnumValue: TenvpnBatteryMode.always) TenvpnBatteryMode tenvpnBatteryMode, List<TenvpnScheduleSlot> tenvpnSchedule,@JsonKey(unknownEnumValue: ServerListStyle.compact) ServerListStyle serverListStyle,@JsonKey(unknownEnumValue: ServerSort.subscription) ServerSort serverSort,@JsonKey(unknownEnumValue: AppLook.burrow) AppLook look, String testUrl, bool isAnimateToPage, bool isSwipeToPage, bool autoCheckUpdate, bool showLabel, bool disclaimerAccepted, bool minimizeOnExit, bool backToDashboard, bool tvMode, bool hidden, bool collapseQuickSettingsPanel, bool developerMode,@JsonKey(unknownEnumValue: RestoreStrategy.compatible) RestoreStrategy restoreStrategy, bool checkCertificate, String customUserAgent, int foregroundTickerInterval, bool foregroundTickerIdleWhenUnfocused, bool editorLineWrap,@JsonKey(unknownEnumValue: EditorFontSize.standard) EditorFontSize editorFontSize,@JsonKey(unknownEnumValue: EditorLineHeight.standard) EditorLineHeight editorLineHeight, int foregroundTickerIdleInterval
 });
 
 
@@ -354,7 +364,7 @@ class __$AppSettingPropsCopyWithImpl<$Res>
 
 /// Create a copy of AppSettingProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? onlyStatisticsProxy = null,Object? showNotificationStopAction = null,Object? showTrayProxySelection = null,Object? autoLaunch = null,Object? highPriorityAutoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? promptCloseConnections = null,Object? awgPriority = null,Object? tenvpnRussianDirect = null,Object? tenvpnTelemetry = null,Object? serverListStyle = null,Object? serverSort = null,Object? look = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? isSwipeToPage = null,Object? autoCheckUpdate = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? backToDashboard = null,Object? tvMode = null,Object? hidden = null,Object? collapseQuickSettingsPanel = null,Object? developerMode = null,Object? restoreStrategy = null,Object? checkCertificate = null,Object? customUserAgent = null,Object? foregroundTickerInterval = null,Object? foregroundTickerIdleWhenUnfocused = null,Object? editorLineWrap = null,Object? editorFontSize = null,Object? editorLineHeight = null,Object? foregroundTickerIdleInterval = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? locale = freezed,Object? dashboardWidgets = null,Object? onlyStatisticsProxy = null,Object? showNotificationStopAction = null,Object? showTrayProxySelection = null,Object? autoLaunch = null,Object? highPriorityAutoLaunch = null,Object? silentLaunch = null,Object? autoRun = null,Object? openLogs = null,Object? closeConnections = null,Object? promptCloseConnections = null,Object? awgPriority = null,Object? tenvpnRussianDirect = null,Object? tenvpnTelemetry = null,Object? tenvpnBatteryMode = null,Object? tenvpnSchedule = null,Object? serverListStyle = null,Object? serverSort = null,Object? look = null,Object? testUrl = null,Object? isAnimateToPage = null,Object? isSwipeToPage = null,Object? autoCheckUpdate = null,Object? showLabel = null,Object? disclaimerAccepted = null,Object? minimizeOnExit = null,Object? backToDashboard = null,Object? tvMode = null,Object? hidden = null,Object? collapseQuickSettingsPanel = null,Object? developerMode = null,Object? restoreStrategy = null,Object? checkCertificate = null,Object? customUserAgent = null,Object? foregroundTickerInterval = null,Object? foregroundTickerIdleWhenUnfocused = null,Object? editorLineWrap = null,Object? editorFontSize = null,Object? editorLineHeight = null,Object? foregroundTickerIdleInterval = null,}) {
   return _then(_AppSettingProps(
 locale: freezed == locale ? _self.locale : locale // ignore: cast_nullable_to_non_nullable
 as String?,dashboardWidgets: null == dashboardWidgets ? _self._dashboardWidgets : dashboardWidgets // ignore: cast_nullable_to_non_nullable
@@ -371,7 +381,9 @@ as bool,promptCloseConnections: null == promptCloseConnections ? _self.promptClo
 as bool,awgPriority: null == awgPriority ? _self.awgPriority : awgPriority // ignore: cast_nullable_to_non_nullable
 as bool,tenvpnRussianDirect: null == tenvpnRussianDirect ? _self.tenvpnRussianDirect : tenvpnRussianDirect // ignore: cast_nullable_to_non_nullable
 as bool,tenvpnTelemetry: null == tenvpnTelemetry ? _self.tenvpnTelemetry : tenvpnTelemetry // ignore: cast_nullable_to_non_nullable
-as bool,serverListStyle: null == serverListStyle ? _self.serverListStyle : serverListStyle // ignore: cast_nullable_to_non_nullable
+as bool,tenvpnBatteryMode: null == tenvpnBatteryMode ? _self.tenvpnBatteryMode : tenvpnBatteryMode // ignore: cast_nullable_to_non_nullable
+as TenvpnBatteryMode,tenvpnSchedule: null == tenvpnSchedule ? _self._tenvpnSchedule : tenvpnSchedule // ignore: cast_nullable_to_non_nullable
+as List<TenvpnScheduleSlot>,serverListStyle: null == serverListStyle ? _self.serverListStyle : serverListStyle // ignore: cast_nullable_to_non_nullable
 as ServerListStyle,serverSort: null == serverSort ? _self.serverSort : serverSort // ignore: cast_nullable_to_non_nullable
 as ServerSort,look: null == look ? _self.look : look // ignore: cast_nullable_to_non_nullable
 as AppLook,testUrl: null == testUrl ? _self.testUrl : testUrl // ignore: cast_nullable_to_non_nullable
@@ -396,6 +408,288 @@ as bool,editorFontSize: null == editorFontSize ? _self.editorFontSize : editorFo
 as EditorFontSize,editorLineHeight: null == editorLineHeight ? _self.editorLineHeight : editorLineHeight // ignore: cast_nullable_to_non_nullable
 as EditorLineHeight,foregroundTickerIdleInterval: null == foregroundTickerIdleInterval ? _self.foregroundTickerIdleInterval : foregroundTickerIdleInterval // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$TenvpnScheduleSlot {
+
+ int get start; int get end; List<int> get days;
+/// Create a copy of TenvpnScheduleSlot
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TenvpnScheduleSlotCopyWith<TenvpnScheduleSlot> get copyWith => _$TenvpnScheduleSlotCopyWithImpl<TenvpnScheduleSlot>(this as TenvpnScheduleSlot, _$identity);
+
+  /// Serializes this TenvpnScheduleSlot to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as TenvpnScheduleSlot;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TenvpnScheduleSlot&&(identical(other.start, _this.start) || other.start == _this.start)&&(identical(other.end, _this.end) || other.end == _this.end)&&const DeepCollectionEquality().equals(other.days, _this.days));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as TenvpnScheduleSlot;
+  return Object.hash(runtimeType,_this.start,_this.end,const DeepCollectionEquality().hash(_this.days));
+}
+
+@override
+String toString() {
+  final _this = this as TenvpnScheduleSlot;
+  return 'TenvpnScheduleSlot(start: ${_this.start}, end: ${_this.end}, days: ${_this.days})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TenvpnScheduleSlotCopyWith<$Res>  {
+  factory $TenvpnScheduleSlotCopyWith(TenvpnScheduleSlot value, $Res Function(TenvpnScheduleSlot) _then) = _$TenvpnScheduleSlotCopyWithImpl;
+@useResult
+$Res call({
+ int start, int end, List<int> days
+});
+
+
+
+
+}
+/// @nodoc
+class _$TenvpnScheduleSlotCopyWithImpl<$Res>
+    implements $TenvpnScheduleSlotCopyWith<$Res> {
+  _$TenvpnScheduleSlotCopyWithImpl(this._self, this._then);
+
+  final TenvpnScheduleSlot _self;
+  final $Res Function(TenvpnScheduleSlot) _then;
+
+/// Create a copy of TenvpnScheduleSlot
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? start = null,Object? end = null,Object? days = null,}) {
+  return _then(TenvpnScheduleSlot(
+start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as int,days: null == days ? _self.days : days // ignore: cast_nullable_to_non_nullable
+as List<int>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TenvpnScheduleSlot].
+extension TenvpnScheduleSlotPatterns on TenvpnScheduleSlot {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TenvpnScheduleSlot value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TenvpnScheduleSlot value)  $default,){
+final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TenvpnScheduleSlot value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int start,  int end,  List<int> days)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot() when $default != null:
+return $default(_that.start,_that.end,_that.days);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int start,  int end,  List<int> days)  $default,) {final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot():
+return $default(_that.start,_that.end,_that.days);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int start,  int end,  List<int> days)?  $default,) {final _that = this;
+switch (_that) {
+case _TenvpnScheduleSlot() when $default != null:
+return $default(_that.start,_that.end,_that.days);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TenvpnScheduleSlot implements TenvpnScheduleSlot {
+  const _TenvpnScheduleSlot({required this.start, required this.end,  List<int> days = const [1, 2, 3, 4, 5, 6, 7]}): _days = days;
+  factory _TenvpnScheduleSlot.fromJson(Map<String, dynamic> json) => _$TenvpnScheduleSlotFromJson(json);
+
+@override final  int start;
+@override final  int end;
+ final  List<int> _days;
+@override@JsonKey() List<int> get days {
+  if (_days is EqualUnmodifiableListView) return _days;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_days);
+}
+
+
+/// Create a copy of TenvpnScheduleSlot
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TenvpnScheduleSlotCopyWith<_TenvpnScheduleSlot> get copyWith => __$TenvpnScheduleSlotCopyWithImpl<_TenvpnScheduleSlot>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TenvpnScheduleSlotToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _TenvpnScheduleSlot&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&const DeepCollectionEquality().equals(other.days, _days));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,start,end,const DeepCollectionEquality().hash(_days));
+}
+
+@override
+String toString() {
+    return 'TenvpnScheduleSlot(start: $start, end: $end, days: $days)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TenvpnScheduleSlotCopyWith<$Res> implements $TenvpnScheduleSlotCopyWith<$Res> {
+  factory _$TenvpnScheduleSlotCopyWith(_TenvpnScheduleSlot value, $Res Function(_TenvpnScheduleSlot) _then) = __$TenvpnScheduleSlotCopyWithImpl;
+@override @useResult
+$Res call({
+ int start, int end, List<int> days
+});
+
+
+
+
+}
+/// @nodoc
+class __$TenvpnScheduleSlotCopyWithImpl<$Res>
+    implements _$TenvpnScheduleSlotCopyWith<$Res> {
+  __$TenvpnScheduleSlotCopyWithImpl(this._self, this._then);
+
+  final _TenvpnScheduleSlot _self;
+  final $Res Function(_TenvpnScheduleSlot) _then;
+
+/// Create a copy of TenvpnScheduleSlot
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? start = null,Object? end = null,Object? days = null,}) {
+  return _then(_TenvpnScheduleSlot(
+start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
+as int,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
+as int,days: null == days ? _self._days : days // ignore: cast_nullable_to_non_nullable
+as List<int>,
   ));
 }
 

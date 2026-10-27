@@ -14,6 +14,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'advanced_view.dart';
 import 'awg_key_view.dart';
+import 'battery_view.dart';
 import 'main_view.dart';
 import 'mascot.dart';
 import 'privacy_view.dart';
@@ -51,6 +52,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                   if (system.isDesktop) const _AutoStartRow(),
                   if (system.isWindows) const _FullTunnelRow(),
                   if (system.isAndroid) const TenvpnKillSwitchRow(),
+                  if (system.isAndroid) const _BatteryRow(),
                   if (system.isAndroid)
                     TenvpnSettingsRow(
                       icon: Symbols.call_split,
@@ -438,6 +440,25 @@ class _RussianDirectRow extends ConsumerWidget {
       subtitle: l.tenvpnRussianDirectDesc,
       value: value,
       onChanged: (value) => _set(ref, value),
+    );
+  }
+}
+
+class _BatteryRow extends ConsumerWidget {
+  const _BatteryRow();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.appLocalizations;
+    final mode = ref.watch(
+      appSettingProvider.select((s) => s.tenvpnBatteryMode),
+    );
+    return TenvpnSettingsRow(
+      key: const ValueKey('tenvpn-battery'),
+      icon: Symbols.battery_horiz_075,
+      title: l.tenvpnBattery,
+      subtitle: tenvpnBatteryModeLabel(l, mode),
+      onTap: () => BaseNavigator.push(context, const TenvpnBatteryView()),
     );
   }
 }

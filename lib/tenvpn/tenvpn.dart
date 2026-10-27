@@ -22,6 +22,7 @@ export 'headers.dart';
 export 'network_mode.dart';
 export 'configgen/configgen.dart';
 export 'presentation.dart';
+export 'schedule.dart';
 export 'subscription_issue.dart';
 export 'support.dart';
 export 'tenvpn_config.dart';
@@ -40,10 +41,17 @@ final tenvpnConfig = TenvpnConfigService(
   endpoints: TenvpnEndpoints.configured,
   options: () {
     final settings = globalState.container.read(appSettingProvider);
+    final autoStrategy = settings.awgPriority
+        ? AutoStrategy.awgFirst
+        : AutoStrategy.fastest;
+    if (settings.tenvpnBatteryMode == TenvpnBatteryMode.saver) {
+      return ConfigGenOptions.saver(
+        autoStrategy: autoStrategy,
+        russianDirect: settings.tenvpnRussianDirect,
+      );
+    }
     return ConfigGenOptions(
-      autoStrategy: settings.awgPriority
-          ? AutoStrategy.awgFirst
-          : AutoStrategy.fastest,
+      autoStrategy: autoStrategy,
       russianDirect: settings.tenvpnRussianDirect,
     );
   },

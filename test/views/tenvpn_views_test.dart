@@ -13,6 +13,7 @@ import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:fl_clash/views/tenvpn/advanced_view.dart';
 import 'package:fl_clash/views/tenvpn/awg_key_view.dart';
+import 'package:fl_clash/views/tenvpn/battery_view.dart';
 import 'package:fl_clash/views/tenvpn/home.dart';
 import 'package:fl_clash/views/tenvpn/main_view.dart';
 import 'package:fl_clash/views/tenvpn/mascot.dart';
@@ -816,6 +817,61 @@ void main() {
       expect(find.text('On'), findsOneWidget);
       expect(find.text('Off'), findsOneWidget);
       expect(find.byIcon(Symbols.open_in_new), findsOneWidget);
+    });
+  });
+
+  group('battery', () {
+    TenvpnBatteryMode mode() =>
+        container.read(appSettingProvider).tenvpnBatteryMode;
+
+    _tv('saver rebuilds the profile on the way in and out only', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      await pump(tester, TenvpnBatteryView(readBackground: () async => false));
+      expect(mode(), TenvpnBatteryMode.always);
+      expect(text('Allow'), findsOneWidget);
+
+      await tester.tap(find.byKey(const ValueKey('tenvpn-battery-saver')));
+      await tester.pump();
+      expect(mode(), TenvpnBatteryMode.saver);
+      expect(profiles.regenerated, 1);
+
+      await tester.tap(find.byKey(const ValueKey('tenvpn-battery-schedule')));
+      await tester.pump();
+      expect(mode(), TenvpnBatteryMode.schedule);
+      expect(profiles.regenerated, 2);
+
+      await tester.tap(find.byKey(const ValueKey('tenvpn-battery-always')));
+      await tester.pump();
+      expect(profiles.regenerated, 2);
+    });
+
+    _tv('the schedule adds, tells the next change and removes hours', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      await pump(tester, TenvpnBatteryView(readBackground: () async => true));
+      await tester.tap(find.byKey(const ValueKey('tenvpn-battery-schedule')));
+      await tester.pump();
+      expect(text('Allowed'), findsOneWidget);
+      expect(text('Add the hours when you need the VPN'), findsOneWidget);
+
+      await tester.ensureVisible(
+        find.byKey(const ValueKey('tenvpn-schedule-add')),
+      );
+      await tester.pump();
+      await tester.tap(find.byKey(const ValueKey('tenvpn-schedule-add')));
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnSchedule, [
+        const TenvpnScheduleSlot(start: 18 * 60, end: 21 * 60),
+      ]);
+      expect(find.text('18:00'), findsOneWidget);
+      expect(text('Turns'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Remove'));
+      await tester.pump();
+      expect(container.read(appSettingProvider).tenvpnSchedule, isEmpty);
     });
   });
 

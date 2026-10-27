@@ -121,27 +121,31 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m41(date) => "Подписка до ${date}";
 
-  static String m42(percent) => "Скачиваем обновление… ${percent}%";
+  static String m42(time) => "Выключится в ${time}";
 
-  static String m43(reason) =>
+  static String m43(time) => "Включится в ${time}";
+
+  static String m44(percent) => "Скачиваем обновление… ${percent}%";
+
+  static String m45(reason) =>
       "Не получилось обновить: ${reason}. Новую версию можно скачать вручную.";
 
-  static String m44(version) => "Новая версия ${version}";
+  static String m46(version) => "Новая версия ${version}";
 
-  static String m45(time) => "Обновлена ${time}";
+  static String m47(time) => "Обновлена ${time}";
 
-  static String m46(version) => "Версия ${version}";
+  static String m48(version) => "Версия ${version}";
 
-  static String m47(country) => "Ваш IP: ${country}";
+  static String m49(country) => "Ваш IP: ${country}";
 
-  static String m48(interval, idleInterval) =>
+  static String m50(interval, idleInterval) =>
       "${interval} · бездействие ${idleInterval}";
 
-  static String m49(interval) => "${interval} · бездействие отключено";
+  static String m51(interval) => "${interval} · бездействие отключено";
 
-  static String m50(label) => "Значение «${label}» должно быть URL";
+  static String m52(label) => "Значение «${label}» должно быть URL";
 
-  static String m51(count) =>
+  static String m53(count) =>
       "${Intl.plural(count, one: '${count} год назад', few: '${count} года назад', many: '${count} лет назад', other: '${count} года назад')}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -881,9 +885,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1748,6 +1753,35 @@ class MessageLookup extends MessageLookupByLibrary {
       "Это не похоже на ссылку подписки. Скопируйте её из бота целиком.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBattery": MessageLookupByLibrary.simpleMessage("Батарея"),
+    "tenvpnBatteryAlways": MessageLookupByLibrary.simpleMessage(
+      "Всегда на связи",
+    ),
+    "tenvpnBatteryAlwaysDesc": MessageLookupByLibrary.simpleMessage(
+      "Серверы проверяются как обычно: уведомления и YouTube с погашенным экраном идут без перебоев.",
+    ),
+    "tenvpnBatteryBackground": MessageLookupByLibrary.simpleMessage(
+      "Работа в фоне",
+    ),
+    "tenvpnBatteryBackgroundAllow": MessageLookupByLibrary.simpleMessage(
+      "Разрешить",
+    ),
+    "tenvpnBatteryBackgroundAllowed": MessageLookupByLibrary.simpleMessage(
+      "Разрешена",
+    ),
+    "tenvpnBatteryBackgroundDesc": MessageLookupByLibrary.simpleMessage(
+      "Чтобы телефон не выключал VPN, когда экран погашен",
+    ),
+    "tenvpnBatterySaver": MessageLookupByLibrary.simpleMessage("Экономный"),
+    "tenvpnBatterySaverDesc": MessageLookupByLibrary.simpleMessage(
+      "Серверы проверяются в разы реже — меньше расход батареи. Если сервер перестанет отвечать, переключение займёт немного дольше.",
+    ),
+    "tenvpnBatterySchedule": MessageLookupByLibrary.simpleMessage(
+      "По расписанию",
+    ),
+    "tenvpnBatteryScheduleDesc": MessageLookupByLibrary.simpleMessage(
+      "VPN работает только в выбранные часы и сам включается и выключается. Время может сдвигаться на несколько минут — так Android бережёт батарею.",
+    ),
     "tenvpnBest": MessageLookupByLibrary.simpleMessage("лучший"),
     "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
       "Нет доступа к сайту? Получите через Telegram-бота",
@@ -1937,6 +1971,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Банки, Госуслуги и маркетплейсы работают без VPN — не ругаются на зарубежный IP",
     ),
+    "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("Добавить часы"),
+    "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage(
+      "Добавьте часы, когда VPN нужен",
+    ),
+    "tenvpnScheduleLockdown": MessageLookupByLibrary.simpleMessage(
+      "Если включено «Блокировать интернет без VPN», вне расписания интернета не будет.",
+    ),
+    "tenvpnScheduleNextOff": m42,
+    "tenvpnScheduleNextOn": m43,
+    "tenvpnScheduleRemove": MessageLookupByLibrary.simpleMessage("Удалить"),
     "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
       "Страна, протокол или название",
     ),
@@ -2041,8 +2085,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
       "установка отменена",
     ),
-    "tenvpnUpdateDownloading": m42,
-    "tenvpnUpdateFailed": m43,
+    "tenvpnUpdateDownloading": m44,
+    "tenvpnUpdateFailed": m45,
     "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Позже"),
     "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
       "в выпуске нет установщика для Windows",
@@ -2054,19 +2098,19 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
       "TENVPN скачает обновление и установит его сам. Windows попросит разрешение на установку — нажмите «Да».",
     ),
-    "tenvpnUpdateTitle": m44,
-    "tenvpnUpdatedAt": m45,
+    "tenvpnUpdateTitle": m46,
+    "tenvpnUpdatedAt": m47,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage(
       "Открытая основа приложения",
     ),
-    "tenvpnVersion": m46,
+    "tenvpnVersion": m48,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку из бота TENVPN или нажмите в боте «Открыть в приложении».",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Подключим за минуту",
     ),
-    "tenvpnYourIp": m47,
+    "tenvpnYourIp": m49,
     "testInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал тестирования",
     ),
@@ -2119,8 +2163,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage(
       "Интервал обновления информации UI",
     ),
-    "uiUpdateIntervalDesc": m48,
-    "uiUpdateIntervalIdleDisabledDesc": m49,
+    "uiUpdateIntervalDesc": m50,
+    "uiUpdateIntervalIdleDisabledDesc": m51,
     "unauthorized": MessageLookupByLibrary.simpleMessage("Не разрешено"),
     "undo": MessageLookupByLibrary.simpleMessage("Отменить"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("Единая задержка"),
@@ -2146,7 +2190,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("Исходящий трафик"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("Получить профиль по URL"),
-    "urlTip": m50,
+    "urlTip": m52,
     "useHosts": MessageLookupByLibrary.simpleMessage("Использовать hosts"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "Проверяет записи hosts из конфигурации перед запросом к вышестоящим DNS-серверам",
@@ -2186,7 +2230,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage(
       "Также устанавливать системные часы",
     ),
-    "yearsAgo": m51,
+    "yearsAgo": m53,
     "yes": MessageLookupByLibrary.simpleMessage("Да"),
     "zhCN": MessageLookupByLibrary.simpleMessage("Упрощённый китайский"),
   };

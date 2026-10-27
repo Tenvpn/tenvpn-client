@@ -8794,6 +8794,171 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Battery`
+  String get tenvpnBattery {
+    return Intl.message('Battery', name: 'tenvpnBattery', desc: '', args: []);
+  }
+
+  /// `Always on`
+  String get tenvpnBatteryAlways {
+    return Intl.message(
+      'Always on',
+      name: 'tenvpnBatteryAlways',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Servers are checked as usual: notifications and YouTube with the screen off keep going.`
+  String get tenvpnBatteryAlwaysDesc {
+    return Intl.message(
+      'Servers are checked as usual: notifications and YouTube with the screen off keep going.',
+      name: 'tenvpnBatteryAlwaysDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Saver`
+  String get tenvpnBatterySaver {
+    return Intl.message(
+      'Saver',
+      name: 'tenvpnBatterySaver',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Servers are checked far less often, which saves battery. If a server stops answering, switching takes a bit longer.`
+  String get tenvpnBatterySaverDesc {
+    return Intl.message(
+      'Servers are checked far less often, which saves battery. If a server stops answering, switching takes a bit longer.',
+      name: 'tenvpnBatterySaverDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `On a schedule`
+  String get tenvpnBatterySchedule {
+    return Intl.message(
+      'On a schedule',
+      name: 'tenvpnBatterySchedule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The VPN runs only in the hours you pick and turns itself on and off. Android may shift the time by a few minutes to save battery.`
+  String get tenvpnBatteryScheduleDesc {
+    return Intl.message(
+      'The VPN runs only in the hours you pick and turns itself on and off. Android may shift the time by a few minutes to save battery.',
+      name: 'tenvpnBatteryScheduleDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Run in background`
+  String get tenvpnBatteryBackground {
+    return Intl.message(
+      'Run in background',
+      name: 'tenvpnBatteryBackground',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `So the phone does not turn the VPN off while the screen is off`
+  String get tenvpnBatteryBackgroundDesc {
+    return Intl.message(
+      'So the phone does not turn the VPN off while the screen is off',
+      name: 'tenvpnBatteryBackgroundDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allowed`
+  String get tenvpnBatteryBackgroundAllowed {
+    return Intl.message(
+      'Allowed',
+      name: 'tenvpnBatteryBackgroundAllowed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Allow`
+  String get tenvpnBatteryBackgroundAllow {
+    return Intl.message(
+      'Allow',
+      name: 'tenvpnBatteryBackgroundAllow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add hours`
+  String get tenvpnScheduleAdd {
+    return Intl.message(
+      'Add hours',
+      name: 'tenvpnScheduleAdd',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add the hours when you need the VPN`
+  String get tenvpnScheduleEmpty {
+    return Intl.message(
+      'Add the hours when you need the VPN',
+      name: 'tenvpnScheduleEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Turns on at {time}`
+  String tenvpnScheduleNextOn(Object time) {
+    return Intl.message(
+      'Turns on at $time',
+      name: 'tenvpnScheduleNextOn',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Turns off at {time}`
+  String tenvpnScheduleNextOff(Object time) {
+    return Intl.message(
+      'Turns off at $time',
+      name: 'tenvpnScheduleNextOff',
+      desc: '',
+      args: [time],
+    );
+  }
+
+  /// `Remove`
+  String get tenvpnScheduleRemove {
+    return Intl.message(
+      'Remove',
+      name: 'tenvpnScheduleRemove',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `With «Block internet without VPN» on, there is no internet outside the schedule.`
+  String get tenvpnScheduleLockdown {
+    return Intl.message(
+      'With «Block internet without VPN» on, there is no internet outside the schedule.',
+      name: 'tenvpnScheduleLockdown',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

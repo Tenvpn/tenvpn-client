@@ -26,6 +26,20 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
       awgPriority: json['awgPriority'] as bool? ?? false,
       tenvpnRussianDirect: json['tenvpnRussianDirect'] as bool? ?? true,
       tenvpnTelemetry: json['tenvpnTelemetry'] as bool? ?? true,
+      tenvpnBatteryMode:
+          $enumDecodeNullable(
+            _$TenvpnBatteryModeEnumMap,
+            json['tenvpnBatteryMode'],
+            unknownValue: TenvpnBatteryMode.always,
+          ) ??
+          TenvpnBatteryMode.always,
+      tenvpnSchedule:
+          (json['tenvpnSchedule'] as List<dynamic>?)
+              ?.map(
+                (e) => TenvpnScheduleSlot.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          const [],
       serverListStyle:
           $enumDecodeNullable(
             _$ServerListStyleEnumMap,
@@ -94,51 +108,60 @@ _AppSettingProps _$AppSettingPropsFromJson(Map<String, dynamic> json) =>
           defaultForegroundTickerIdleInterval,
     );
 
-Map<String, dynamic> _$AppSettingPropsToJson(_AppSettingProps instance) =>
-    <String, dynamic>{
-      'locale': instance.locale,
-      'dashboardWidgets': instance.dashboardWidgets
-          .map((e) => _$DashboardWidgetEnumMap[e]!)
-          .toList(),
-      'onlyStatisticsProxy': instance.onlyStatisticsProxy,
-      'showNotificationStopAction': instance.showNotificationStopAction,
-      'showTrayProxySelection': instance.showTrayProxySelection,
-      'autoLaunch': instance.autoLaunch,
-      'highPriorityAutoLaunch': instance.highPriorityAutoLaunch,
-      'silentLaunch': instance.silentLaunch,
-      'autoRun': instance.autoRun,
-      'openLogs': instance.openLogs,
-      'closeConnections': instance.closeConnections,
-      'promptCloseConnections': instance.promptCloseConnections,
-      'awgPriority': instance.awgPriority,
-      'tenvpnRussianDirect': instance.tenvpnRussianDirect,
-      'tenvpnTelemetry': instance.tenvpnTelemetry,
-      'serverListStyle': _$ServerListStyleEnumMap[instance.serverListStyle]!,
-      'serverSort': _$ServerSortEnumMap[instance.serverSort]!,
-      'look': _$AppLookEnumMap[instance.look]!,
-      'testUrl': instance.testUrl,
-      'isAnimateToPage': instance.isAnimateToPage,
-      'isSwipeToPage': instance.isSwipeToPage,
-      'autoCheckUpdate': instance.autoCheckUpdate,
-      'showLabel': instance.showLabel,
-      'disclaimerAccepted': instance.disclaimerAccepted,
-      'minimizeOnExit': instance.minimizeOnExit,
-      'backToDashboard': instance.backToDashboard,
-      'tvMode': instance.tvMode,
-      'hidden': instance.hidden,
-      'collapseQuickSettingsPanel': instance.collapseQuickSettingsPanel,
-      'developerMode': instance.developerMode,
-      'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
-      'checkCertificate': instance.checkCertificate,
-      'customUserAgent': instance.customUserAgent,
-      'foregroundTickerInterval': instance.foregroundTickerInterval,
-      'foregroundTickerIdleWhenUnfocused':
-          instance.foregroundTickerIdleWhenUnfocused,
-      'editorLineWrap': instance.editorLineWrap,
-      'editorFontSize': _$EditorFontSizeEnumMap[instance.editorFontSize]!,
-      'editorLineHeight': _$EditorLineHeightEnumMap[instance.editorLineHeight]!,
-      'foregroundTickerIdleInterval': instance.foregroundTickerIdleInterval,
-    };
+Map<String, dynamic> _$AppSettingPropsToJson(
+  _AppSettingProps instance,
+) => <String, dynamic>{
+  'locale': instance.locale,
+  'dashboardWidgets': instance.dashboardWidgets
+      .map((e) => _$DashboardWidgetEnumMap[e]!)
+      .toList(),
+  'onlyStatisticsProxy': instance.onlyStatisticsProxy,
+  'showNotificationStopAction': instance.showNotificationStopAction,
+  'showTrayProxySelection': instance.showTrayProxySelection,
+  'autoLaunch': instance.autoLaunch,
+  'highPriorityAutoLaunch': instance.highPriorityAutoLaunch,
+  'silentLaunch': instance.silentLaunch,
+  'autoRun': instance.autoRun,
+  'openLogs': instance.openLogs,
+  'closeConnections': instance.closeConnections,
+  'promptCloseConnections': instance.promptCloseConnections,
+  'awgPriority': instance.awgPriority,
+  'tenvpnRussianDirect': instance.tenvpnRussianDirect,
+  'tenvpnTelemetry': instance.tenvpnTelemetry,
+  'tenvpnBatteryMode': _$TenvpnBatteryModeEnumMap[instance.tenvpnBatteryMode]!,
+  'tenvpnSchedule': instance.tenvpnSchedule,
+  'serverListStyle': _$ServerListStyleEnumMap[instance.serverListStyle]!,
+  'serverSort': _$ServerSortEnumMap[instance.serverSort]!,
+  'look': _$AppLookEnumMap[instance.look]!,
+  'testUrl': instance.testUrl,
+  'isAnimateToPage': instance.isAnimateToPage,
+  'isSwipeToPage': instance.isSwipeToPage,
+  'autoCheckUpdate': instance.autoCheckUpdate,
+  'showLabel': instance.showLabel,
+  'disclaimerAccepted': instance.disclaimerAccepted,
+  'minimizeOnExit': instance.minimizeOnExit,
+  'backToDashboard': instance.backToDashboard,
+  'tvMode': instance.tvMode,
+  'hidden': instance.hidden,
+  'collapseQuickSettingsPanel': instance.collapseQuickSettingsPanel,
+  'developerMode': instance.developerMode,
+  'restoreStrategy': _$RestoreStrategyEnumMap[instance.restoreStrategy]!,
+  'checkCertificate': instance.checkCertificate,
+  'customUserAgent': instance.customUserAgent,
+  'foregroundTickerInterval': instance.foregroundTickerInterval,
+  'foregroundTickerIdleWhenUnfocused':
+      instance.foregroundTickerIdleWhenUnfocused,
+  'editorLineWrap': instance.editorLineWrap,
+  'editorFontSize': _$EditorFontSizeEnumMap[instance.editorFontSize]!,
+  'editorLineHeight': _$EditorLineHeightEnumMap[instance.editorLineHeight]!,
+  'foregroundTickerIdleInterval': instance.foregroundTickerIdleInterval,
+};
+
+const _$TenvpnBatteryModeEnumMap = {
+  TenvpnBatteryMode.always: 'always',
+  TenvpnBatteryMode.saver: 'saver',
+  TenvpnBatteryMode.schedule: 'schedule',
+};
 
 const _$ServerListStyleEnumMap = {
   ServerListStyle.compact: 'compact',
@@ -184,6 +207,24 @@ const _$DashboardWidgetEnumMap = {
   DashboardWidget.goroutineInfo: 'goroutineInfo',
   DashboardWidget.connectionInfo: 'connectionInfo',
 };
+
+_TenvpnScheduleSlot _$TenvpnScheduleSlotFromJson(Map<String, dynamic> json) =>
+    _TenvpnScheduleSlot(
+      start: (json['start'] as num).toInt(),
+      end: (json['end'] as num).toInt(),
+      days:
+          (json['days'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList() ??
+          const [1, 2, 3, 4, 5, 6, 7],
+    );
+
+Map<String, dynamic> _$TenvpnScheduleSlotToJson(_TenvpnScheduleSlot instance) =>
+    <String, dynamic>{
+      'start': instance.start,
+      'end': instance.end,
+      'days': instance.days,
+    };
 
 _AccessControlProps _$AccessControlPropsFromJson(Map<String, dynamic> json) =>
     _AccessControlProps(

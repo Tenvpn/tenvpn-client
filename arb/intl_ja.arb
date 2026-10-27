@@ -1037,5 +1037,22 @@
   "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot",
   "tenvpnCabinet": "Your account",
   "tenvpnCabinetHint": "Put the account on your phone screen — always at hand",
-  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand"
+  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand",
+  "tenvpnBattery": "バッテリー",
+  "tenvpnBatteryAlways": "常に接続",
+  "tenvpnBatteryAlwaysDesc": "通常どおりサーバーを確認します。画面オフでも通知や YouTube が途切れません。",
+  "tenvpnBatterySaver": "省電力",
+  "tenvpnBatterySaverDesc": "サーバーの確認回数を大幅に減らしてバッテリーを節約します。サーバーが応答しなくなった場合、切り替えに少し時間がかかります。",
+  "tenvpnBatterySchedule": "スケジュール",
+  "tenvpnBatteryScheduleDesc": "選んだ時間だけ VPN が動作し、自動でオン・オフします。Android はバッテリー節約のため数分ずらすことがあります。",
+  "tenvpnBatteryBackground": "バックグラウンド動作",
+  "tenvpnBatteryBackgroundDesc": "画面オフ中に VPN が切られないようにします",
+  "tenvpnBatteryBackgroundAllowed": "許可済み",
+  "tenvpnBatteryBackgroundAllow": "許可する",
+  "tenvpnScheduleAdd": "時間を追加",
+  "tenvpnScheduleEmpty": "VPN が必要な時間を追加してください",
+  "tenvpnScheduleNextOn": "{time} にオン",
+  "tenvpnScheduleNextOff": "{time} にオフ",
+  "tenvpnScheduleRemove": "削除",
+  "tenvpnScheduleLockdown": "「VPN なしの通信をブロック」がオンだと、スケジュール外はインターネットが使えません。"
 }

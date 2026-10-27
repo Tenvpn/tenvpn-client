@@ -108,27 +108,31 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m41(date) => "Subscription until ${date}";
 
-  static String m42(percent) => "Downloading the update… ${percent}%";
+  static String m42(time) => "${time} にオフ";
 
-  static String m43(reason) =>
+  static String m43(time) => "${time} にオン";
+
+  static String m44(percent) => "Downloading the update… ${percent}%";
+
+  static String m45(reason) =>
       "Could not update: ${reason}. You can download the new version manually.";
 
-  static String m44(version) => "New version ${version}";
+  static String m46(version) => "New version ${version}";
 
-  static String m45(time) => "Updated ${time}";
+  static String m47(time) => "Updated ${time}";
 
-  static String m46(version) => "Version ${version}";
+  static String m48(version) => "Version ${version}";
 
-  static String m47(country) => "Your IP: ${country}";
+  static String m49(country) => "Your IP: ${country}";
 
-  static String m48(interval, idleInterval) =>
+  static String m50(interval, idleInterval) =>
       "${interval} · アイドル ${idleInterval}";
 
-  static String m49(interval) => "${interval} · アイドル無効";
+  static String m51(interval) => "${interval} · アイドル無効";
 
-  static String m50(label) => "${label} は URL である必要があります";
+  static String m52(label) => "${label} は URL である必要があります";
 
-  static String m51(count) => "${count} 年前";
+  static String m53(count) => "${count} 年前";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -1395,6 +1399,31 @@ class MessageLookup extends MessageLookupByLibrary {
       "This does not look like a subscription link. Copy it from the bot in full.",
     ),
     "tenvpnBalance": m32,
+    "tenvpnBattery": MessageLookupByLibrary.simpleMessage("バッテリー"),
+    "tenvpnBatteryAlways": MessageLookupByLibrary.simpleMessage("常に接続"),
+    "tenvpnBatteryAlwaysDesc": MessageLookupByLibrary.simpleMessage(
+      "通常どおりサーバーを確認します。画面オフでも通知や YouTube が途切れません。",
+    ),
+    "tenvpnBatteryBackground": MessageLookupByLibrary.simpleMessage(
+      "バックグラウンド動作",
+    ),
+    "tenvpnBatteryBackgroundAllow": MessageLookupByLibrary.simpleMessage(
+      "許可する",
+    ),
+    "tenvpnBatteryBackgroundAllowed": MessageLookupByLibrary.simpleMessage(
+      "許可済み",
+    ),
+    "tenvpnBatteryBackgroundDesc": MessageLookupByLibrary.simpleMessage(
+      "画面オフ中に VPN が切られないようにします",
+    ),
+    "tenvpnBatterySaver": MessageLookupByLibrary.simpleMessage("省電力"),
+    "tenvpnBatterySaverDesc": MessageLookupByLibrary.simpleMessage(
+      "サーバーの確認回数を大幅に減らしてバッテリーを節約します。サーバーが応答しなくなった場合、切り替えに少し時間がかかります。",
+    ),
+    "tenvpnBatterySchedule": MessageLookupByLibrary.simpleMessage("スケジュール"),
+    "tenvpnBatteryScheduleDesc": MessageLookupByLibrary.simpleMessage(
+      "選んだ時間だけ VPN が動作し、自動でオン・オフします。Android はバッテリー節約のため数分ずらすことがあります。",
+    ),
     "tenvpnBest": MessageLookupByLibrary.simpleMessage("best"),
     "tenvpnBotFallback": MessageLookupByLibrary.simpleMessage(
       "No access to the site? Get it via the Telegram bot",
@@ -1570,6 +1599,16 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
     ),
+    "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("時間を追加"),
+    "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage(
+      "VPN が必要な時間を追加してください",
+    ),
+    "tenvpnScheduleLockdown": MessageLookupByLibrary.simpleMessage(
+      "「VPN なしの通信をブロック」がオンだと、スケジュール外はインターネットが使えません。",
+    ),
+    "tenvpnScheduleNextOff": m42,
+    "tenvpnScheduleNextOn": m43,
+    "tenvpnScheduleRemove": MessageLookupByLibrary.simpleMessage("削除"),
     "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
       "Country, protocol or name",
     ),
@@ -1668,8 +1707,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateDeclined": MessageLookupByLibrary.simpleMessage(
       "installation was cancelled",
     ),
-    "tenvpnUpdateDownloading": m42,
-    "tenvpnUpdateFailed": m43,
+    "tenvpnUpdateDownloading": m44,
+    "tenvpnUpdateFailed": m45,
     "tenvpnUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
     "tenvpnUpdateNoInstaller": MessageLookupByLibrary.simpleMessage(
       "this release has no Windows installer",
@@ -1681,17 +1720,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnUpdateText": MessageLookupByLibrary.simpleMessage(
       "TENVPN will download the update and install it. Windows will ask for permission — click Yes.",
     ),
-    "tenvpnUpdateTitle": m44,
-    "tenvpnUpdatedAt": m45,
+    "tenvpnUpdateTitle": m46,
+    "tenvpnUpdatedAt": m47,
     "tenvpnUpstream": MessageLookupByLibrary.simpleMessage("Open-source base"),
-    "tenvpnVersion": m46,
+    "tenvpnVersion": m48,
     "tenvpnWelcomeText": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from the TENVPN bot, or tap “Open in the app” in the bot.",
     ),
     "tenvpnWelcomeTitle": MessageLookupByLibrary.simpleMessage(
       "Let\'s connect in a minute",
     ),
-    "tenvpnYourIp": m47,
+    "tenvpnYourIp": m49,
     "testInterval": MessageLookupByLibrary.simpleMessage("テスト間隔"),
     "testUrl": MessageLookupByLibrary.simpleMessage("URL テスト"),
     "testWhenUsed": MessageLookupByLibrary.simpleMessage("使用時にテスト"),
@@ -1730,8 +1769,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "アプリウィンドウがフォーカスを失ったときにアイドル更新間隔を使用",
     ),
     "uiUpdateInterval": MessageLookupByLibrary.simpleMessage("UI 情報の更新間隔"),
-    "uiUpdateIntervalDesc": m48,
-    "uiUpdateIntervalIdleDisabledDesc": m49,
+    "uiUpdateIntervalDesc": m50,
+    "uiUpdateIntervalIdleDisabledDesc": m51,
     "unauthorized": MessageLookupByLibrary.simpleMessage("未許可"),
     "undo": MessageLookupByLibrary.simpleMessage("元に戻す"),
     "unifiedDelay": MessageLookupByLibrary.simpleMessage("統一遅延"),
@@ -1753,7 +1792,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uploadTraffic": MessageLookupByLibrary.simpleMessage("アップロード通信量"),
     "url": MessageLookupByLibrary.simpleMessage("URL"),
     "urlDesc": MessageLookupByLibrary.simpleMessage("URL 経由でプロファイルを取得"),
-    "urlTip": m50,
+    "urlTip": m52,
     "useHosts": MessageLookupByLibrary.simpleMessage("Hostsを使用"),
     "useHostsDesc": MessageLookupByLibrary.simpleMessage(
       "上流 DNS へ問い合わせる前に、設定内の hosts エントリを確認します",
@@ -1779,7 +1818,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "whitelistMode": MessageLookupByLibrary.simpleMessage("ホワイトリストモード"),
     "writeToSystem": MessageLookupByLibrary.simpleMessage("システムに書き込む"),
     "writeToSystemDesc": MessageLookupByLibrary.simpleMessage("システムクロックも設定します"),
-    "yearsAgo": m51,
+    "yearsAgo": m53,
     "yes": MessageLookupByLibrary.simpleMessage("はい"),
     "zhCN": MessageLookupByLibrary.simpleMessage("簡体字中国語"),
   };

@@ -1037,5 +1037,22 @@
   "tenvpnBotFallback": "Нет доступа к сайту? Получите через Telegram-бота",
   "tenvpnCabinet": "Личный кабинет",
   "tenvpnCabinetHint": "Кабинет можно поставить на экран телефона — всегда под рукой",
-  "tenvpnCabinetHintDesktop": "Кабинет можно поставить как приложение — всегда под рукой"
+  "tenvpnCabinetHintDesktop": "Кабинет можно поставить как приложение — всегда под рукой",
+  "tenvpnBattery": "Батарея",
+  "tenvpnBatteryAlways": "Всегда на связи",
+  "tenvpnBatteryAlwaysDesc": "Серверы проверяются как обычно: уведомления и YouTube с погашенным экраном идут без перебоев.",
+  "tenvpnBatterySaver": "Экономный",
+  "tenvpnBatterySaverDesc": "Серверы проверяются в разы реже — меньше расход батареи. Если сервер перестанет отвечать, переключение займёт немного дольше.",
+  "tenvpnBatterySchedule": "По расписанию",
+  "tenvpnBatteryScheduleDesc": "VPN работает только в выбранные часы и сам включается и выключается. Время может сдвигаться на несколько минут — так Android бережёт батарею.",
+  "tenvpnBatteryBackground": "Работа в фоне",
+  "tenvpnBatteryBackgroundDesc": "Чтобы телефон не выключал VPN, когда экран погашен",
+  "tenvpnBatteryBackgroundAllowed": "Разрешена",
+  "tenvpnBatteryBackgroundAllow": "Разрешить",
+  "tenvpnScheduleAdd": "Добавить часы",
+  "tenvpnScheduleEmpty": "Добавьте часы, когда VPN нужен",
+  "tenvpnScheduleNextOn": "Включится в {time}",
+  "tenvpnScheduleNextOff": "Выключится в {time}",
+  "tenvpnScheduleRemove": "Удалить",
+  "tenvpnScheduleLockdown": "Если включено «Блокировать интернет без VPN», вне расписания интернета не будет."
 }

@@ -1037,5 +1037,22 @@
   "tenvpnBotFallback": "No access to the site? Get it via the Telegram bot",
   "tenvpnCabinet": "Your account",
   "tenvpnCabinetHint": "Put the account on your phone screen — always at hand",
-  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand"
+  "tenvpnCabinetHintDesktop": "Install the account as an app — always at hand",
+  "tenvpnBattery": "Battery",
+  "tenvpnBatteryAlways": "Always on",
+  "tenvpnBatteryAlwaysDesc": "Servers are checked as usual: notifications and YouTube with the screen off keep going.",
+  "tenvpnBatterySaver": "Saver",
+  "tenvpnBatterySaverDesc": "Servers are checked far less often, which saves battery. If a server stops answering, switching takes a bit longer.",
+  "tenvpnBatterySchedule": "On a schedule",
+  "tenvpnBatteryScheduleDesc": "The VPN runs only in the hours you pick and turns itself on and off. Android may shift the time by a few minutes to save battery.",
+  "tenvpnBatteryBackground": "Run in background",
+  "tenvpnBatteryBackgroundDesc": "So the phone does not turn the VPN off while the screen is off",
+  "tenvpnBatteryBackgroundAllowed": "Allowed",
+  "tenvpnBatteryBackgroundAllow": "Allow",
+  "tenvpnScheduleAdd": "Add hours",
+  "tenvpnScheduleEmpty": "Add the hours when you need the VPN",
+  "tenvpnScheduleNextOn": "Turns on at {time}",
+  "tenvpnScheduleNextOff": "Turns off at {time}",
+  "tenvpnScheduleRemove": "Remove",
+  "tenvpnScheduleLockdown": "With «Block internet without VPN» on, there is no internet outside the schedule."
 }
