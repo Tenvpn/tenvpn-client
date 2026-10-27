@@ -38,6 +38,25 @@ class _FakeCommonAction extends CommonAction {
   void toggleRunning() => toggles++;
 }
 
+class _FakeSetupAction extends SetupAction {
+  final List<String?> selected;
+  int applied = 0;
+  List<String?> selectedWhenApplied = const [];
+
+  _FakeSetupAction(this.selected);
+
+  @override
+  Future<bool> applyProfile({
+    bool silence = false,
+    bool force = false,
+    Future<void> Function()? preloadInvoke,
+  }) async {
+    applied++;
+    selectedWhenApplied = [...selected];
+    return true;
+  }
+}
+
 class _FakeProxiesAction extends ProxiesAction {
   final selected = <String?>[];
   int speedChecks = 0;
@@ -166,6 +185,7 @@ void main() {
   late _FakeCommonAction common;
   late _FakeProxiesAction proxies;
   late _FakeProfilesAction profiles;
+  late _FakeSetupAction setup;
   late _KeyConfig keys;
 
   setUpAll(() {
@@ -193,6 +213,7 @@ void main() {
     common = _FakeCommonAction();
     proxies = _FakeProxiesAction();
     profiles = _FakeProfilesAction();
+    setup = _FakeSetupAction(proxies.selected);
     keys = _KeyConfig();
     final c = ProviderContainer(
       overrides: [
@@ -204,6 +225,7 @@ void main() {
         commonActionProvider.overrideWith(() => common),
         proxiesActionProvider.overrideWith(() => proxies),
         profilesActionProvider.overrideWith(() => profiles),
+        setupActionProvider.overrideWith(() => setup),
         networkDetectionProvider.overrideWith(() => _FixedDetection(detection)),
         tenvpnServerEntriesProvider.overrideWith((_) async => _servers),
         tenvpnDesktopAwgProvider.overrideWithValue(desktop),
@@ -836,6 +858,10 @@ void main() {
       await tester.pump();
       expect(keys.manual, conf.trim());
       expect(profiles.regenerated, 1);
+      expect(setup.applied, 1);
+      expect(setup.selectedWhenApplied, isEmpty);
+      expect(proxies.selected, [awgDefaultName]);
+      expect(common.toggles, 1);
     });
 
     _tv('the Play build has no cabinet link; a set key can be removed', (
@@ -851,6 +877,9 @@ void main() {
       await tester.pump();
       expect(keys.manual, isNull);
       expect(profiles.regenerated, 1);
+      expect(setup.applied, 0);
+      expect(proxies.selected, isEmpty);
+      expect(common.toggles, 0);
     });
   });
 

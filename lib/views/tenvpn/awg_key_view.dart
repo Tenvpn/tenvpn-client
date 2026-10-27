@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
@@ -68,6 +69,19 @@ class _TenvpnAwgKeyViewState extends ConsumerState<TenvpnAwgKeyView> {
     };
   }
 
+  /// The rebuilt profile reaches the core only after a debounce; until then
+  /// the core has no AmneziaWG proxy and the selection rolls back.
+  Future<void> _connect() async {
+    debouncer.cancel(FunctionTag.applyProfile);
+    await ref.read(setupActionProvider.notifier).applyProfile(silence: true);
+    await ref
+        .read(proxiesActionProvider.notifier)
+        .selectTenvpnServer(awgDefaultName);
+    if (!ref.read(isStartProvider)) {
+      ref.read(commonActionProvider.notifier).toggleRunning();
+    }
+  }
+
   Future<void> _apply(String? conf) async {
     final profile = ref.read(currentProfileProvider);
     if (profile == null) return;
@@ -78,6 +92,7 @@ class _TenvpnAwgKeyViewState extends ConsumerState<TenvpnAwgKeyView> {
           .read(profilesActionProvider.notifier)
           .regenerateProfile(profile);
       ref.read(tenvpnAwgKeyRefreshProvider.notifier).bump();
+      if (conf != null) await _connect();
       if (mounted) Navigator.of(context).maybePop();
     } catch (error) {
       if (mounted) setState(() => _error = _message(error));
