@@ -939,6 +939,31 @@ void main() {
     });
   });
 
+  group('QR scan', () {
+    _tv('the button shows only where the scanner ships', (tester) async {
+      container = build(items: [profile]);
+      await pump(tester, const TenvpnOnboardingView(qrScan: true));
+      expect(find.byKey(const ValueKey('tenvpn-scan-qr')), findsOneWidget);
+      expect(text('Scan QR'), findsOneWidget);
+      await pump(tester, const TenvpnOnboardingView(qrScan: false));
+      expect(find.byKey(const ValueKey('tenvpn-scan-qr')), findsNothing);
+      await pump(tester, const TenvpnOnboardingView(playBuild: true));
+      expect(find.byKey(const ValueKey('tenvpn-scan-qr')), findsNothing);
+
+      await pump(tester, const TenvpnAwgKeyView(qrScan: true));
+      expect(find.byKey(const ValueKey('tenvpn-awg-scan')), findsOneWidget);
+      await pump(tester, const TenvpnAwgKeyView(qrScan: false));
+      expect(find.byKey(const ValueKey('tenvpn-awg-scan')), findsNothing);
+    });
+
+    test('an Amnezia key is told apart from a subscription link', () {
+      expect(looksLikeAwgKey('vpn://AAAD0Hic1VZbb9s2'), isTrue);
+      expect(looksLikeAwgKey('  [Interface]\nPrivateKey = x'), isTrue);
+      expect(looksLikeAwgKey('https://sub.tenhoume.space/AbCd'), isFalse);
+      expect(looksLikeAwgKey('tenvpn://import?sub=x&token=y'), isFalse);
+    });
+  });
+
   group('onboarding', () {
     _tv('rejects text that is not a link', (tester) async {
       container = build();

@@ -1423,6 +1423,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Banks, Gosuslugi and marketplaces work without the VPN and don\'t complain about a foreign IP",
     ),
+    "tenvpnScanAwgNeedsSub": MessageLookupByLibrary.simpleMessage(
+      "This is an Amnezia key. Add your main subscription first, then the key under «Amnezia protocol».",
+    ),
+    "tenvpnScanQr": MessageLookupByLibrary.simpleMessage("Scan QR"),
+    "tenvpnScanQrShort": MessageLookupByLibrary.simpleMessage("QR"),
     "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("添加时段"),
     "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage("添加需要 VPN 的时段"),
     "tenvpnScheduleLockdown": MessageLookupByLibrary.simpleMessage(

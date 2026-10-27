@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
@@ -21,8 +22,13 @@ import 'theme.dart';
 /// device and never sent anywhere. The key is a secret — it is not logged.
 class TenvpnAwgKeyView extends ConsumerStatefulWidget {
   final bool playBuild;
+  final bool? qrScan;
 
-  const TenvpnAwgKeyView({super.key, this.playBuild = tenvpnStore == 'play'});
+  const TenvpnAwgKeyView({
+    super.key,
+    this.playBuild = tenvpnStore == 'play',
+    this.qrScan,
+  });
 
   @override
   ConsumerState<TenvpnAwgKeyView> createState() => _TenvpnAwgKeyViewState();
@@ -57,6 +63,19 @@ class _TenvpnAwgKeyViewState extends ConsumerState<TenvpnAwgKeyView> {
       _controller.text = utf8.decode(bytes, allowMalformed: true).trim();
       _error = null;
     });
+  }
+
+  Future<void> _scan() async {
+    final text = await BaseNavigator.push<String>(
+      context,
+      const ScanPage(anyText: true),
+    );
+    if (text == null || !mounted) return;
+    setState(() {
+      _controller.text = text;
+      _error = null;
+    });
+    await _save();
   }
 
   String _message(Object error) {
@@ -197,6 +216,19 @@ class _TenvpnAwgKeyViewState extends ConsumerState<TenvpnAwgKeyView> {
                       onPressed: _busy ? null : _pickFile,
                     ),
                   ),
+                  if (widget.qrScan ??
+                      (!widget.playBuild && system.isAndroid)) ...[
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TenvpnBigButton(
+                        key: const ValueKey('tenvpn-awg-scan'),
+                        label: l.tenvpnScanQrShort,
+                        primary: false,
+                        height: 48,
+                        onPressed: _busy ? null : _scan,
+                      ),
+                    ),
+                  ],
                 ],
               ),
               const SizedBox(height: 12),

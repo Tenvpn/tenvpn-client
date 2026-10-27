@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/pages/scan.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:flutter/services.dart';
@@ -26,10 +27,14 @@ class TenvpnOnboardingView extends ConsumerStatefulWidget {
   final bool replace;
   final bool playBuild;
 
+  /// Null: the site's Android build only — the Play build drops the camera.
+  final bool? qrScan;
+
   const TenvpnOnboardingView({
     super.key,
     this.replace = false,
     this.playBuild = tenvpnStore == 'play',
+    this.qrScan,
   });
 
   @override
@@ -52,6 +57,21 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     final text = data?.text?.trim();
     if (text == null || text.isEmpty || !mounted) return;
+    _controller.text = text;
+    setState(() => _error = null);
+    await _submit();
+  }
+
+  Future<void> _scan() async {
+    final text = await BaseNavigator.push<String>(
+      context,
+      const ScanPage(anyText: true),
+    );
+    if (text == null || !mounted) return;
+    if (looksLikeAwgKey(text)) {
+      setState(() => _error = context.appLocalizations.tenvpnScanAwgNeedsSub);
+      return;
+    }
     _controller.text = text;
     setState(() => _error = null);
     await _submit();
@@ -222,6 +242,16 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
           height: 50,
           onPressed: _submit,
         ),
+        if (widget.qrScan ?? (!widget.playBuild && system.isAndroid)) ...[
+          const SizedBox(height: 10),
+          TenvpnBigButton(
+            key: const ValueKey('tenvpn-scan-qr'),
+            label: l.tenvpnScanQr,
+            primary: false,
+            height: 50,
+            onPressed: _busy ? null : _scan,
+          ),
+        ],
         if (widget.playBuild) ...[
           const SizedBox(height: 14),
           Center(
@@ -262,6 +292,11 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
       ),
     );
   }
+}
+
+bool looksLikeAwgKey(String text) {
+  final t = text.trimLeft();
+  return t.startsWith('vpn://') || t.startsWith('[Interface]');
 }
 
 String cabinetInstallHint(AppLocalizations l) =>

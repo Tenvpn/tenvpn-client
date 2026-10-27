@@ -12,7 +12,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanPage extends ConsumerStatefulWidget {
-  const ScanPage({super.key});
+  /// Return any non-empty text, not only URLs: a TENVPN cabinet QR may hold
+  /// an AmneziaWG `vpn://` key, which the barcode reader does not type as a URL.
+  final bool anyText;
+
+  const ScanPage({super.key, this.anyText = false});
 
   @override
   ConsumerState<ScanPage> createState() => _ScanPageState();
@@ -41,7 +45,10 @@ class _ScanPageState extends ConsumerState<ScanPage>
       return;
     }
     final barcode = barcodeCapture.barcodes.first;
-    if (barcode.type == BarcodeType.url) {
+    final text = barcode.rawValue?.trim() ?? '';
+    if (widget.anyText && text.isNotEmpty) {
+      Navigator.pop<String>(context, text);
+    } else if (barcode.type == BarcodeType.url) {
       Navigator.pop<String>(context, barcode.rawValue);
     } else {
       Navigator.pop(context);
