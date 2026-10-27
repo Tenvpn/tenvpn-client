@@ -19,12 +19,23 @@ String decodeAwgKey(String input) {
   if (!text.toLowerCase().startsWith('vpn://')) {
     throw const AwgKeyException(AwgKeyError.notAwg);
   }
-  final Object? json;
+  final String unpacked;
   try {
     final packed = base64Url.decode(base64Url.normalize(text.substring(6)));
     if (packed.length < 5) throw const FormatException('too short');
-    json = jsonDecode(utf8.decode(zlib.decode(packed.sublist(4))));
+    unpacked = utf8.decode(zlib.decode(packed.sublist(4)));
   } on Object {
+    throw const AwgKeyException(AwgKeyError.unreadable);
+  }
+  // The TENVPN cabinet packs the bare .conf (AmneziaVPN reads both forms).
+  if (!unpacked.trimLeft().startsWith('{')) {
+    if (unpacked.contains('[Interface]')) return unpacked.trim();
+    throw const AwgKeyException(AwgKeyError.unreadable);
+  }
+  final Object? json;
+  try {
+    json = jsonDecode(unpacked);
+  } on FormatException {
     throw const AwgKeyException(AwgKeyError.unreadable);
   }
   final conf = _findConf(json);

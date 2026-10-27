@@ -5,8 +5,9 @@ import 'dart:typed_data';
 import 'package:fl_clash/tenvpn/awg_key.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-String _amneziaShare(Object json) {
-  final body = utf8.encode(jsonEncode(json));
+String _amneziaShare(Object json) => _pack(utf8.encode(jsonEncode(json)));
+
+String _pack(List<int> body) {
   final length = ByteData(4)..setUint32(0, body.length);
   final packed = [...length.buffer.asUint8List(), ...zlib.encode(body)];
   return 'vpn://${base64Url.encode(packed).replaceAll('=', '')}';
@@ -14,6 +15,21 @@ String _amneziaShare(Object json) {
 
 void main() {
   final conf = File('test/fixtures/tenvpn/awg_v3.conf').readAsStringSync();
+
+  test('a TENVPN cabinet key — the bare .conf packed — is read', () {
+    // What tenvpn-center awg/vpnkey.py encode() gives: qCompress(.conf).
+    expect(decodeAwgKey(_pack(utf8.encode(conf))), conf.trim());
+    expect(
+      () => decodeAwgKey(_pack(utf8.encode('just text'))),
+      throwsA(
+        isA<AwgKeyException>().having(
+          (e) => e.error,
+          'error',
+          AwgKeyError.unreadable,
+        ),
+      ),
+    );
+  });
 
   test('a pasted .conf is taken as it is', () {
     expect(decodeAwgKey('\n$conf\n'), conf.trim());
