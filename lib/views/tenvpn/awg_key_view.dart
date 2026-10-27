@@ -216,21 +216,18 @@ class _TenvpnAwgKeyViewState extends ConsumerState<TenvpnAwgKeyView> {
                       onPressed: _busy ? null : _pickFile,
                     ),
                   ),
-                  if (widget.qrScan ??
-                      (!widget.playBuild && system.isAndroid)) ...[
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TenvpnBigButton(
-                        key: const ValueKey('tenvpn-awg-scan'),
-                        label: l.tenvpnScanQrShort,
-                        primary: false,
-                        height: 48,
-                        onPressed: _busy ? null : _scan,
-                      ),
-                    ),
-                  ],
                 ],
               ),
+              if (widget.qrScan ?? (!widget.playBuild && system.isAndroid)) ...[
+                const SizedBox(height: 10),
+                TenvpnBigButton(
+                  key: const ValueKey('tenvpn-awg-scan'),
+                  label: l.tenvpnScanQr,
+                  primary: false,
+                  height: 48,
+                  onPressed: _busy ? null : _scan,
+                ),
+              ],
               const SizedBox(height: 12),
               TenvpnBigButton(
                 key: const ValueKey('tenvpn-awg-save'),

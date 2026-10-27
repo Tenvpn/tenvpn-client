@@ -69,6 +69,12 @@ class _ScanPageState extends ConsumerState<ScanPage>
       case AppLifecycleState.paused:
         return;
       case AppLifecycleState.resumed:
+        // The permission dialog itself pauses and resumes the page: restarting
+        // after a refusal would ask again, forever. A gallery image still works.
+        if (controller.value.error?.errorCode ==
+            MobileScannerErrorCode.permissionDenied) {
+          return;
+        }
         _listenBarcodes();
         unawaited(controller.start());
       case AppLifecycleState.inactive:

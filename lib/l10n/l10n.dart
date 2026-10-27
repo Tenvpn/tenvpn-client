@@ -8420,11 +8420,6 @@ class AppLocalizations {
     return Intl.message('Scan QR', name: 'tenvpnScanQr', desc: '', args: []);
   }
 
-  /// `QR`
-  String get tenvpnScanQrShort {
-    return Intl.message('QR', name: 'tenvpnScanQrShort', desc: '', args: []);
-  }
-
   /// `This is an Amnezia key. Add your main subscription first, then the key under «Amnezia protocol».`
   String get tenvpnScanAwgNeedsSub {
     return Intl.message(

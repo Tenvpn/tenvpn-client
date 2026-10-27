@@ -1603,7 +1603,6 @@ class MessageLookup extends MessageLookupByLibrary {
       "This is an Amnezia key. Add your main subscription first, then the key under «Amnezia protocol».",
     ),
     "tenvpnScanQr": MessageLookupByLibrary.simpleMessage("Scan QR"),
-    "tenvpnScanQrShort": MessageLookupByLibrary.simpleMessage("QR"),
     "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("時間を追加"),
     "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage(
       "VPN が必要な時間を追加してください",
