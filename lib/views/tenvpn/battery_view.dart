@@ -19,11 +19,12 @@ import 'theme.dart';
 
 const _newSlot = TenvpnScheduleSlot(start: 18 * 60, end: 21 * 60);
 
-/// Hands the windows to Android, which keeps them across reboots; any other
-/// mode clears the alarm.
+/// Hands the windows to Android, which keeps them across reboots and applies
+/// them at once; another mode or no hours yet leave the VPN alone.
 Future<void> syncTenvpnSchedule(AppSettingProps settings) async =>
     app?.setVpnSchedule(
-      settings.tenvpnBatteryMode == TenvpnBatteryMode.schedule
+      settings.tenvpnBatteryMode == TenvpnBatteryMode.schedule &&
+              settings.tenvpnSchedule.isNotEmpty
           ? settings.tenvpnSchedule
           : null,
     );

@@ -24,7 +24,11 @@ object VpnSchedule {
         context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit {
             if (slotsJson == null) remove(KEY_SLOTS) else putString(KEY_SLOTS, slotsJson)
         }
-        arm(context)
+        if (slotsJson == null) {
+            arm(context)
+        } else {
+            GlobalState.launch { tick(context) }
+        }
     }
 
     suspend fun tick(context: Context) {
