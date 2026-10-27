@@ -1971,9 +1971,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnRussianDirectDesc": MessageLookupByLibrary.simpleMessage(
       "Банки, Госуслуги и маркетплейсы работают без VPN — не ругаются на зарубежный IP",
     ),
-    "tenvpnScanAwgNeedsSub": MessageLookupByLibrary.simpleMessage(
-      "Это конфиг Амнезии. Сначала добавьте ключ основной подписки, а конфиг — потом, в разделе «Протокол Амнезия».",
-    ),
     "tenvpnScanQr": MessageLookupByLibrary.simpleMessage("Сканировать QR"),
     "tenvpnScheduleAdd": MessageLookupByLibrary.simpleMessage("Добавить часы"),
     "tenvpnScheduleEmpty": MessageLookupByLibrary.simpleMessage(

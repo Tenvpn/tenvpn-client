@@ -48,7 +48,9 @@ class TenvpnConfigService {
     if (subscription == null) return null;
     final state = await store.load(profileId);
     final generated = buildConfig(
-      parseSubscription(subscription),
+      subscription.isEmpty
+          ? ParsedSubscription.empty
+          : parseSubscription(subscription),
       awg: _awgProxy(state),
       options: options(),
     );
@@ -61,6 +63,14 @@ class TenvpnConfigService {
     if (conf != null) parseAwgConf(conf);
     final state = await store.load(profileId);
     await store.save(profileId, state.copyWith(awgManual: () => conf));
+  }
+
+  /// A profile of one AmneziaWG key and no subscription: the cached
+  /// subscription is empty, so offline rebuilds keep working.
+  Future<String> generateAwgOnly(int profileId, String conf) async {
+    await setManualAwg(profileId, conf);
+    await store.saveSubscription(profileId, '');
+    return (await regenerate(profileId))!;
   }
 
   Future<bool> hasManualAwg(int profileId) async =>

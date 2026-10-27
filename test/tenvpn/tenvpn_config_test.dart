@@ -91,6 +91,28 @@ void main() {
   );
 
   test(
+    'an Amnezia key alone is a whole profile and rebuilds offline',
+    () async {
+      final yaml = await service.generateAwgOnly(7, fixture('awg_v3.conf'));
+      expect(requests, isEmpty);
+      final config = loadYaml(yaml);
+      expect(proxyNames(yaml), [awgDefaultName]);
+      final groups = {
+        for (final group in (config['proxy-groups'] as YamlList))
+          group['name'] as String: group,
+      };
+      expect((groups[autoGroupName]['proxies'] as YamlList).toList(), [
+        awgDefaultName,
+      ]);
+      expect((groups[manualGroupName]['proxies'] as YamlList).toList(), [
+        awgDefaultName,
+      ]);
+      expect(proxyNames((await service.regenerate(7))!), [awgDefaultName]);
+      expect(await service.hasManualAwg(7), isTrue);
+    },
+  );
+
+  test(
     'a pasted AWG key wins over the server source and is not fetched',
     () async {
       await service.setAwgSource(1, source);

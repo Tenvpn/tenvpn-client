@@ -33,6 +33,13 @@ class ParsedSubscription {
     required this.servers,
     required this.separators,
   });
+
+  /// An AmneziaWG key alone: no server list, the key is the whole profile.
+  static const empty = ParsedSubscription(
+    proxies: [],
+    servers: [],
+    separators: [],
+  );
 }
 
 final _shareLinkPattern = RegExp(

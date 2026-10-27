@@ -103,6 +103,14 @@ class _FakeProfilesAction extends ProfilesAction {
   @override
   Future<void> deleteProfile(int id) async => deleted.add(id);
 
+  final awgKeys = <(String, bool)>[];
+
+  @override
+  Future<String?> importAwgKey(String conf, {bool replace = false}) async {
+    awgKeys.add((conf, replace));
+    return result;
+  }
+
   @override
   Future<String?> importSubscription(
     String url, {
@@ -954,6 +962,30 @@ void main() {
       expect(find.byKey(const ValueKey('tenvpn-awg-scan')), findsOneWidget);
       await pump(tester, const TenvpnAwgKeyView(qrScan: false));
       expect(find.byKey(const ValueKey('tenvpn-awg-scan')), findsNothing);
+    });
+
+    _tv('an Amnezia key without a subscription becomes the profile', (
+      tester,
+    ) async {
+      final conf = File('test/fixtures/tenvpn/awg_v3.conf').readAsStringSync();
+      container = build();
+      await pump(tester, const TenvpnOnboardingView());
+      final field = find.byKey(const ValueKey('tenvpn-link-field'));
+      await tester.ensureVisible(find.byKey(const ValueKey('tenvpn-add')));
+      await tester.pump();
+
+      await tester.enterText(field, 'vpn://not-a-real-key');
+      await tester.tap(find.byKey(const ValueKey('tenvpn-add')));
+      await tester.pump();
+      expect(text('The key is damaged'), findsOneWidget);
+      expect(profiles.awgKeys, isEmpty);
+
+      await tester.enterText(field, conf);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-add')));
+      await tester.pump();
+      expect(profiles.awgKeys, hasLength(1));
+      expect(profiles.awgKeys.single.$1, startsWith('[Interface]'));
+      expect(profiles.imported, isEmpty);
     });
 
     test('an Amnezia key is told apart from a subscription link', () {

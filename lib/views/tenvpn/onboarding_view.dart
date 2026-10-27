@@ -68,10 +68,6 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
       const ScanPage(anyText: true),
     );
     if (text == null || !mounted) return;
-    if (looksLikeAwgKey(text)) {
-      setState(() => _error = context.appLocalizations.tenvpnScanAwgNeedsSub);
-      return;
-    }
     _controller.text = text;
     setState(() => _error = null);
     await _submit();
@@ -80,23 +76,39 @@ class _TenvpnOnboardingViewState extends ConsumerState<TenvpnOnboardingView> {
   Future<void> _submit() async {
     if (_busy) return;
     final l = context.appLocalizations;
-    final link = parseImportLink(_controller.text);
-    if (link == null) {
-      setState(() => _error = l.tenvpnBadLink);
-      return;
+    final actions = ref.read(profilesActionProvider.notifier);
+    final Future<String?> Function() start;
+    if (looksLikeAwgKey(_controller.text)) {
+      final String conf;
+      try {
+        conf = decodeAwgKey(_controller.text);
+      } on AwgKeyException catch (error) {
+        setState(
+          () => _error = error.error == AwgKeyError.unreadable
+              ? l.tenvpnAwgKeyBroken
+              : l.tenvpnAwgKeyInvalid,
+        );
+        return;
+      }
+      start = () => actions.importAwgKey(conf, replace: widget.replace);
+    } else {
+      final link = parseImportLink(_controller.text);
+      if (link == null) {
+        setState(() => _error = l.tenvpnBadLink);
+        return;
+      }
+      start = () => actions.importSubscription(
+        link.url,
+        awg: link.awg,
+        token: link.token,
+        replace: widget.replace,
+      );
     }
     setState(() {
       _busy = true;
       _error = null;
     });
-    final error = await ref
-        .read(profilesActionProvider.notifier)
-        .importSubscription(
-          link.url,
-          awg: link.awg,
-          token: link.token,
-          replace: widget.replace,
-        );
+    final error = await start();
     if (!mounted) return;
     setState(() {
       _busy = false;

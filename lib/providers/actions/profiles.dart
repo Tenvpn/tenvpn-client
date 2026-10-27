@@ -76,7 +76,9 @@ class ProfilesAction extends _$ProfilesAction {
       _refreshProfile(
         profile,
         showLoading: showLoading,
-        run: () => profile.update(prepare: prepareProfileConfig),
+        run: () => profile.type == ProfileType.file
+            ? profile.regenerate(prepare: prepareProfileConfig)
+            : profile.update(prepare: prepareProfileConfig),
       );
 
   /// Offline from the cached subscription; one retried download if none.
@@ -179,14 +181,38 @@ class ProfilesAction extends _$ProfilesAction {
     bool replace = false,
   }) async {
     final profile = Profile.normal(url: url);
-    final Profile imported;
-    try {
+    return _importProfile(profile, replace: replace, () async {
       if (token != null) {
         await tenvpnConfig.setAppToken(profile.id, token);
       } else if (awg != null) {
         await tenvpnConfig.setAwgSource(profile.id, awg);
       }
-      imported = await profile.update(prepare: prepareProfileConfig);
+      return profile.update(prepare: prepareProfileConfig);
+    });
+  }
+
+  /// A cabinet AmneziaWG key is a subscription of its own: no link, one server.
+  Future<String?> importAwgKey(String conf, {bool replace = false}) async {
+    final profile = Profile.normal(
+      label: currentAppLocalizations.tenvpnSectionReserve,
+    );
+    return _importProfile(profile, replace: replace, () async {
+      final config = await tenvpnConfig.generateAwgOnly(profile.id, conf);
+      return profile.saveFile(
+        utf8.encode(config),
+        prepare: prepareProfileConfig,
+      );
+    });
+  }
+
+  Future<String?> _importProfile(
+    Profile profile,
+    Future<Profile> Function() load, {
+    required bool replace,
+  }) async {
+    final Profile imported;
+    try {
+      imported = await load();
     } catch (error, stackTrace) {
       commonPrint.log(
         'importSubscription ===> ${compactError(error)}, $stackTrace',

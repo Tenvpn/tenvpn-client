@@ -268,6 +268,7 @@ List<Map<String, dynamic>> _autoGroups(
   ];
   // AmneziaWG stalls on mobile and is dead under whitelists, so it joins
   // «Авто» only when the user asks for it first; otherwise it is manual.
+  if (tiers.isEmpty) return [urlTest(autoGroupName, awg, false)];
   final lead = options.autoStrategy == AutoStrategy.awgFirst
       ? awg
       : const <String>[];
