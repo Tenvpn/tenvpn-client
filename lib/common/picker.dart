@@ -46,7 +46,8 @@ class Picker {
     return uri;
   }
 
-  Future<String?> pickerConfigQRCode() async {
+  /// Text of the QR code in a gallery image; null if no image was picked.
+  Future<String?> pickQrText() async {
     final xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (xFile == null) {
       return null;
@@ -56,8 +57,19 @@ class Picker {
       xFile.path,
       formats: [BarcodeFormat.qrCode],
     );
-    final result = capture?.barcodes.first.rawValue;
-    if (result == null || !result.isUrl) {
+    final result = capture?.barcodes.firstOrNull?.rawValue?.trim();
+    if (result == null || result.isEmpty) {
+      throw MessageException(currentAppLocalizations.pleaseUploadValidQrcode);
+    }
+    return result;
+  }
+
+  Future<String?> pickerConfigQRCode() async {
+    final result = await pickQrText();
+    if (result == null) {
+      return null;
+    }
+    if (!result.isUrl) {
       throw MessageException(currentAppLocalizations.pleaseUploadValidQrcode);
     }
     return result;

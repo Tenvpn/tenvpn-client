@@ -3,8 +3,10 @@ import 'dart:math';
 
 import 'package:fl_clash/common/color.dart';
 import 'package:fl_clash/common/context.dart';
+import 'package:fl_clash/common/picker.dart';
 import 'package:fl_clash/common/shape.dart';
 import 'package:fl_clash/providers/action.dart';
+import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/activate_box.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import 'package:material_ui/material_ui.dart';
@@ -53,6 +55,11 @@ class _ScanPageState extends ConsumerState<ScanPage>
     } else {
       Navigator.pop(context);
     }
+  }
+
+  Future<void> _pickFromGallery() async {
+    final text = await globalState.safeRun(picker.pickQrText);
+    if (text != null && mounted) Navigator.pop<String>(context, text);
   }
 
   void _listenBarcodes() {
@@ -168,9 +175,11 @@ class _ScanPageState extends ConsumerState<ScanPage>
               ),
               padding: const EdgeInsets.all(16),
               iconSize: 32.0,
-              onPressed: ref
-                  .read(profilesActionProvider.notifier)
-                  .addProfileFormQrCode,
+              onPressed: widget.anyText
+                  ? _pickFromGallery
+                  : ref
+                        .read(profilesActionProvider.notifier)
+                        .addProfileFormQrCode,
               icon: const Icon(Symbols.photo_camera_back),
             ),
           ),
