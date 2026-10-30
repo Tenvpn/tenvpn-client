@@ -10,6 +10,10 @@ shoulders. fer-glyph.png is the white head silhouette with the eye mask cut out:
 Android draws status-bar, Quick Settings and themed icons from shape alone, and a
 shield there read as a bank logo. --vector rewrites the two 24dp vector drawables
 from that silhouette.
+
+The Android 12+ splash is the bust inside a lime disc on the app's dark ink: the system
+crops the splash icon to a circle, which cut the launcher foreground off at the chest,
+and a lime screen flashing up in a dark room is the opposite of what the app looks like.
 """
 import base64
 import io
@@ -23,6 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 BRAND = ROOT / 'assets_source/images/brand'
 LIME = (182, 227, 46)
 DARK = (29, 37, 33)
+INK = '#0C100E'
 DENSITIES = {'mdpi': 1, 'hdpi': 1.5, 'xhdpi': 2, 'xxhdpi': 3, 'xxxhdpi': 4}
 ICO_SIZES = [16, 20, 24, 32, 40, 48, 64, 96, 128, 256]
 TRAY_ICO_SIZES = [16, 20, 24, 32, 40, 48, 64]
@@ -33,6 +38,15 @@ def bust(fer: Image.Image, size: int, height: float, bg=LIME) -> Image.Image:
     h = round(size * height)
     w = round(fer.width * h / fer.height)
     canvas.alpha_composite(fer.resize((w, h), Image.LANCZOS), ((size - w) // 2, size - h))
+    return canvas
+
+
+def splash_icon(fer: Image.Image, size: int) -> Image.Image:
+    # The system keeps the middle 2/3 circle of the 288dp splash icon; the disc sits just inside it.
+    d = round(size * 0.645)
+    disc = round_mask(bust(fer, d, 0.8))
+    canvas = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    canvas.alpha_composite(disc, ((size - d) // 2, (size - d) // 2))
     return canvas
 
 
@@ -130,6 +144,9 @@ def main():
         round_mask(bust(fer, round(48 * k), 0.78)).save(d / 'ic_launcher_round.webp', lossless=True)
         bust(fer, round(108 * k), 0.58, bg=None).save(d / 'ic_launcher_foreground.png')
         glyph(mask, round(108 * k), 0.5).save(d / 'ic_launcher_monochrome.png')
+        splash = res / f'drawable-{name}'
+        splash.mkdir(exist_ok=True)
+        splash_icon(fer, round(288 * k)).save(splash / 'splash_icon.png', optimize=True)
         tv = res / f'mipmap-television-{name}'
         if tv.exists():
             bust(fer, round(80 * k), 0.84).save(tv / 'ic_launcher.webp', lossless=True)
@@ -140,6 +157,11 @@ def main():
     (res / 'values/ic_launcher_background.xml').write_text(
         '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
         '    <color name="ic_launcher_background">#B6E32E</color>\n</resources>\n',
+        encoding='utf-8',
+    )
+    (res / 'values/splash_background.xml').write_text(
+        '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
+        f'    <color name="splash_background">{INK}</color>\n</resources>\n',
         encoding='utf-8',
     )
 
