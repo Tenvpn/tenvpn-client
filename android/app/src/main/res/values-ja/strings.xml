@@ -3,4 +3,8 @@
     <string name="start_vpn">VPN を開始中...</string>
     <string name="stop_vpn">VPN を停止中...</string>
     <string name="local_network_fallback">ローカルネットワーク権限がないため mips スタックに切り替えました。LAN には到達できません。</string>
+    <string name="widget_toggle_on">VPN オン</string>
+    <string name="widget_toggle_off">VPN オフ</string>
+    <string name="widget_toggle_busy">お待ちください…</string>
+    <string name="widget_toggle_description">アプリを開かずに VPN をオン/オフ</string>
 </resources>
