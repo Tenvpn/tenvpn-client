@@ -428,10 +428,14 @@ class TenvpnPing extends ConsumerWidget {
     final pending = ref.watch(
       delayTestPendingProvider(proxyName: proxyName, testUrl: testUrl),
     );
+    final stale =
+        ref.watch(delayStaleProvider(proxyName: proxyName, testUrl: testUrl)) &&
+        ref.watch(isStartProvider);
+    final failed = delay != null && delay < 0;
     final style = TextStyle(
       fontFamily: 'JetBrainsMono',
       fontSize: 12.5,
-      color: delay != null && delay < 0 ? p.danger : p.muted,
+      color: failed && !stale ? p.danger : p.muted,
     );
     final Widget child;
     if (pending || delay == 0) {
@@ -441,6 +445,8 @@ class TenvpnPing extends ConsumerWidget {
       );
     } else if (delay == null) {
       child = const SizedBox.shrink();
+    } else if (failed && stale) {
+      child = Text('…', key: const ValueKey('tenvpn-ping-stale'), style: style);
     } else {
       child = Text(
         delay > 0

@@ -1901,6 +1901,90 @@ final class DelayFamily extends $Family
   String toString() => r'delayProvider';
 }
 
+@ProviderFor(delayStale)
+final delayStaleProvider = DelayStaleFamily._();
+
+final class DelayStaleProvider extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  DelayStaleProvider._({
+    required DelayStaleFamily super.from,
+    required ({String proxyName, String? testUrl}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'delayStaleProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$delayStaleHash();
+
+  @override
+  String toString() {
+    return r'delayStaleProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    final argument = this.argument as ({String proxyName, String? testUrl});
+    return delayStale(
+      ref,
+      proxyName: argument.proxyName,
+      testUrl: argument.testUrl,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is DelayStaleProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$delayStaleHash() => r'e9c20274a7477d75429eb57fcb8c8da55e209b8e';
+
+final class DelayStaleFamily extends $Family
+    with
+        $FunctionalFamilyOverride<bool, ({String proxyName, String? testUrl})> {
+  DelayStaleFamily._()
+    : super(
+        retry: null,
+        name: r'delayStaleProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  DelayStaleProvider call({required String proxyName, String? testUrl}) =>
+      DelayStaleProvider._(
+        argument: (proxyName: proxyName, testUrl: testUrl),
+        from: this,
+      );
+
+  @override
+  String toString() => r'delayStaleProvider';
+}
+
 @ProviderFor(delayTestPending)
 final delayTestPendingProvider = DelayTestPendingFamily._();
 

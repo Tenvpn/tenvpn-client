@@ -12,6 +12,10 @@ class App {
   late MethodChannel methodChannel;
   Function()? onExit;
   Function()? onPackagesChanged;
+  final _networkChanges = StreamController<void>.broadcast();
+
+  /// The physical network under the VPN changed (Wi-Fi ↔ mobile).
+  Stream<void> get networkChanges => _networkChanges.stream;
 
   App._internal() {
     methodChannel = const MethodChannel('$packageName/app');
@@ -23,6 +27,8 @@ class App {
           }
         case 'packagesChanged':
           onPackagesChanged?.call();
+        case 'networkChanged':
+          _networkChanges.add(null);
         default:
           throw MissingPluginException();
       }

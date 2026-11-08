@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/tenvpn/tenvpn.dart';
 import 'package:flutter/widgets.dart';
@@ -20,13 +21,17 @@ const _recheckGap = Duration(seconds: 30);
 class TenvpnNetworkModeTasks extends ConsumerStatefulWidget {
   final Widget child;
   final Stream<List<ConnectivityResult>>? connectivity;
+  final Stream<void>? networkChanges;
   final NetworkModeController? controller;
+  final NetworkRecheck? recheck;
 
   const TenvpnNetworkModeTasks({
     super.key,
     required this.child,
     this.connectivity,
+    this.networkChanges,
     this.controller,
+    this.recheck,
   });
 
   @override
@@ -73,7 +78,14 @@ class _TenvpnNetworkModeTasksState
           await core.getDelay(url, tier.name, timeout: _reviveTimeout);
         },
       );
+  late final NetworkRecheck _recheck =
+      widget.recheck ??
+      NetworkRecheck(
+        isActive: () => mounted && ref.read(isStartProvider),
+        run: _recheckDelays,
+      );
   StreamSubscription<List<ConnectivityResult>>? _subscription;
+  StreamSubscription<void>? _networkChanges;
   Timer? _timer;
   DateTime? _lastRefresh;
 
@@ -84,12 +96,17 @@ class _TenvpnNetworkModeTasksState
         (widget.connectivity ?? Connectivity().onConnectivityChanged).listen(
           (_) => _schedule(_settleDelay),
         );
+    _networkChanges = (widget.networkChanges ?? app?.networkChanges)?.listen(
+      (_) => _onNetworkChanged(),
+    );
     ref.listenManual(isStartProvider, (previous, next) {
       if (next && previous != true) {
         _schedule(_settleDelay);
       } else if (!next) {
         _timer?.cancel();
         _controller.reset();
+        _recheck.cancel();
+        ref.read(staleDelaysProvider.notifier).clear();
       }
     }, fireImmediately: true);
     ref.listenManual(
@@ -107,6 +124,33 @@ class _TenvpnNetworkModeTasksState
         _schedule(wait > _settleDelay ? wait : _settleDelay);
       },
     );
+  }
+
+  // connectivity_plus watches the default network, under the VPN the tunnel.
+  void _onNetworkChanged() {
+    if (!ref.read(isStartProvider)) return;
+    ref.read(staleDelaysProvider.notifier).markAll([
+      for (final MapEntry(key: url, value: delays)
+          in ref.read(delayDataSourceProvider).entries)
+        for (final name in delays.keys) delayTestKey(url, name),
+    ]);
+    _schedule(_settleDelay);
+    _recheck.networkChanged();
+  }
+
+  Future<void> _recheckDelays() async {
+    final actions = ref.read(proxiesActionProvider.notifier);
+    final manual = ref.read(groupsProvider).getGroup(manualGroupName);
+    commonPrint.log('TENVPN network changed: re-measuring servers');
+    try {
+      if (manual != null) {
+        // An in-flight test from the old network would be joined, not redone.
+        actions.cancelDelayTests();
+        await actions.delayTestGroups([manual]);
+      }
+    } finally {
+      ref.read(staleDelaysProvider.notifier).clear();
+    }
   }
 
   void _schedule(Duration delay, [int attempt = 0]) {
@@ -128,7 +172,9 @@ class _TenvpnNetworkModeTasksState
   @override
   void dispose() {
     _timer?.cancel();
+    _recheck.cancel();
     unawaited(_subscription?.cancel());
+    unawaited(_networkChanges?.cancel());
     super.dispose();
   }
 

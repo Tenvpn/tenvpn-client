@@ -24,6 +24,8 @@ const _allowed = {
   'lib/state.dart#isBackground',
   // The Service singleton retains native tunnel snapshots until process exit.
   'lib/plugins/service.dart#_tunnelState',
+  // The App plugin singleton reports network changes for the whole run.
+  'lib/plugins/app.dart#_networkChanges',
 };
 
 final _declaration = RegExp(

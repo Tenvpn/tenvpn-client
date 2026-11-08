@@ -1237,7 +1237,7 @@ final class DelayDataSourceProvider
   }
 }
 
-String _$delayDataSourceHash() => r'9737cf2d943cb9b5504a5ec8ace20b0a9380b197';
+String _$delayDataSourceHash() => r'ab30074468eede46f8c2a0694e2b492c14e20d88';
 
 abstract class _$DelayDataSource extends $Notifier<DelayMap> {
   DelayMap build();
@@ -1250,6 +1250,68 @@ abstract class _$DelayDataSource extends $Notifier<DelayMap> {
             as $ClassProviderElement<
               AnyNotifier<DelayMap, DelayMap>,
               DelayMap,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// Delay keys last measured before a network change: a failure among them
+/// says nothing about the network the phone is on now.
+
+@ProviderFor(StaleDelays)
+final staleDelaysProvider = StaleDelaysProvider._();
+
+/// Delay keys last measured before a network change: a failure among them
+/// says nothing about the network the phone is on now.
+final class StaleDelaysProvider
+    extends $NotifierProvider<StaleDelays, Set<String>> {
+  /// Delay keys last measured before a network change: a failure among them
+  /// says nothing about the network the phone is on now.
+  StaleDelaysProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'staleDelaysProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$staleDelaysHash();
+
+  @$internal
+  @override
+  StaleDelays create() => StaleDelays();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
+String _$staleDelaysHash() => r'2a6692eedbf2e82210c06d81da6e246d453c0baa';
+
+/// Delay keys last measured before a network change: a failure among them
+/// says nothing about the network the phone is on now.
+
+abstract class _$StaleDelays extends $Notifier<Set<String>> {
+  Set<String> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Set<String>, Set<String>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<String>, Set<String>>,
+              Set<String>,
               Object?,
               Object?
             >;
