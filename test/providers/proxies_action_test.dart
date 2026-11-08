@@ -1015,6 +1015,22 @@ void main() {
       },
     );
 
+    test('the whitelist auto is picked in the main group', () async {
+      final container = buildContainer();
+
+      await actionOf(container).selectTenvpnWhitelistAuto();
+
+      verify(
+        () => core.changeProxy(
+          const ChangeProxyParams(
+            groupName: 'TENVPN',
+            proxyName: 'Авто · белые списки',
+          ),
+          closeConnections: true,
+        ),
+      ).called(1);
+    });
+
     test('hands the choice back to the url-test group for auto', () async {
       final container = buildContainer();
 

@@ -61,7 +61,10 @@ class _TenvpnReportViewState extends ConsumerState<TenvpnReportView> {
       os: Platform.operatingSystemVersion,
       network: await _network(),
       server: [
-        if (selection.auto) autoGroupName,
+        if (selection.whitelist)
+          autoWhitelistGroupName
+        else if (selection.auto)
+          autoGroupName,
         ?selection.server,
       ].join(' · '),
       look: '${setting.look.name}, ${theme.themeMode.name}',

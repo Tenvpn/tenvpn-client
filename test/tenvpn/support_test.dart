@@ -35,19 +35,6 @@ void main() {
     });
   });
 
-  group('server search', () {
-    final sweden = _server('🇸🇪 Швеция', section: null);
-
-    test('finds by country in both languages, protocol and name', () {
-      expect(serverMatches(sweden, ''), isTrue);
-      expect(serverMatches(sweden, 'шве'), isTrue);
-      expect(serverMatches(sweden, 'Sweden'), isTrue);
-      expect(serverMatches(sweden, 'vless'), isTrue);
-      expect(serverMatches(sweden, 'шве vless'), isTrue);
-      expect(serverMatches(sweden, 'герм'), isFalse);
-    });
-  });
-
   group('support report', () {
     test('keeps nothing that opens the subscription or finds the person', () {
       const raw =

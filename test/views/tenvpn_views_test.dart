@@ -61,11 +61,15 @@ class _FakeSetupAction extends SetupAction {
 class _FakeProxiesAction extends ProxiesAction {
   final selected = <String?>[];
   int speedChecks = 0;
+  int whitelistAuto = 0;
 
   @override
   Future<void> selectTenvpnServer(String? serverName) async {
     selected.add(serverName);
   }
+
+  @override
+  Future<void> selectTenvpnWhitelistAuto() async => whitelistAuto++;
 
   @override
   Future<void> delayTestGroups(List<Group> groups) async => speedChecks++;
@@ -668,9 +672,36 @@ void main() {
         ];
         expect(container.read(tenvpnSelectionProvider), (
           auto: true,
+          whitelist: false,
           server: server,
         ));
       }
+    });
+
+    test('the whitelist auto is an auto choice of its own', () {
+      container = build(items: [profile]);
+      container.read(groupsProvider.notifier).value = [
+        const Group(
+          type: GroupType.Selector,
+          name: mainGroupName,
+          now: autoWhitelistGroupName,
+        ),
+        const Group(
+          type: GroupType.Fallback,
+          name: autoGroupName,
+          now: autoPrimaryGroupName,
+        ),
+        const Group(
+          type: GroupType.URLTest,
+          name: autoWhitelistGroupName,
+          now: 'WL 1',
+        ),
+      ];
+      expect(container.read(tenvpnSelectionProvider), (
+        auto: true,
+        whitelist: true,
+        server: 'WL 1',
+      ));
     });
   });
 
@@ -750,41 +781,64 @@ void main() {
       await tester.pump(const Duration(seconds: 1));
     });
 
-    _tv('search keeps «Авто» and the sections that match', (tester) async {
+    _tv('«Авто», «Умный» and the whitelist auto lead; no search', (
+      tester,
+    ) async {
+      container = build(items: [profile]);
+      const smart = '🇪🇺 Умный сервер';
+      final groups = _groups(manual: false);
+      container.read(groupsProvider.notifier).value = [
+        groups[0].copyWith(
+          all: const [
+            Proxy(name: autoGroupName, type: 'Fallback'),
+            Proxy(name: autoWhitelistGroupName, type: 'URLTest'),
+            Proxy(name: manualGroupName, type: 'Selector'),
+          ],
+        ),
+        groups[1],
+        groups[2].copyWith(
+          all: [
+            const Proxy(name: smart, type: 'vless'),
+            ...groups[2].all,
+          ],
+        ),
+      ];
+      await pump(
+        tester,
+        Scaffold(body: ListView(children: const [TenvpnServerList()])),
+      );
+      expect(find.byType(TextField), findsNothing);
+      double top(String key) => tester.getTopLeft(find.byKey(ValueKey(key))).dy;
+      final auto = top('tenvpn-server-auto');
+      final smartTop = top('tenvpn-server-$smart');
+      final whitelist = top('tenvpn-server-auto-whitelist');
+      expect(auto < smartTop && smartTop < whitelist, isTrue);
+      expect(whitelist < top('tenvpn-section-vless'), isTrue);
+
+      await tester.tap(find.byKey(const ValueKey('tenvpn-section-vless')));
+      await tester.pump();
+      expect(
+        find.byKey(const ValueKey('tenvpn-server-$smart')),
+        findsOneWidget,
+        reason: 'not repeated inside its section',
+      );
+
+      await tester.tap(
+        find.byKey(const ValueKey('tenvpn-server-auto-whitelist')),
+      );
+      await tester.tap(find.byKey(const ValueKey('tenvpn-server-$smart')));
+      await tester.pump();
+      expect(proxies.whitelistAuto, 1);
+      expect(proxies.selected, [smart]);
+    });
+
+    _tv('no whitelist auto in a profile built before it existed', (
+      tester,
+    ) async {
       await showList(tester);
-      final field = find.byKey(const ValueKey('tenvpn-server-search'));
-      await tester.enterText(field, 'белые');
-      await tester.pump();
-      expect(find.byKey(const ValueKey('tenvpn-server-auto')), findsOneWidget);
-      expect(text('Белые списки 1'), findsOneWidget);
       expect(
-        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
+        find.byKey(const ValueKey('tenvpn-server-auto-whitelist')),
         findsNothing,
-      );
-      expect(
-        find.byKey(const ValueKey('tenvpn-section-reserve')),
-        findsNothing,
-      );
-
-      await tester.enterText(field, 'sweden');
-      await tester.pump();
-      expect(
-        find.byKey(ValueKey('tenvpn-server-${_servers[0].name}')),
-        findsOneWidget,
-      );
-
-      await tester.enterText(field, 'zzz');
-      await tester.pump();
-      expect(
-        find.byKey(const ValueKey('tenvpn-nothing-found')),
-        findsOneWidget,
-      );
-
-      await tester.tap(find.byIcon(Symbols.close));
-      await tester.pump();
-      expect(
-        find.byKey(const ValueKey('tenvpn-section-reserve')),
-        findsOneWidget,
       );
     });
 

@@ -16,8 +16,8 @@ import 'main_view.dart' show TenvpnPing;
 import 'state.dart';
 import 'theme.dart';
 
-/// The server choice, inline under the power button: compact one-line rows,
-/// the main servers open, the special sections folded so the list stays
+/// The server choice, inline under the power button: the automatic choices
+/// and «Умный» on top, then the protocol sections folded so the list stays
 /// short. Speeds are measured once the manual group shows up and again on
 /// request.
 class TenvpnServerList extends ConsumerStatefulWidget {
@@ -30,14 +30,6 @@ class TenvpnServerList extends ConsumerStatefulWidget {
 class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   bool _measured = false;
   final _toggled = <String>{};
-  final _search = TextEditingController();
-  String _query = '';
-
-  @override
-  void dispose() {
-    _search.dispose();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -73,7 +65,17 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
   Widget build(BuildContext context) {
     final l = context.appLocalizations;
     final p = context.palette;
-    final sections = ref.watch(tenvpnSectionsProvider);
+    final (:smart, :sections) = pinSmart(ref.watch(tenvpnSectionsProvider));
+    final whitelistAuto = ref.watch(
+      groupsProvider.select(
+        (g) =>
+            g
+                .getGroup(mainGroupName)
+                ?.all
+                .any((proxy) => proxy.name == autoWhitelistGroupName) ??
+            false,
+      ),
+    );
     final selection = ref.watch(tenvpnSelectionProvider);
     final active = ref.watch(tenvpnPhaseProvider) == ConnectionPhase.on;
     final look = ref.watch(
@@ -85,18 +87,13 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     );
     int? delayOf(String name) =>
         ref.watch(delayProvider(proxyName: name, testUrl: testUrl));
-    List<ServerPresentation> ordered(List<ServerPresentation> servers) {
-      final found = [
-        for (final s in servers)
-          if (serverMatches(s, _query)) s,
-      ];
-      return look.$2 == ServerSort.ping ? sortByPing(found, delayOf) : found;
-    }
+    List<ServerPresentation> ordered(List<ServerPresentation> servers) =>
+        look.$2 == ServerSort.ping ? sortByPing(servers, delayOf) : servers;
 
     bool isSelected(ServerPresentation s) =>
         !selection.auto && selection.server == s.name;
-    final searching = _query.trim().isNotEmpty;
     final best = bestServerName([
+      ...smart,
       for (final s in sections) ...s.servers,
     ], delayOf);
     Widget tile(ServerPresentation server) => _ServerTile(
@@ -110,16 +107,10 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
     final awgOnTop = ref.watch(tenvpnDesktopAwgProvider);
     bool isOpen(ServerSection section) =>
         detailed ||
-        searching ||
         section.servers.any(isSelected) ||
         (section.kind == ServerSectionKind.reserve && awgOnTop) !=
             _toggled.contains(section.id);
     final hasAwg = sections.any((s) => s.kind == ServerSectionKind.reserve);
-    final shown = [
-      for (final section in sections)
-        if (!searching || section.servers.any((s) => serverMatches(s, _query)))
-          section,
-    ];
     List<Widget> rows(ServerSection section) => [
       _SectionHeader(
         section: section,
@@ -131,21 +122,16 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
       ),
       if (isOpen(section)) ...ordered(section.servers).map(tile),
     ];
-    final awgMissing = !hasAwg && sections.isNotEmpty && !searching
+    final awgMissing = !hasAwg && sections.isNotEmpty
         ? const _AwgMissingTile()
         : null;
-    final reserve = [
-      for (final section in shown)
-        if (section.kind == ServerSectionKind.reserve) section,
+    List<ServerSection> ofKind(ServerSectionKind kind) => [
+      for (final section in sections)
+        if (section.kind == kind) section,
     ];
-    final ordinary = [
-      for (final section in shown)
-        if (section.kind == ServerSectionKind.main) section,
-    ];
-    final mobile = [
-      for (final section in shown)
-        if (section.kind == ServerSectionKind.mobile) section,
-    ];
+    final reserve = ofKind(ServerSectionKind.reserve);
+    final ordinary = ofKind(ServerSectionKind.main);
+    final mobile = ofKind(ServerSectionKind.mobile);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -181,11 +167,6 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
             _PingButton(onPressed: _checkSpeed),
           ],
         ),
-        const SizedBox(height: 8),
-        _SearchField(
-          controller: _search,
-          onChanged: (value) => setState(() => _query = value),
-        ),
         if (awgOnTop && (reserve.isNotEmpty || awgMissing != null)) ...[
           const SizedBox(height: 8),
           _Group(
@@ -199,12 +180,40 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
         _Group(
           children: [
             _AutoTile(
-              selected: selection.auto,
+              key: const ValueKey('tenvpn-server-auto'),
+              selected: selection.auto && !selection.whitelist,
               active: active,
               detailed: detailed,
-              current: selection.auto ? selection.server : null,
+              title: l.tenvpnAuto,
+              description: l.tenvpnAutoDesc,
+              icon: Symbols.bolt,
+              current: selection.auto && !selection.whitelist
+                  ? selection.server
+                  : null,
               onTap: () => _select(null),
             ),
+            ...smart.map(tile),
+            if (whitelistAuto)
+              _AutoTile(
+                key: const ValueKey('tenvpn-server-auto-whitelist'),
+                selected: selection.whitelist,
+                active: active,
+                detailed: detailed,
+                title: l.tenvpnAutoWhitelist,
+                description: l.tenvpnAutoWhitelistDesc,
+                icon: Symbols.signal_cellular_alt,
+                current: selection.whitelist ? selection.server : null,
+                onTap: () => unawaited(
+                  ref
+                      .read(proxiesActionProvider.notifier)
+                      .selectTenvpnWhitelistAuto(),
+                ),
+              ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        _Group(
+          children: [
             for (final section in ordinary) ...rows(section),
             if (!awgOnTop) ...[
               ?awgMissing,
@@ -213,16 +222,6 @@ class _TenvpnServerListState extends ConsumerState<TenvpnServerList> {
             for (final section in mobile) ...rows(section),
           ],
         ),
-        if (searching && shown.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(14),
-            child: Text(
-              l.tenvpnNothingFound,
-              key: const ValueKey('tenvpn-nothing-found'),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 13.5, color: p.muted),
-            ),
-          ),
       ],
     );
   }
@@ -314,50 +313,6 @@ class _AwgMissingTile extends StatelessWidget {
         ],
       ),
       end: Icon(Symbols.chevron_right, color: p.muted, size: 22),
-    );
-  }
-}
-
-class _SearchField extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-
-  const _SearchField({required this.controller, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    final p = context.palette;
-    return SizedBox(
-      height: 46,
-      child: TextField(
-        key: const ValueKey('tenvpn-server-search'),
-        controller: controller,
-        onChanged: onChanged,
-        textInputAction: TextInputAction.search,
-        style: TextStyle(fontSize: 14.5, color: p.text),
-        decoration: InputDecoration(
-          isDense: true,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-          hintText: context.appLocalizations.tenvpnSearchServers,
-          hintStyle: TextStyle(fontSize: 14, color: p.mutedDeep),
-          filled: true,
-          fillColor: p.surface,
-          prefixIcon: Icon(Symbols.search, size: 20, color: p.muted),
-          suffixIcon: ValueListenableBuilder(
-            valueListenable: controller,
-            builder: (context, value, _) => value.text.isEmpty
-                ? const SizedBox.shrink()
-                : IconButton(
-                    tooltip: context.appLocalizations.clear,
-                    icon: Icon(Symbols.close, size: 18, color: p.muted),
-                    onPressed: () {
-                      controller.clear();
-                      onChanged('');
-                    },
-                  ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -531,13 +486,20 @@ class _AutoTile extends StatelessWidget {
   final bool selected;
   final bool active;
   final bool detailed;
+  final String title;
+  final String description;
+  final IconData icon;
   final String? current;
   final VoidCallback onTap;
 
   const _AutoTile({
+    super.key,
     required this.selected,
     required this.active,
     required this.detailed,
+    required this.title,
+    required this.description,
+    required this.icon,
     required this.current,
     required this.onTap,
   });
@@ -550,16 +512,15 @@ class _AutoTile extends StatelessWidget {
         ? null
         : presentServer(name: current!, type: '');
     return _Row(
-      key: const ValueKey('tenvpn-server-auto'),
       highlighted: selected,
       onTap: onTap,
-      leading: Icon(Symbols.bolt, color: p.cocoaText, size: 24, fill: 1),
+      leading: Icon(icon, color: p.cocoaText, size: 24, fill: 1),
       minHeight: detailed ? 60 : 50,
       title: _Line(
         detailed: detailed,
-        title: l.tenvpnAuto,
+        title: title,
         detail: now == null
-            ? l.tenvpnAutoDesc
+            ? description
             : l.tenvpnNow('${now.flag} ${now.title}'.trim()),
       ),
       end: _Check(selected: selected, active: active),

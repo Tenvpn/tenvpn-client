@@ -71,18 +71,30 @@ final tenvpnPhaseProvider = Provider<ConnectionPhase>((ref) {
   );
 });
 
-typedef TenvpnSelection = ({bool auto, String? server});
+/// [whitelist]: «Авто» limited to the whitelist tier, still an auto choice.
+typedef TenvpnSelection = ({bool auto, bool whitelist, String? server});
 
 final tenvpnSelectionProvider = Provider<TenvpnSelection>((ref) {
   final groups = ref.watch(groupsProvider);
   final main = groups.getGroup(mainGroupName);
   final auto = main == null || main.now != manualGroupName;
-  final group = groups.getGroup(auto ? autoGroupName : manualGroupName);
+  final whitelist = main?.now == autoWhitelistGroupName;
+  final group = groups.getGroup(
+    whitelist
+        ? autoWhitelistGroupName
+        : auto
+        ? autoGroupName
+        : manualGroupName,
+  );
   var server = group?.now;
   while (autoTierGroupNames.contains(server)) {
     server = groups.getGroup(server!)?.now;
   }
-  return (auto: auto, server: server?.isEmpty == true ? null : server);
+  return (
+    auto: auto,
+    whitelist: whitelist,
+    server: server?.isEmpty == true ? null : server,
+  );
 });
 
 final tenvpnServerEntriesProvider = FutureProvider<List<ServerEntry>>((

@@ -302,7 +302,11 @@ proxies:
         manualGroupName,
       ]);
       expect(groups[0]['type'], 'select');
-      expect(groups[0]['proxies'], [autoGroupName, manualGroupName]);
+      expect(groups[0]['proxies'], [
+        autoGroupName,
+        autoWhitelistGroupName,
+        manualGroupName,
+      ], reason: 'the whitelist tier can be picked on its own');
       expect(groups[1], {
         'name': autoGroupName,
         'type': 'fallback',
@@ -382,6 +386,7 @@ proxies:
           autoGroupName,
           manualGroupName,
         ]);
+        expect(groups[0]['proxies'], [autoGroupName, manualGroupName]);
         expect(groups[1]['type'], 'url-test');
         expect(groups[1].containsKey('hidden'), isFalse);
         expect(groups[1]['interval'], wl ? 300 : 120);

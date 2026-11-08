@@ -7305,6 +7305,26 @@ class AppLocalizations {
     );
   }
 
+  /// `Auto: allowlists`
+  String get tenvpnAutoWhitelist {
+    return Intl.message(
+      'Auto: allowlists',
+      name: 'tenvpnAutoWhitelist',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The best of the allowlist servers`
+  String get tenvpnAutoWhitelistDesc {
+    return Intl.message(
+      'The best of the allowlist servers',
+      name: 'tenvpnAutoWhitelistDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto · {server}`
   String tenvpnAutoNow(Object server) {
     return Intl.message(
@@ -8258,26 +8278,6 @@ class AppLocalizations {
   /// `best`
   String get tenvpnBest {
     return Intl.message('best', name: 'tenvpnBest', desc: '', args: []);
-  }
-
-  /// `Country, protocol or name`
-  String get tenvpnSearchServers {
-    return Intl.message(
-      'Country, protocol or name',
-      name: 'tenvpnSearchServers',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Nothing found`
-  String get tenvpnNothingFound {
-    return Intl.message(
-      'Nothing found',
-      name: 'tenvpnNothingFound',
-      desc: '',
-      args: [],
-    );
   }
 
   /// `Send a bug report`

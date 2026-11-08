@@ -1371,6 +1371,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Launch TENVPN when the computer starts",
     ),
+    "tenvpnAutoWhitelist": MessageLookupByLibrary.simpleMessage(
+      "Auto: allowlists",
+    ),
+    "tenvpnAutoWhitelistDesc": MessageLookupByLibrary.simpleMessage(
+      "The best of the allowlist servers",
+    ),
     "tenvpnAwgKey": MessageLookupByLibrary.simpleMessage("Amnezia key"),
     "tenvpnAwgKeyBroken": MessageLookupByLibrary.simpleMessage(
       "The key is damaged — copy it again in full.",
@@ -1544,7 +1550,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNoSubscriptionText": MessageLookupByLibrary.simpleMessage(
       "Four steps and the internet works.",
     ),
-    "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage("Nothing found"),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Subscription"),
     "tenvpnNow": m40,
     "tenvpnOpen": MessageLookupByLibrary.simpleMessage("Open"),
@@ -1610,9 +1615,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnScheduleNextOff": m42,
     "tenvpnScheduleNextOn": m43,
     "tenvpnScheduleRemove": MessageLookupByLibrary.simpleMessage("削除"),
-    "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
-      "Country, protocol or name",
-    ),
     "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
     "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Fastest on home internet",

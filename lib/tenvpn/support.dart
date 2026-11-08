@@ -24,25 +24,6 @@ String? bestServerName(
   return best;
 }
 
-bool serverMatches(ServerPresentation server, String query) {
-  final words = query.toLowerCase().split(RegExp(r'\s+'))
-    ..removeWhere((w) => w.isEmpty);
-  if (words.isEmpty) return true;
-  final code = String.fromCharCodes(
-    server.flag.runes.map((rune) => rune - 0x1F1A5),
-  );
-  final haystack = [
-    server.title,
-    server.protocol,
-    server.name,
-    if (code.length == 2) ...[
-      countryName(code, russian: false),
-      countryName(code, russian: true),
-    ],
-  ].join(' ').toLowerCase();
-  return words.every(haystack.contains);
-}
-
 final _scrubbers = <(RegExp, String)>[
   (RegExp(r'[a-z][a-z0-9+.-]*://\S+', caseSensitive: false), '<link>'),
   (

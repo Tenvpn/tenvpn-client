@@ -245,4 +245,20 @@ void main() {
     ], (name) => delays[name]);
     expect(sorted.map((server) => server.name), ['c', 'f', 'a', 'd', 'e', 'b']);
   });
+
+  test('«Умный» leaves its section for the top, whitelist ones stay', () {
+    final sections = groupServers([
+      (name: '🇪🇺 Умный сервер', type: 'vless'),
+      (name: '🇸🇪 Швеция', type: 'vless'),
+      (name: '🇪🇺 Умный обход белых списков', type: 'vless'),
+    ], const []);
+    final (:smart, sections: rest) = pinSmart(sections);
+    expect(smart.map((s) => s.name), ['🇪🇺 Умный сервер']);
+    expect(
+      [for (final section in rest) ...section.servers.map((s) => s.name)],
+      ['🇸🇪 Швеция', '🇪🇺 Умный обход белых списков'],
+    );
+    final alone = ServerSection(ServerSectionKind.main, smart);
+    expect(pinSmart([alone]).sections, isEmpty);
+  });
 }
