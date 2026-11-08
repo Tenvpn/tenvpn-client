@@ -43,6 +43,22 @@ export ANDROID_KEYSTORE_FILE=/path/to/tenvpn-release.jks
 export ANDROID_KEYSTORE_PASSWORD=...  ANDROID_KEY_ALIAS=tenvpn  ANDROID_KEY_PASSWORD=...
 ```
 
+### Релизная сборка Android на машине владельца (Windows, Git Bash)
+
+Ключ и пароли лежат в `~/.android-keys/` (`tenvpn-release.jks` и `tenvpn-release-passwords.txt`), адрес бэкенда — тот же, что в секрете CI `TENVPN_API_BASE`. Ни то, ни другое в git не попадает; в консоль значения не печатать.
+
+```bash
+export PATH="$PATH:$LOCALAPPDATA/Pub/Cache/bin"   # flutter_distributor, см. ловушку 5
+export ANDROID_KEYSTORE_FILE="$HOME/.android-keys/tenvpn-release.jks"
+while IFS='=' read -r k v; do export "$k=$v"; done \
+  < <(grep '^ANDROID_' ~/.android-keys/tenvpn-release-passwords.txt | tr -d '\r')
+export TENVPN_API_BASE='<адрес бэкенда>'
+dart setup.dart android --env stable -v
+grep -q '"TENVPN_API_BASE"' env.json && echo "адрес бэкенда в сборке"
+```
+
+Без переменных `ANDROID_*` APK выходит как `com.tenvpn.app.dev` (debug-ключ) и не обновляет установленный релиз. Без `TENVPN_API_BASE` в приложении нет аккаунта, AWG и телеметрии. `env.json` локальный и в `.gitignore`.
+
 ### Ловушки Windows-хоста
 
 Android в CI собирается на Linux, как у апстримов. Собирать APK на Windows можно, но только после правок ниже. Каждая стоила отдельной итерации сборки.
@@ -71,6 +87,8 @@ Android в CI собирается на Linux, как у апстримов. С�
 - тег `v*` (или ручной запуск) — сборки: Android (ubuntu), Windows x64 (windows-2022, Inno Setup), iOS без подписи (macos); по тегу файлы прикладываются к GitHub Release.
 
 Секреты репозитория для подписи APK: `ANDROID_KEYSTORE_B64` (keystore в base64), `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS`, `ANDROID_KEY_PASSWORD`. Без них релиз не собирается — debug-подписанный APK наружу не уходит.
+
+Секрет `TENVPN_API_BASE` — адрес бэкенда приложения (Settings → Secrets and variables → Actions). Шаг `Build` передаёт его в окружение `setup.dart` и падает, если секрет пуст или адрес не попал в `env.json`.
 
 ## Глубокие ссылки
 
