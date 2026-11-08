@@ -19,6 +19,8 @@ object ServiceState {
 
     suspend fun handleStartAction() = machine.handleStartAction()
 
+    fun startNeedsApp(): Boolean = machine.startNeedsApp()
+
     suspend fun handleStopAction() = machine.handleStopAction()
 
     suspend fun handleVpnRevokeAction() = machine.handleVpnRevokeAction()

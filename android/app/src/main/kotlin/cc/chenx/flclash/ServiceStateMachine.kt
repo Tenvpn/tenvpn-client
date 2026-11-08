@@ -62,6 +62,18 @@ internal class ServiceStateMachine(private val host: ServiceStateHost) {
         }
     }
 
+    fun startNeedsApp(): Boolean {
+        if (isRunningRequested() || host.app() != null) {
+            return false
+        }
+        val state = host.loadSharedState()
+        val options = state.vpnOptions ?: return true
+        if (state.setupParams == null) {
+            return true
+        }
+        return options.enable && !host.isVpnPermissionGranted()
+    }
+
     suspend fun refresh(): Long = transitionLock.withLock {
         val current = runTimeMillis
         mutableRunState.value = if (current == 0L) RunState.STOPPED else RunState.STARTED

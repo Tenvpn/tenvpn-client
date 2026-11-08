@@ -469,6 +469,63 @@ class ServiceStateMachineTest {
     }
 
     @Test
+    fun `a start needs the app without a vpn permission`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.vpnPermissionGranted = false
+        val machine = ServiceStateMachine(host)
+
+        assertTrue(machine.startNeedsApp())
+    }
+
+    @Test
+    fun `a start needs the app without a stored configuration`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.storedSharedState = SharedState()
+        val machine = ServiceStateMachine(host)
+
+        assertTrue(machine.startNeedsApp())
+    }
+
+    @Test
+    fun `a configured start with the vpn permission runs without the app`() = runTest {
+        val host = FakeHost(backgroundScope)
+        val machine = ServiceStateMachine(host)
+
+        assertFalse(machine.startNeedsApp())
+    }
+
+    @Test
+    fun `a proxy-only start runs without the app and without the vpn permission`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.vpnPermissionGranted = false
+        host.storedSharedState = configuredState(enable = false)
+        val machine = ServiceStateMachine(host)
+
+        assertFalse(machine.startNeedsApp())
+    }
+
+    @Test
+    fun `an attached app asks for what is missing itself`() = runTest {
+        val host = FakeHost(backgroundScope)
+        host.vpnPermissionGranted = false
+        host.app = FakeApp()
+        val machine = ServiceStateMachine(host)
+
+        assertFalse(machine.startNeedsApp())
+    }
+
+    @Test
+    fun `stopping a running service never needs the app`() = runTest {
+        val host = FakeHost(backgroundScope)
+        val machine = ServiceStateMachine(host)
+        machine.syncSharedState(configuredState())
+        machine.requestStart().await()
+        host.vpnPermissionGranted = false
+
+        assertFalse(machine.startNeedsApp())
+    }
+
+    @Test
     fun `handleStartAction reports a missing configuration`() = runTest {
         val host = FakeHost(backgroundScope)
         host.storedSharedState = SharedState()
