@@ -110,6 +110,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
         }
     }
 
+    private var networkChangeWatcher: NetworkChangeWatcher? = null
+
     private var skipNotificationPermissionRequest = false
 
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -530,6 +532,9 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
             MethodChannel(flutterPluginBinding.binaryMessenger, "${Components.PACKAGE_NAME}/app")
         channel.setMethodCallHandler(this)
         watchPackageChanges(flutterPluginBinding.applicationContext)
+        networkChangeWatcher = NetworkChangeWatcher(flutterPluginBinding.applicationContext) {
+            channel.invokeMethod("networkChanged", null)
+        }.also { it.start() }
     }
 
     private fun watchPackageChanges(context: Context) {
@@ -546,6 +551,8 @@ class AppPlugin : FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
         packageChangeContext?.unregisterReceiver(packageChangeReceiver)
         packageChangeContext = null
+        networkChangeWatcher?.stop()
+        networkChangeWatcher = null
         channel.setMethodCallHandler(null)
         scope.cancel()
         invokeVpnPrepareCallback(false)

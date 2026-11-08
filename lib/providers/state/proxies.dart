@@ -222,6 +222,15 @@ int? delay(Ref ref, {required String proxyName, String? testUrl}) {
 }
 
 @riverpod
+bool delayStale(Ref ref, {required String proxyName, String? testUrl}) {
+  final currentTestUrl = ref.watch(realTestUrlProvider(testUrl));
+  final proxyState = ref.watch(realSelectedProxyStateProvider(proxyName));
+  final effectiveTestUrl = proxyState.testUrl.takeFirstValid([currentTestUrl]);
+  final key = delayTestKey(effectiveTestUrl, proxyState.proxyName);
+  return ref.watch(staleDelaysProvider.select((state) => state.contains(key)));
+}
+
+@riverpod
 bool delayTestPending(Ref ref, {required String proxyName, String? testUrl}) {
   final currentTestUrl = ref.watch(realTestUrlProvider(testUrl));
   final proxyState = ref.watch(realSelectedProxyStateProvider(proxyName));

@@ -309,6 +309,9 @@ class DelayDataSource extends _$DelayDataSource with AutoDisposeNotifierMixin {
   }
 
   void setDelay(Delay delay) {
+    ref
+        .read(staleDelaysProvider.notifier)
+        .release(delayTestKey(delay.url, delay.name));
     if (state[delay.url]?[delay.name] != delay.value) {
       final DelayMap newDelayMap = Map.from(state);
       if (newDelayMap[delay.url] == null) {
@@ -316,6 +319,34 @@ class DelayDataSource extends _$DelayDataSource with AutoDisposeNotifierMixin {
       }
       newDelayMap[delay.url]![delay.name] = delay.value;
       value = newDelayMap;
+    }
+  }
+}
+
+/// Delay keys last measured before a network change, so their failures are moot.
+@Riverpod(keepAlive: true)
+class StaleDelays extends _$StaleDelays with AutoDisposeNotifierMixin {
+  @override
+  Set<String> build() {
+    return const <String>{};
+  }
+
+  void markAll(Iterable<String> keys) {
+    final next = {...state, ...keys};
+    if (next.length != state.length) {
+      value = Set.unmodifiable(next);
+    }
+  }
+
+  void release(String key) {
+    if (state.contains(key)) {
+      value = Set.unmodifiable({...state}..remove(key));
+    }
+  }
+
+  void clear() {
+    if (state.isNotEmpty) {
+      value = const <String>{};
     }
   }
 }

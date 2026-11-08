@@ -722,6 +722,34 @@ void main() {
       });
     }
 
+    _tv('a failure from before a network change reads «…» while on', (
+      tester,
+    ) async {
+      await showList(tester);
+      await tester.tap(find.byKey(const ValueKey('tenvpn-section-vless')));
+      final url = container.read(appSettingProvider).testUrl;
+      final name = _servers[0].name;
+      final delays = container.read(delayDataSourceProvider.notifier);
+      delays.setDelay(Delay(name: name, url: url, value: -1));
+      container.read(staleDelaysProvider.notifier).markAll([
+        delayTestKey(url, name),
+      ]);
+      await tester.pump();
+      final stale = find.byKey(const ValueKey('tenvpn-ping-stale'));
+      expect(stale, findsNothing, reason: 'off: the failure is the news');
+
+      container.read(runTimeProvider.notifier).value = 1;
+      await tester.pump();
+      expect(stale, findsOneWidget);
+      expect(text('no reply'), findsNothing);
+
+      delays.setDelay(Delay(name: name, url: url, value: -1));
+      await tester.pump();
+      expect(stale, findsNothing, reason: 'measured again after the change');
+      expect(text('no reply'), findsOneWidget);
+      await tester.pump(const Duration(seconds: 1));
+    });
+
     _tv('search keeps «Авто» and the sections that match', (tester) async {
       await showList(tester);
       final field = find.byKey(const ValueKey('tenvpn-server-search'));

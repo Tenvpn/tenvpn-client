@@ -20,6 +20,7 @@ export 'expiry.dart';
 export 'telemetry.dart';
 export 'headers.dart';
 export 'network_mode.dart';
+export 'network_recheck.dart';
 export 'configgen/configgen.dart';
 export 'presentation.dart';
 export 'schedule.dart';
