@@ -236,6 +236,15 @@ class ProxiesAction extends _$ProxiesAction {
     await updateGroups();
   }
 
+  Future<void> selectTenvpnWhitelistAuto() async {
+    await changeProxy(
+      groupName: mainGroupName,
+      proxyName: autoWhitelistGroupName,
+      closeConnections: true,
+    );
+    await updateGroups();
+  }
+
   void _showCloseConnectionsSnackBar(ChangeProxyParams params) {
     final context = globalState.navigatorKey.currentContext;
     if (context == null || !context.mounted) return;

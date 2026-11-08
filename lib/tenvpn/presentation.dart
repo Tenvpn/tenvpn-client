@@ -21,7 +21,7 @@ ConnectionPhase connectionPhase({
   return checkingIp ? ConnectionPhase.on : ConnectionPhase.error;
 }
 
-enum ServerTag { mobile, youtube, gemini, reserve }
+enum ServerTag { mobile, youtube, gemini, reserve, smart }
 
 enum ServerSectionKind { main, mobile, reserve }
 
@@ -78,6 +78,7 @@ final _mobileTitle = RegExp(
   caseSensitive: false,
 );
 final _spaces = RegExp(r'\s+');
+final _smartWords = RegExp('умн', caseSensitive: false);
 
 const _protocolWords = {
   'hysteria2',
@@ -129,6 +130,9 @@ ServerPresentation presentServer({
       type.toLowerCase() == 'wireguard' || section == awgSectionTitle;
   if (isMobile) tags.add(ServerTag.mobile);
   if (isReserve) tags.add(ServerTag.reserve);
+  if (!isMobile && !isReserve && _smartWords.hasMatch(name)) {
+    tags.add(ServerTag.smart);
+  }
   title = title.replaceAllMapped(_bracketPattern, (match) {
     final inner = match.group(1)!.toLowerCase();
     final words = inner
@@ -207,6 +211,25 @@ List<ServerSection> groupServers(
       else if (buckets[kind]!.isNotEmpty)
         ServerSection(kind, buckets[kind]!),
   ];
+}
+
+/// The server-side «Умный» balancer sits next to «Авто», out of its section.
+({List<ServerPresentation> smart, List<ServerSection> sections}) pinSmart(
+  List<ServerSection> sections,
+) {
+  bool isSmart(ServerPresentation s) => s.tags.contains(ServerTag.smart);
+  return (
+    smart: [for (final section in sections) ...section.servers.where(isSmart)],
+    sections: [
+      for (final section in sections)
+        if (section.servers.any((s) => !isSmart(s)))
+          ServerSection(
+            section.kind,
+            section.servers.where((s) => !isSmart(s)).toList(),
+            family: section.family,
+          ),
+    ],
+  );
 }
 
 String flagEmoji(String countryCode) {

@@ -885,10 +885,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage":
-        MessageLookupByLibrary.simpleMessage(
-          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-        ),
+    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
+      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+    ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1727,6 +1726,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnAutoStartDesc": MessageLookupByLibrary.simpleMessage(
       "Запускать TENVPN вместе с компьютером",
     ),
+    "tenvpnAutoWhitelist": MessageLookupByLibrary.simpleMessage(
+      "Авто: белые списки",
+    ),
+    "tenvpnAutoWhitelistDesc": MessageLookupByLibrary.simpleMessage(
+      "Лучший из серверов под белые списки",
+    ),
     "tenvpnAwgKey": MessageLookupByLibrary.simpleMessage("Ключ Амнезии"),
     "tenvpnAwgKeyBroken": MessageLookupByLibrary.simpleMessage(
       "Ключ повреждён — скопируйте его заново целиком.",
@@ -1908,9 +1913,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnNoSubscriptionText": MessageLookupByLibrary.simpleMessage(
       "Четыре шага — и интернет работает.",
     ),
-    "tenvpnNothingFound": MessageLookupByLibrary.simpleMessage(
-      "Ничего не нашлось",
-    ),
     "tenvpnNoticeChannel": MessageLookupByLibrary.simpleMessage("Подписка"),
     "tenvpnNow": m40,
     "tenvpnOpen": MessageLookupByLibrary.simpleMessage("Открыть"),
@@ -1982,9 +1984,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "tenvpnScheduleNextOff": m42,
     "tenvpnScheduleNextOn": m43,
     "tenvpnScheduleRemove": MessageLookupByLibrary.simpleMessage("Удалить"),
-    "tenvpnSearchServers": MessageLookupByLibrary.simpleMessage(
-      "Страна, протокол или название",
-    ),
     "tenvpnSectionAwg": MessageLookupByLibrary.simpleMessage("AmneziaWG"),
     "tenvpnSectionAwgDesc": MessageLookupByLibrary.simpleMessage(
       "Самый быстрый на домашнем интернете",

@@ -1257,18 +1257,15 @@ abstract class _$DelayDataSource extends $Notifier<DelayMap> {
   }
 }
 
-/// Delay keys last measured before a network change: a failure among them
-/// says nothing about the network the phone is on now.
+/// Delay keys last measured before a network change, so their failures are moot.
 
 @ProviderFor(StaleDelays)
 final staleDelaysProvider = StaleDelaysProvider._();
 
-/// Delay keys last measured before a network change: a failure among them
-/// says nothing about the network the phone is on now.
+/// Delay keys last measured before a network change, so their failures are moot.
 final class StaleDelaysProvider
     extends $NotifierProvider<StaleDelays, Set<String>> {
-  /// Delay keys last measured before a network change: a failure among them
-  /// says nothing about the network the phone is on now.
+  /// Delay keys last measured before a network change, so their failures are moot.
   StaleDelaysProvider._()
     : super(
         from: null,
@@ -1298,8 +1295,7 @@ final class StaleDelaysProvider
 
 String _$staleDelaysHash() => r'2a6692eedbf2e82210c06d81da6e246d453c0baa';
 
-/// Delay keys last measured before a network change: a failure among them
-/// says nothing about the network the phone is on now.
+/// Delay keys last measured before a network change, so their failures are moot.
 
 abstract class _$StaleDelays extends $Notifier<Set<String>> {
   Set<String> build();

@@ -124,7 +124,11 @@ void main() {
         tenvpnConfigProvider.overrideWithValue(config),
         tenvpnAccountProvider.overrideWith((_) async => account),
         tenvpnPhaseProvider.overrideWith((ref) => ref.watch(_phaseProvider)),
-        tenvpnSelectionProvider.overrideWithValue((auto: false, server: 'NL')),
+        tenvpnSelectionProvider.overrideWithValue((
+          auto: false,
+          whitelist: false,
+          server: 'NL',
+        )),
         tenvpnServerEntriesProvider.overrideWith(
           (_) async => const [
             ServerEntry(name: 'NL', type: 'vless', security: 'reality'),

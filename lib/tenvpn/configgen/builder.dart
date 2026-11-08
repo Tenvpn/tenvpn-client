@@ -190,13 +190,24 @@ GeneratedConfig buildConfig(
   ];
   final whitelistNames = allNames.where(whitelist.contains).toList();
   final secret = options.controllerSecret ?? generateSecret(random);
+  final autoGroups = _autoGroups(
+    primaryNames,
+    awgNames,
+    whitelistNames,
+    options,
+  );
   final groups = <Map<String, dynamic>>[
     {
       'name': mainGroupName,
       'type': 'select',
-      'proxies': [autoGroupName, manualGroupName],
+      'proxies': [
+        autoGroupName,
+        if (autoGroups.any((g) => g['name'] == autoWhitelistGroupName))
+          autoWhitelistGroupName,
+        manualGroupName,
+      ],
     },
-    ..._autoGroups(primaryNames, awgNames, whitelistNames, options),
+    ...autoGroups,
     {'name': manualGroupName, 'type': 'select', 'proxies': allNames},
   ];
   final config = <String, dynamic>{
