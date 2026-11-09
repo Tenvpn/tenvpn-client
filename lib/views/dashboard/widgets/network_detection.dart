@@ -1,6 +1,6 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
-import 'package:fl_clash/providers/app.dart';
+import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:material_symbols_icons/symbols.dart';
@@ -44,6 +44,8 @@ class NetworkDetection extends ConsumerWidget {
     final networkDetection = ref.watch(networkDetectionProvider);
     final ipInfo = networkDetection.ipInfo;
     final isLoading = networkDetection.isLoading;
+    // With the VPN off the IP is not looked up at all.
+    final isStart = ref.watch(isStartProvider);
     final emojiTextStyle = context.textTheme.titleMedium?.toLight.copyWith(
       fontFamily: FontFamily.twEmoji.value,
       height: 1,
@@ -131,6 +133,13 @@ class NetworkDetection extends ConsumerWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
+                        )
+                      : !isStart
+                      ? Text(
+                          '—',
+                          style: context.textTheme.bodyMedium?.toLight
+                              .adjustSize(1),
+                          maxLines: 1,
                         )
                       : isLoading == false && ipInfo == null
                       ? Text(

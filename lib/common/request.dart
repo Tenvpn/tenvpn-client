@@ -5,10 +5,12 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:flutter/foundation.dart' show visibleForTesting;
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart' show selfUpdateEnabled;
 import 'package:fl_clash/tenvpn/update.dart' show tenvpnReleasesUrl;
 
 class Request {
@@ -106,7 +108,10 @@ class Request {
         .timeout(const Duration(seconds: 10));
   }
 
+  /// Null when there is nothing newer — and always in the Play build, which
+  /// sends no request at all (see [selfUpdateEnabled]).
   Future<Map<String, dynamic>?> checkForUpdate() async {
+    if (!selfUpdateEnabled) return null;
     try {
       final response = await dio
           .get(
@@ -176,15 +181,19 @@ class Request {
     return data.toString().trim();
   }
 
+  /// HTTPS only: the free ip-api.com answers over plain HTTP alone, so it is
+  /// not asked. Callers ask only through the tunnel (see NetworkDetection).
   final Map<String, IpInfo Function(Map<String, dynamic>)> _ipInfoSources = {
     'https://ipwho.is': IpInfo.fromIpWhoIsJson,
     'https://api.myip.com': IpInfo.fromMyIpJson,
     'https://ipapi.co/json': IpInfo.fromIpApiCoJson,
     'https://ident.me/json': IpInfo.fromIdentMeJson,
-    'http://ip-api.com/json': IpInfo.fromIpAPIJson,
     'https://api.ip.sb/geoip': IpInfo.fromIpSbJson,
     'https://ipinfo.io/json': IpInfo.fromIpInfoIoJson,
   };
+
+  @visibleForTesting
+  Iterable<String> get ipInfoSourceUrls => _ipInfoSources.keys;
 
   Future<Result<IpInfo?>> checkIp({CancelToken? cancelToken}) async {
     var failureCount = 0;

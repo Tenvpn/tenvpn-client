@@ -4,6 +4,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 import 'package:fl_clash/widgets/config_item.dart';
 import 'package:fl_clash/widgets/list.dart';
 import 'package:fl_clash/widgets/scaffold.dart';
@@ -65,28 +66,33 @@ class AboutView extends ConsumerWidget {
             },
           ),
           const SizedBox(height: 8),
-          generateSectionV3(
-            isFirst: true,
-            title: appLocalizations.update,
-            items: [
-              ConfigToggleItem(
-                title: (l) => l.autoCheckUpdate,
-                selector: appSettingProvider.select(
-                  (state) => state.autoCheckUpdate,
+          // The Play build gets its updates from Play only.
+          if (selfUpdateEnabled)
+            generateSectionV3(
+              isFirst: true,
+              title: appLocalizations.update,
+              items: [
+                ConfigToggleItem(
+                  title: (l) => l.autoCheckUpdate,
+                  selector: appSettingProvider.select(
+                    (state) => state.autoCheckUpdate,
+                  ),
+                  onChanged: (ref, value) => ref
+                      .read(appSettingProvider.notifier)
+                      .update(
+                        (state) => state.copyWith(autoCheckUpdate: value),
+                      ),
                 ),
-                onChanged: (ref, value) => ref
-                    .read(appSettingProvider.notifier)
-                    .update((state) => state.copyWith(autoCheckUpdate: value)),
-              ),
-              ListItem(
-                title: Text(appLocalizations.checkUpdate),
-                onTap: () {
-                  _checkUpdate(context, ref);
-                },
-              ),
-            ],
-          ),
+                ListItem(
+                  title: Text(appLocalizations.checkUpdate),
+                  onTap: () {
+                    _checkUpdate(context, ref);
+                  },
+                ),
+              ],
+            ),
           generateSectionV3(
+            isFirst: !selfUpdateEnabled,
             title: appLocalizations.more,
             items: [
               _buildLinkItem(

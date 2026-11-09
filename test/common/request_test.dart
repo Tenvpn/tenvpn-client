@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:fl_clash/common/exception.dart';
 import 'package:fl_clash/common/request.dart';
 import 'package:fl_clash/l10n/l10n.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -69,5 +70,31 @@ void main() {
             .having((e) => e.message, 'message', contains('rate limited')),
       ),
     );
+  });
+
+  test('every IP lookup service is asked over HTTPS', () {
+    expect(request.ipInfoSourceUrls, isNotEmpty);
+    for (final url in request.ipInfoSourceUrls) {
+      expect(Uri.parse(url).scheme, 'https', reason: url);
+    }
+  });
+
+  test('the Play build never asks GitHub for a newer release', () async {
+    var requests = 0;
+    final interceptor = InterceptorsWrapper(
+      onRequest: (options, handler) {
+        requests++;
+        handler.reject(DioException(requestOptions: options));
+      },
+    );
+    request.dio.interceptors.add(interceptor);
+    debugSelfUpdateEnabled = false;
+    addTearDown(() {
+      debugSelfUpdateEnabled = null;
+      request.dio.interceptors.remove(interceptor);
+    });
+
+    await expectLater(request.checkForUpdate(), completion(isNull));
+    expect(requests, 0);
   });
 }

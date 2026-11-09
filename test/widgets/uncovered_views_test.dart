@@ -4,6 +4,7 @@ import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/config/scripts.dart';
 import 'package:fl_clash/views/profiles/overwrite/standard.dart';
@@ -169,6 +170,27 @@ void main() {
         await tester.pump();
       }
     }
+    expect(tester.takeException(), null);
+  });
+
+  testWidgets('about view in the Play build has no update section', (
+    tester,
+  ) async {
+    debugSelfUpdateEnabled = false;
+    addTearDown(() => debugSelfUpdateEnabled = null);
+    final container = _containerFor(tester);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(child: AboutView()),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byType(AboutView), findsOneWidget);
+    expect(find.text('Auto check for updates'), findsNothing);
+    expect(find.text('Check for updates'), findsNothing);
     expect(tester.takeException(), null);
   });
 
