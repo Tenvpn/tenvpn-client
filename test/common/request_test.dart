@@ -72,6 +72,13 @@ void main() {
     );
   });
 
+  test('every IP lookup service is asked over HTTPS', () {
+    expect(request.ipInfoSourceUrls, isNotEmpty);
+    for (final url in request.ipInfoSourceUrls) {
+      expect(Uri.parse(url).scheme, 'https', reason: url);
+    }
+  });
+
   test('the Play build never asks GitHub for a newer release', () async {
     var requests = 0;
     final interceptor = InterceptorsWrapper(

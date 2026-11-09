@@ -580,7 +580,6 @@ class NetworkDetection extends _$NetworkDetection
     with AutoDisposeNotifierMixin {
   static const _timeoutDisplayDelay = Duration(seconds: 2);
 
-  bool? _preIsStart;
   CancelToken? _cancelToken;
   Timer? _timeoutTimer;
   int _checkVersion = 0;
@@ -588,8 +587,8 @@ class NetworkDetection extends _$NetworkDetection
   @override
   NetworkDetectionState build() {
     ref.listen(tunnelStateProvider, (_, _) => _onTunnelStateChanged());
-    ref.listen(isStartProvider, (_, _) {
-      if (ref.read(tunnelStateProvider) != null) {
+    ref.listen(isStartProvider, (_, isStart) {
+      if (!isStart || ref.read(tunnelStateProvider) != null) {
         _onTunnelStateChanged();
       }
     });
@@ -600,20 +599,30 @@ class NetworkDetection extends _$NetworkDetection
     return const NetworkDetectionState(isLoading: true, ipInfo: null);
   }
 
+  /// The IP is looked up only through a running tunnel: with the VPN off
+  /// the lookup services would see the user's own address, so nothing is
+  /// sent and no IP is shown.
   bool get _canCheck {
-    final tunnelState = ref.read(tunnelStateProvider);
-    if (tunnelState == null) {
-      return true;
+    if (!ref.read(isStartProvider)) {
+      return false;
     }
-    return ref.read(isStartProvider)
-        ? tunnelState == TunnelState.connected
-        : tunnelState == TunnelState.disconnected;
+    final tunnelState = ref.read(tunnelStateProvider);
+    return tunnelState == null || tunnelState == TunnelState.connected;
+  }
+
+  void _clearForStopped() {
+    debouncer.cancel(FunctionTag.checkIp);
+    _resetCheckSession(null);
+    state = state.copyWith(isLoading: false, ipInfo: null);
   }
 
   void _onTunnelStateChanged() {
+    if (!ref.read(isStartProvider)) {
+      _clearForStopped();
+      return;
+    }
     debouncer.cancel(FunctionTag.checkIp);
     _resetCheckSession(null);
-    _preIsStart = null;
     state = state.copyWith(isLoading: true, ipInfo: null);
     if (_canCheck && ref.read(checkIpProvider).containsDetection) {
       startCheck();
@@ -632,18 +641,20 @@ class NetworkDetection extends _$NetworkDetection
 
   Future<void> _checkIp() async {
     final isInit = ref.read(initProvider);
-    if (!isInit || !_canCheck) {
+    if (!isInit) {
       return;
     }
-    final isStart = ref.read(isStartProvider);
-    if (!isStart && _preIsStart == false && state.ipInfo != null) {
+    if (!ref.read(isStartProvider)) {
+      _clearForStopped();
+      return;
+    }
+    if (!_canCheck) {
       return;
     }
     final cancelToken = CancelToken();
     final version = _resetCheckSession(cancelToken);
     commonPrint.log('checkIp start');
     state = state.copyWith(isLoading: true, ipInfo: null);
-    _preIsStart = isStart;
     final res = await request.checkIp(cancelToken: cancelToken);
     commonPrint.log('checkIp res: $res');
 
