@@ -95,7 +95,7 @@ void main() {
 
     tunnel.value = TunnelState.connected;
     await settle(tester);
-    expect(adapter.pending, hasLength(7));
+    expect(adapter.pending, hasLength(request.ipInfoSourceUrls.length));
     adapter.succeed(0, '1.1.1.1');
     await settle(tester);
     expect(container.read(networkDetectionProvider).ipInfo?.ip, '1.1.1.1');
@@ -104,34 +104,50 @@ void main() {
     await tester.pump(const Duration(seconds: 11));
   });
 
-  testWidgets('waits for stop convergence before checking the direct network', (
+  testWidgets(
+    'stopping clears the IP and asks nothing over the direct network',
+    (tester) async {
+      initialize();
+      final sources = request.ipInfoSourceUrls.length;
+      container.read(runTimeProvider.notifier).value = 1;
+      tunnel.value = TunnelState.connected;
+      final notifier = container.read(networkDetectionProvider.notifier);
+      notifier.startCheck();
+      await settle(tester);
+      expect(adapter.pending, hasLength(sources));
+
+      container.read(runTimeProvider.notifier).value = null;
+      await settle(tester);
+      expect(adapter.canceled, sources);
+      expect(container.read(networkDetectionProvider).isLoading, isFalse);
+      tunnel.value = TunnelState.pending;
+      notifier.startCheck();
+      await settle(tester);
+      tunnel.value = TunnelState.disconnected;
+      await settle(tester);
+      notifier.startCheck();
+      await settle(tester);
+      expect(adapter.pending, hasLength(sources));
+      adapter.succeed(0, '1.1.1.1');
+      await settle(tester);
+      expect(container.read(networkDetectionProvider).ipInfo, isNull);
+      expect(container.read(networkDetectionProvider).isLoading, isFalse);
+      container.dispose();
+      await tester.pump(const Duration(seconds: 11));
+    },
+  );
+
+  testWidgets('with the VPN off from the start nothing is looked up', (
     tester,
   ) async {
     initialize();
-    container.read(runTimeProvider.notifier).value = 1;
-    tunnel.value = TunnelState.connected;
+    tunnel.value = TunnelState.disconnected;
     final notifier = container.read(networkDetectionProvider.notifier);
     notifier.startCheck();
     await settle(tester);
-    expect(adapter.pending, hasLength(7));
-
-    container.read(runTimeProvider.notifier).value = null;
-    await settle(tester);
-    expect(adapter.canceled, 7);
-    expect(adapter.pending, hasLength(7));
-    tunnel.value = TunnelState.pending;
-    notifier.startCheck();
-    await settle(tester);
-    expect(adapter.pending, hasLength(7));
-
-    tunnel.value = TunnelState.disconnected;
-    await settle(tester);
-    expect(adapter.pending, hasLength(14));
-    adapter.succeed(7, '2.2.2.2');
-    await settle(tester);
-    adapter.succeed(0, '1.1.1.1');
-    await settle(tester);
-    expect(container.read(networkDetectionProvider).ipInfo?.ip, '2.2.2.2');
+    expect(adapter.pending, isEmpty);
+    expect(container.read(networkDetectionProvider).ipInfo, isNull);
+    expect(container.read(networkDetectionProvider).isLoading, isFalse);
     container.dispose();
     await tester.pump(const Duration(seconds: 11));
   });
@@ -147,7 +163,8 @@ void main() {
 
       tunnel.value = TunnelState.pending;
       await settle(tester);
-      expect(adapter.canceled, 7);
+      final sources = request.ipInfoSourceUrls.length;
+      expect(adapter.canceled, sources);
       adapter.succeed(0, '1.1.1.1');
       await tester.pump(const Duration(seconds: 3));
       expect(container.read(networkDetectionProvider).ipInfo, isNull);
@@ -155,8 +172,8 @@ void main() {
 
       tunnel.value = TunnelState.connected;
       await settle(tester);
-      expect(adapter.pending, hasLength(14));
-      adapter.succeed(7, '2.2.2.2');
+      expect(adapter.pending, hasLength(sources * 2));
+      adapter.succeed(sources, '2.2.2.2');
       await settle(tester);
       expect(container.read(networkDetectionProvider).ipInfo?.ip, '2.2.2.2');
       container.dispose();
@@ -165,7 +182,7 @@ void main() {
   );
 
   testWidgets(
-    'failed startup waits for the optimistic running state rollback',
+    'failed startup sends nothing once the running state rolls back',
     (tester) async {
       initialize();
       container.read(runTimeProvider.notifier).value = 1;
@@ -178,10 +195,9 @@ void main() {
 
       container.read(runTimeProvider.notifier).value = null;
       await settle(tester);
-      expect(adapter.pending, hasLength(7));
-      adapter.succeed(0, '2.2.2.2');
-      await settle(tester);
-      expect(container.read(networkDetectionProvider).ipInfo?.ip, '2.2.2.2');
+      expect(adapter.pending, isEmpty);
+      expect(container.read(networkDetectionProvider).isLoading, isFalse);
+      expect(container.read(networkDetectionProvider).ipInfo, isNull);
       container.dispose();
       await tester.pump(const Duration(seconds: 11));
     },
