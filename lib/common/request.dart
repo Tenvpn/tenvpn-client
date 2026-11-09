@@ -9,6 +9,7 @@ import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart' show selfUpdateEnabled;
 import 'package:fl_clash/tenvpn/update.dart' show tenvpnReleasesUrl;
 
 class Request {
@@ -106,7 +107,10 @@ class Request {
         .timeout(const Duration(seconds: 10));
   }
 
+  /// Null when there is nothing newer — and always in the Play build, which
+  /// sends no request at all (see [selfUpdateEnabled]).
   Future<Map<String, dynamic>?> checkForUpdate() async {
+    if (!selfUpdateEnabled) return null;
     try {
       final response = await dio
           .get(

@@ -12,6 +12,7 @@ import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
 import 'package:fl_clash/providers/core.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -180,6 +181,29 @@ void main() {
         container.read(commonActionProvider.notifier).autoCheckUpdate(),
         completion(isFalse),
       );
+    });
+
+    test('the Play build skips the start-up check entirely', () async {
+      final container = buildContainer();
+      var requests = 0;
+      final interceptor = InterceptorsWrapper(
+        onRequest: (options, handler) {
+          requests++;
+          handler.reject(DioException(requestOptions: options));
+        },
+      );
+      request.dio.interceptors.add(interceptor);
+      debugSelfUpdateEnabled = false;
+      addTearDown(() {
+        debugSelfUpdateEnabled = null;
+        request.dio.interceptors.remove(interceptor);
+      });
+
+      await expectLater(
+        container.read(commonActionProvider.notifier).autoCheckUpdate(),
+        completion(isFalse),
+      );
+      expect(requests, 0);
     });
 
     test('absorbs request failures during startup checks', () async {
