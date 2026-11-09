@@ -57,6 +57,8 @@ dart setup.dart android --env stable -v
 grep -q '"TENVPN_API_BASE"' env.json && echo "адрес бэкенда в сборке"
 ```
 
+Сборка для Google Play (`TENVPN_STORE=play dart setup.dart android --env stable --targets aab`) выходит с `applicationId` `site.tenproxy.app`: `com.tenvpn.app` в Play занят чужим приложением. Сайтовый APK остаётся `com.tenvpn.app`, чтобы у установленных копий шли обновления; оба ставятся на один телефон рядом.
+
 Без переменных `ANDROID_*` APK выходит как `com.tenvpn.app.dev` (debug-ключ) и не обновляет установленный релиз. Без `TENVPN_API_BASE` в приложении нет аккаунта, AWG и телеметрии. `env.json` локальный и в `.gitignore`.
 
 ### Ловушки Windows-хоста

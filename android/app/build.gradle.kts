@@ -52,7 +52,11 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.tenvpn.app"
+        // com.tenvpn.app is taken on Google Play by an unrelated app, so the Play
+        // build ships as site.tenproxy.app; the site APK keeps com.tenvpn.app so
+        // installed copies keep updating. Code, channels and JNI live under the
+        // namespace (cc.chenx.flclash) and read the package name at run time.
+        applicationId = if (isPlayStore) "site.tenproxy.app" else "com.tenvpn.app"
         minSdk = flutter.minSdkVersion
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = flutter.versionCode
