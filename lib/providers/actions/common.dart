@@ -88,7 +88,9 @@ class CommonAction extends _$CommonAction {
     }
   }
 
+  /// Off for good in the Play build: Play delivers the updates there.
   Future<bool> autoCheckUpdate() async {
+    if (!selfUpdateEnabled) return false;
     if (!ref.read(appSettingProvider).autoCheckUpdate) return false;
     try {
       final res = await request.checkForUpdate();
@@ -144,6 +146,7 @@ class CommonAction extends _$CommonAction {
   /// Settings → «Проверить обновления»: unlike the start-up check, says so
   /// when there is nothing newer.
   Future<void> checkUpdateByUser() async {
+    if (!selfUpdateEnabled) return;
     await globalState.safeRun(() async {
       final data = await request.checkForUpdate();
       if (data == null) {
@@ -210,6 +213,7 @@ class CommonAction extends _$CommonAction {
     Map<String, dynamic>? data,
     bool isUser = false,
   }) async {
+    if (!selfUpdateEnabled) return;
     if (data != null) {
       final port = updateProgressPort;
       final release = port != null && system.isWindows && !appPath.isPortable

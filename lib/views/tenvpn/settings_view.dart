@@ -6,6 +6,7 @@ import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
+import 'package:fl_clash/tenvpn/store.dart' show selfUpdateEnabled;
 import 'package:fl_clash/views/about.dart';
 import 'package:fl_clash/views/access.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -135,7 +136,7 @@ class TenvpnSettingsView extends ConsumerWidget {
                     subtitle: l.tenvpnVersion(globalState.packageInfo.version),
                     onTap: () => BaseNavigator.push(context, const AboutView()),
                   ),
-                  if (system.isWindows)
+                  if (system.isWindows && selfUpdateEnabled)
                     TenvpnSettingsRow(
                       icon: Symbols.system_update,
                       title: l.tenvpnCheckUpdate,
